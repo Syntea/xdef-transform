@@ -1,0 +1,27 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:a="http://b"
+           xmlns:tns="http://c"
+           attributeFormDefault="qualified"
+           elementFormDefault="qualified"
+           targetNamespace="http://c">
+  <xs:import namespace="http://b" schemaLocation="t015.xsd"/>
+  <xs:element name="a2">
+    <xs:complexType>
+      <xs:attribute form="unqualified" name="atr1">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+      <xs:attribute ref="a:atr2"/>
+      <xs:attribute name="atr3">
+        <xs:simpleType>
+          <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
