@@ -8,6 +8,7 @@ import org.xdef.transform.xsd.schema2xd.Xsd2XDefAdapter;
 import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
 import org.xdef.transform.xsd.util.SchemaLogger;
+import org.xdef.transform.xsd.util.XmlValidator;
 import org.xdef.util.XValidate;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
@@ -207,7 +208,7 @@ public class TestXsd2Xd extends TesterXdSchema {
 
     private void validateXmlAgainstXsd(final String fileName, final File xmlFile, final File xsdSchemaFile, boolean expectedResult, String type) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlFile), new StreamSource(xsdSchemaFile));
-        assertEq(expectedResult, validator.validate(_outputFilesRoot.getAbsolutePath(), expectedResult && PRINT_XML_VALIDATION_ERRORS),
+        assertEq(expectedResult, validator.validate(expectedResult && PRINT_XML_VALIDATION_ERRORS),
                 "Xml validation failed, testCase: " + fileName + ", type: " + type + ", fileName: " + xmlFile.getName());
     }
 

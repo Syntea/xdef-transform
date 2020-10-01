@@ -11,6 +11,7 @@ import org.xdef.XDPool;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.sys.SUtils;
 import org.xdef.transform.xsd.util.SchemaLogger;
+import org.xdef.transform.xsd.util.XmlValidator;
 import org.xdef.transform.xsd.xd2schema.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
@@ -308,7 +309,7 @@ public class TestXd2Xsd extends TesterXdSchema {
 
     private void validateXmlAgainstXsd(final String fileName, final File xmlFile, final File xsdSchemaFile, boolean expectedResult, String type) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlFile), new StreamSource(xsdSchemaFile));
-        assertEq(expectedResult, validator.validate(_outputFilesRoot.getAbsolutePath(), expectedResult && PRINT_XML_VALIDATION_ERRORS),
+        assertEq(expectedResult, validator.validate(expectedResult && PRINT_XML_VALIDATION_ERRORS),
                 "Xml validation failed, testCase: " + fileName + ", type: " + type + ", fileName: " + xmlFile.getName());
     }
 
