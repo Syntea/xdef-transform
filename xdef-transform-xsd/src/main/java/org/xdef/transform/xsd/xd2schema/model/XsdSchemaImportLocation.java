@@ -30,7 +30,7 @@ public class XsdSchemaImportLocation {
     /**
      * XSD document file extension
      */
-    private String fileExt = ".org.xdef.transform.xsd";
+    private String fileExt = ".xsd";
 
     public XsdSchemaImportLocation(String namespaceUri, String fileName) {
         this.namespaceUri = namespaceUri;
