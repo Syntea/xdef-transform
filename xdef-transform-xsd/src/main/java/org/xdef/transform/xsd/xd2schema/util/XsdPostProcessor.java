@@ -404,9 +404,9 @@ public class XsdPostProcessor {
             return null;
         }
 
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle org.xdef.transform.xsd:all to org.xdef.transform.xsd:choice ...");
+        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle xsd:all to xsd:choice ...");
         adapterCtx.getReportWriter().warning(XSD.XSD043);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node org.xdef.transform.xsd:sequency/choice contains org.xdef.transform.xsd:all node -> converting org.xdef.transform.xsd:all node to org.xdef.transform.xsd:choice!");
+        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node xsd:sequency/choice contains xsd:all node -> converting xsd:all node to xsd:choice!");
 
         final XmlSchemaChoice newGroupChoice = new XmlSchemaChoice();
         newGroupChoice.setAnnotation(XsdNodeFactory.createAnnotation("Original group particle: all", adapterCtx));
@@ -459,7 +459,7 @@ public class XsdPostProcessor {
      * @param schemaChoice          XSD group choice node
      */
     private void copyAllMembersToChoice(final XmlSchemaAll groupParticleAll, final XmlSchemaChoice schemaChoice) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle's members of org.xdef.transform.xsd:all to org.xdef.transform.xsd:choice");
+        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle's members of xsd:all to xsd:choice");
         for (XmlSchemaAllMember member : groupParticleAll.getItems()) {
             allMemberToChoiceMember(member);
             schemaChoice.getItems().add((XmlSchemaChoiceMember) member);
@@ -501,7 +501,7 @@ public class XsdPostProcessor {
         newGroupChoice.setTransformDirection(transformDirection);
         newGroupChoice.xsd().setAnnotation(XsdNodeFactory.createAnnotation("Original group particle: all", adapterCtx));
         adapterCtx.getReportWriter().warning(XSD.XSD043);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node org.xdef.transform.xsd:sequency/choice contains org.xdef.transform.xsd:all node -> converting org.xdef.transform.xsd:all node to org.xdef.transform.xsd:choice!");
+        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node xsd:sequency/choice contains xsd:all node -> converting xsd:all node to xsd:choice!");
         return newGroupChoice;
     }
 }

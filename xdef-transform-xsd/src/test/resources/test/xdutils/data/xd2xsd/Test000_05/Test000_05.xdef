@@ -4,7 +4,7 @@
    xmlns:xd   = "http://www.syntea.cz/xdef/2.0"
    xd:name    = "Test000_05"
    xd:root    = "RegistraceSU"
-   xd:classes = "test.xdef.Test000"
+   xd:classes = "test.xdutils.XdDummyParser"
    xd:include = "Test000_05_L1_common.xdef">
 
    <RegistraceSU        xd:script = "ref L1_common#SU" />

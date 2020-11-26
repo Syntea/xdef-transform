@@ -15,33 +15,33 @@
 
    <xd:declaration scope="global" >
 external method {
-String  test.xdutils.TestXd2XsdConv.getKodPartnera();
-void    test.xdutils.TestXd2XsdConv.protocol(XXElement, String, long);
-void    test.xdutils.TestXd2XsdConv.protocol(XXElement, String, String);
-void    test.xdutils.TestXd2XsdConv.outputIVR(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.setErr(XXElement, XDValue[]);
-boolean test.xdutils.TestXd2XsdConv.tab(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.emptySubjHasAddr(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chkEQ_PojistitelFuze(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.setDefault_ifEx(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chkOpt_RC_ifEQ(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chk_RC_DatNar_ifEQ(XXElement, XDValue[]);
-String  test.xdutils.TestXd2XsdConv.getIdOsoba(XXElement);
-void    test.xdutils.TestXd2XsdConv.dateDavka(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.subjekt_OsobaOrFirma(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chkOpt_IC_ifEQ(XXElement, XDValue[]);
-String  test.xdutils.TestXd2XsdConv.getIdSubjekt(XXElement);
-void    test.xdutils.TestXd2XsdConv.notEmptyMisto(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.equal(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chkOpt_CisloTP_ifEQ(XXElement, XDValue[]);
-String  test.xdutils.TestXd2XsdConv.getIdVozidlo(XXElement);
-boolean test.xdutils.TestXd2XsdConv.fil0(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.hasElement_if(XXElement, XDValue[]);
-boolean test.xdutils.TestXd2XsdConv.kvadrant(XXElement);
-void    test.xdutils.TestXd2XsdConv.chk_dec_nonNegative(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chk_TypMinusPlneni_Platba(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.chk_Poj_NeexElement(XXElement, XDValue[]);
-void    test.xdutils.TestXd2XsdConv.initParams(XXElement);
+String  test.xdutils.XdDummyParser.getKodPartnera();
+void    test.xdutils.XdDummyParser.protocol(XXElement, String, long);
+void    test.xdutils.XdDummyParser.protocol(XXElement, String, String);
+void    test.xdutils.XdDummyParser.outputIVR(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.setErr(XXElement, XDValue[]);
+boolean test.xdutils.XdDummyParser.tab(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.emptySubjHasAddr(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chkEQ_PojistitelFuze(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.setDefault_ifEx(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chkOpt_RC_ifEQ(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chk_RC_DatNar_ifEQ(XXElement, XDValue[]);
+String  test.xdutils.XdDummyParser.getIdOsoba(XXElement);
+void    test.xdutils.XdDummyParser.dateDavka(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.subjekt_OsobaOrFirma(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chkOpt_IC_ifEQ(XXElement, XDValue[]);
+String  test.xdutils.XdDummyParser.getIdSubjekt(XXElement);
+void    test.xdutils.XdDummyParser.notEmptyMisto(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.equal(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chkOpt_CisloTP_ifEQ(XXElement, XDValue[]);
+String  test.xdutils.XdDummyParser.getIdVozidlo(XXElement);
+boolean test.xdutils.XdDummyParser.fil0(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.hasElement_if(XXElement, XDValue[]);
+boolean test.xdutils.XdDummyParser.kvadrant(XXElement);
+void    test.xdutils.XdDummyParser.chk_dec_nonNegative(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chk_TypMinusPlneni_Platba(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.chk_Poj_NeexElement(XXElement, XDValue[]);
+void    test.xdutils.XdDummyParser.initParams(XXElement);
      }
    </xd:declaration>
 

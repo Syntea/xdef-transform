@@ -414,7 +414,7 @@ public class XsdAdapterCtx {
     }
 
     private void updateNode(final String systemId, String nodePath, final XmlSchemaNamed newXsdNode) {
-        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Updating org.xdef.transform.xsd content of node. System=" + systemId + ", Path=" + nodePath + ", NewXsd=" + newXsdNode.getClass().getSimpleName());
+        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Updating xsd content of node. System=" + systemId + ", Path=" + nodePath + ", NewXsd=" + newXsdNode.getClass().getSimpleName());
 
         final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
         final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
@@ -475,7 +475,7 @@ public class XsdAdapterCtx {
      * @param nodePath      x-definition node path
      */
     private void removeNode(final String systemId, final String nodePath) {
-        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Removing org.xdef.transform.xsd node. System=" + systemId + ", Path=" + nodePath);
+        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Removing xsd node. System=" + systemId + ", Path=" + nodePath);
 
         final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
         final SchemaNode refOrig = xsdSystemRefs.remove(nodePath);

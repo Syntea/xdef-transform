@@ -376,7 +376,7 @@ public class Xd2XsdTreeAdapter {
                     return xsdAny;
                 } else if (topLevel && Xd2XsdUtils.containsAnyElement(xElem)) {
                     adapterCtx.getReportWriter().warning(XSD.XSD020);
-                    SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xElem, "Any element cannot be root element of org.xdef.transform.xsd!");
+                    SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xElem, "Any element cannot be root element of xsd!");
                 }
 
                 fillXsdElement(xElem, topLevel, xsdElem);
