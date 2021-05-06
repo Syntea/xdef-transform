@@ -73,8 +73,9 @@ public class XdefAdapter {
                     if (schemaName.equals(config.getInputRoot())) {
                         outputRootSchemaPath = outFileName;
                     }
-                    BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName));
-                    outputSchemas[i].write(writer);
+                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName))) {
+                        outputSchemas[i].write(writer);
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
