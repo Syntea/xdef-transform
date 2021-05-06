@@ -156,8 +156,7 @@ public class XdefToXsd {
         return adapter.transform();
     }
 
-    public final static void main(String... args) {
-        final Options options = XdefToXsdOptionDefs.cli();
+    public final static XdefAdapterConfig parseAndValidateInput(final Options options, String... args) {
         final CommandLineParser parser = new DefaultParser();
         CommandLine cmd;
 
@@ -166,13 +165,19 @@ public class XdefToXsd {
         } catch (ParseException e) {
             System.out.println(e.getMessage());
             new HelpFormatter().printHelp("X-definition to XSD converter", options);
-
-            System.exit(1);
-            return;
+            return null;
         }
 
         checkPaths(cmd);
-        final XdefAdapterConfig config = createConfig(cmd);
-        transform(config);
+        return createConfig(cmd);
+    }
+
+    public final static void main(String... args) {
+        final XdefAdapterConfig xdefAdapterConfig = parseAndValidateInput(XdefToXsdOptionDefs.cli(), args);
+        if (xdefAdapterConfig == null) {
+            System.exit(1);
+        }
+
+        transform(xdefAdapterConfig);
     }
 }
