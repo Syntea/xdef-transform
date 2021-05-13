@@ -18,11 +18,9 @@ import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.util.XValidate;
 
 import javax.xml.transform.stream.StreamSource;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
@@ -90,7 +88,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         final XdPool2XsdAdapter adapter = new XdPool2XsdAdapter();
         final Set<Xd2XsdFeature> features = Xd2XsdUtils.defaultFeatures();
         features.add(Xd2XsdFeature.XSD_ANNOTATION);
-        features.add(Xd2XsdFeature.XSD_NAME_COLISSION_DETECTOR);
+        features.add(Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR);
         features.add(Xd2XsdFeature.POSTPROCESSING_UNIQUE);
         if (additionalFeatures != null) {
             features.addAll(additionalFeatures);

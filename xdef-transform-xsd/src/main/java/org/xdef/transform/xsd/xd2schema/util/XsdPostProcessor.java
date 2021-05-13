@@ -43,6 +43,7 @@ import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_TRACE;
 import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS;
 import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_PP_PROCESOR;
 
 
@@ -76,7 +77,11 @@ public class XsdPostProcessor {
                 final SchemaNode node = refEntry.getValue();
                 if (isTopElement(node)) {
                     // Process elements which are on top level but they are not root of x-definition
-                    if (!adapterCtx.isPostProcessingNamespace(xmlSchema.getTargetNamespace()) && (schemaRootNodeNames == null || !schemaRootNodeNames.contains(node.getXdName()))) {
+                    boolean elementNotInXDefRoot = adapterCtx.hasEnableFeature(XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS)
+                            ? (schemaRootNodeNames != null && !schemaRootNodeNames.isEmpty() && !schemaRootNodeNames.contains(node.getXdName()))
+                            : (schemaRootNodeNames == null || schemaRootNodeNames.isEmpty() || !schemaRootNodeNames.contains(node.getXdName()));
+
+                    if (!adapterCtx.isPostProcessingNamespace(xmlSchema.getTargetNamespace()) && elementNotInXDefRoot) {
                         if (!node.hasAnyPointer()) {
                             nodesToRemove.add(node);
                             continue;

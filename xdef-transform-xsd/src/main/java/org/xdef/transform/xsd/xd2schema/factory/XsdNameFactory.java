@@ -17,7 +17,7 @@ import java.util.Map;
 
 import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
 import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_NAME_COLISSION_DETECTOR;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR;
 import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_NAME_FACTORY;
 
 /**
@@ -58,7 +58,7 @@ public class XsdNameFactory {
      *          null otherwise
      */
     public String findTopLevelName(final XElement xElem) {
-        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLISSION_DETECTOR)) {
+        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR)) {
             return null;
         }
 
@@ -73,7 +73,7 @@ public class XsdNameFactory {
      *          null otherwise
      */
     public String findTopLevelName(final XData xData, boolean usePath) {
-        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLISSION_DETECTOR)) {
+        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR)) {
             return null;
         }
 
@@ -147,7 +147,7 @@ public class XsdNameFactory {
      * @return new name
      */
     private String generateTopLevelName(final XNode xNode, final String baseName) {
-        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLISSION_DETECTOR) || baseName == null) {
+        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR) || baseName == null) {
             return baseName;
         }
 
@@ -174,7 +174,7 @@ public class XsdNameFactory {
      * @param baseName  x-definition node base name
      */
     public void addTopSimpleTypeName(final XData xData, final String baseName) {
-        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLISSION_DETECTOR) || baseName == null) {
+        if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR) || baseName == null) {
             return;
         }
 

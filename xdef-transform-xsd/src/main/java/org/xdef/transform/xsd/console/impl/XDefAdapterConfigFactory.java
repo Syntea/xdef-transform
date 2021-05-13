@@ -95,7 +95,7 @@ public class XDefAdapterConfigFactory {
             if (cmd.hasOption(XDefToXsdOptionsConst.F_XSD_ANNOTATION)) { featureSet.add(Xd2XsdFeature.XSD_ANNOTATION); }
             if (cmd.hasOption(XDefToXsdOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR)) { featureSet.add(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR); }
             if (cmd.hasOption(XDefToXsdOptionsConst.F_XSD_ALL_UNBOUNDED)) { featureSet.add(Xd2XsdFeature.XSD_ALL_UNBOUNDED); }
-            if (cmd.hasOption(XDefToXsdOptionsConst.F_XSD_NAME_COLLISION_DETECTOR)) { featureSet.add(Xd2XsdFeature.XSD_NAME_COLISSION_DETECTOR); }
+            if (cmd.hasOption(XDefToXsdOptionsConst.F_XSD_NAME_COLLISION_DETECTOR)) { featureSet.add(Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR); }
 
             if (cmd.hasOption(XDefToXsdOptionsConst.F_POSTPROCESSING)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING); }
             if (cmd.hasOption(XDefToXsdOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING_EXTRA_SCHEMAS); }
