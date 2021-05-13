@@ -21,7 +21,7 @@ public class XDefAdapterConfig {
     private int verbose = SchemaLoggerDefs.LOG_INFO;
 
     private boolean useDefaultFeatures = true;
-    EnumSet<Xd2XsdFeature> features;
+    private EnumSet<Xd2XsdFeature> features = EnumSet.noneOf(Xd2XsdFeature.class);
 
     public String getInputDirectory() {
         return inputDirectory;
