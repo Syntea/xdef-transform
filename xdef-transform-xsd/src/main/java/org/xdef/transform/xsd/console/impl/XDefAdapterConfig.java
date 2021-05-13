@@ -1,17 +1,20 @@
-package org.xdef.transform.xsd.console;
+package org.xdef.transform.xsd.console.impl;
 
 import org.xdef.transform.xsd.util.SchemaLoggerDefs;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Optional;
 
-public class XdefAdapterConfig {
+public class XDefAdapterConfig {
     private String inputDirectory;
-    private String inputRoot;
     private String outputDirectory;
+
     private String outputFileExt = ".xsd";
     private String outputFilePrefix = "";
+
+    private Optional<String> inputRoot;
     private List<String> testingDataPos;
     private List<String> testingDataNeg;
 
@@ -28,12 +31,12 @@ public class XdefAdapterConfig {
         this.inputDirectory = inputDirectory;
     }
 
-    public String getInputRoot() {
+    public Optional<String> getInputRoot() {
         return inputRoot;
     }
 
     public void setInputRoot(String inputRoot) {
-        this.inputRoot = inputRoot;
+        this.inputRoot = Optional.ofNullable(inputRoot);
     }
 
     public String getOutputDirectory() {

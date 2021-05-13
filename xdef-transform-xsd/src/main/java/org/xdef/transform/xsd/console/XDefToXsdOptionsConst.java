@@ -1,19 +1,29 @@
 package org.xdef.transform.xsd.console;
 
-public interface XdefToXsdOptions {
+public interface XDefToXsdOptionsConst {
+    // Input directory containing x-definition file(s)
     String INPUT_DIR = "inputDir";
-    String INPUT_ROOT = "root";
-
+    // output directory
     String OUTPUT_DIR = "outputDir";
+
+    // output XML schema file name prefix
     String OUTPUT_FILE_PREFIX = "schemaPrefix";
+    // output XML schema file extension
     String OUTPUT_EXT = "schemaExt";
 
-    String VALIDATE_POSITIVE = "validatePos";
-    String VALIDATE_NEGATIVE = "validateNeg";
+    // root name of x-definition
+    String INPUT_ROOT = "root";
+    // XML data file(s) for testing validation of positive case
+    String VALIDATE_POSITIVE_CASE = "validatePos";
+    // XML data file(s) for testing validation of negative case
+    String VALIDATE_NEGATIVE_CASE = "validateNeg";
 
+    // Logging level (TODO: replace by logback)
     String VERBOSE = "verbose";
 
+    // Flag, if default algorithm features will be used
     String NO_DEFAULT_FEATURES = "noFeatures";
+    // Algorithm features to be used
     String FEATURES = "features";
 
     /**
@@ -22,7 +32,7 @@ public interface XdefToXsdOptions {
     String F_XSD_ANNOTATION = "a";
     String F_XSD_DECIMAL_ANY_SEPARATOR = "ds";
     String F_XSD_ALL_UNBOUNDED = "cu";
-    String F_XSD_NAME_COLISSION_DETECTOR = "nc";
+    String F_XSD_NAME_COLLISION_DETECTOR = "nc";
 
     String F_POSTPROCESSING = "p";
     String F_POSTPROCESSING_EXTRA_SCHEMAS = "pe";
