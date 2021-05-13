@@ -2,6 +2,7 @@ package test.xdutils;
 
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.testng.annotations.Test;
 import org.xdef.XDDocument;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.transform.xsd.schema2xd.Xsd2XDefAdapter;
@@ -14,14 +15,11 @@ import org.xmlunit.diff.Diff;
 
 import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -88,9 +86,9 @@ public class TestXsd2Xd extends TesterXdSchema {
     private void writeOutputXDefinition(final String fileName, final String outputXDefinition) {
         if (WRITE_OUTPUT_INTO_FILE == true) {
             try {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + fileName + ".xdef"));
-                writer.write(outputXDefinition);
-                writer.close();
+                try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + fileName + ".xdef")) {
+                    writer.write(outputXDefinition);
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -123,9 +121,9 @@ public class TestXsd2Xd extends TesterXdSchema {
             }
 
             outFileName += "_ref.xdef";
-            BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName));
-            writer.write(refXDefFileContent);
-            writer.close();
+            try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName)) {
+                writer.write(refXDefFileContent);
+            }
         }
 
         // Output x-definition
@@ -136,9 +134,9 @@ public class TestXsd2Xd extends TesterXdSchema {
             }
 
             outFileName += ".xdef";
-            BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName));
-            writer.write(outputXDefinition);
-            writer.close();
+            try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName)) {
+                writer.write(outputXDefinition);
+            }
         }
     }
 
@@ -223,10 +221,12 @@ public class TestXsd2Xd extends TesterXdSchema {
         convertXsd2XDef(fileName, validTestingData, invalidTestingData, false, features);
     }
 
-    private XmlSchema compileXsd(final String fileName) throws FileNotFoundException {
+    private XmlSchema compileXsd(final String fileName) throws IOException {
         final XmlSchemaCollection inputXmlSchemaCollection = new XmlSchemaCollection();
         inputXmlSchemaCollection.setBaseUri(_inputFilesRoot.getAbsolutePath() + "\\" + fileName);
-        return inputXmlSchemaCollection.read(createInputFileReader(fileName, ".xsd"));
+        try (Reader reader = createInputFileReader(fileName, ".xsd")) {
+            return inputXmlSchemaCollection.read(reader);
+        }
     }
 
     private void convertXsd2XDef(final String fileName,
@@ -268,15 +268,18 @@ public class TestXsd2Xd extends TesterXdSchema {
     }
 
     private static String readFile(File f) throws IOException {
-        return readFile((InputStream)(new FileInputStream(f)));
+        try (Reader reader = createFileReader(f.getAbsolutePath())) {
+            return readFile(reader);
+        }
+
     }
 
-    private static String readFile(InputStream is) throws IOException {
+    private static String readFile(Reader reader) throws IOException {
         StringBuilder result = new StringBuilder();
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        for(String line = br.readLine(); line != null; line = br.readLine()) {
-            result.append(line + "\n");
+        try (BufferedReader br = new BufferedReader(reader)) {
+            for (String line = br.readLine(); line != null; line = br.readLine()) {
+                result.append(line + "\n");
+            }
         }
 
         return result.toString();
@@ -422,6 +425,11 @@ public class TestXsd2Xd extends TesterXdSchema {
      */
     public static void main(String... args) {
         XDTester.setFulltestMode(true);
+        runTest();
+    }
+
+    @Test
+    public void testXsd2Xd() {
         runTest();
     }
 }

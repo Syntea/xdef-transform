@@ -25,8 +25,10 @@ import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import javax.xml.transform.stream.StreamSource;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -186,7 +188,9 @@ public class DefaultXDefAdapter implements XDefAdapter {
                         outputRootSchema = Pair.of(config.getInputRoot().get(), Paths.get(outFileName));
                     }
 
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFileName))) {
+                    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
+                                    new FileOutputStream(outFileName),
+                                    StandardCharsets.UTF_8))) {
                         outputSchemas[i].write(writer);
                     }
 

@@ -3,6 +3,7 @@ package test.xdutils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.constants.Constants;
+import org.testng.annotations.Test;
 import org.xdef.XDBuilder;
 import org.xdef.XDConstants;
 import org.xdef.XDDocument;
@@ -23,7 +24,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
@@ -59,11 +62,12 @@ public class TestXd2Xsd extends TesterXdSchema {
         return compile(getInputXDefFile(path, fileName), this.getClass());
     }
 
-    private XmlSchemaCollection getRefXsd(final String path, final String fileName) throws FileNotFoundException {
+    private XmlSchemaCollection getRefXsd(final String path, final String fileName) throws IOException {
         XmlSchemaCollection schemaCollection = new XmlSchemaCollection();
         schemaCollection.setBaseUri(_inputFilesRoot.getAbsolutePath() + "\\" + path);
-        schemaCollection.read(createRefFileReader(fileName, ".xsd"));
-
+        try (Reader reader = createRefFileReader(fileName, ".xsd")) {
+            schemaCollection.read(reader);
+        }
         return schemaCollection;
     }
 
@@ -118,8 +122,9 @@ public class TestXd2Xsd extends TesterXdSchema {
 
                         outFileName += ".xsd";
 
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName));
-                        outputSchemas[i].write(writer);
+                        try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName)) {
+                            outputSchemas[i].write(writer);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -202,8 +207,9 @@ public class TestXd2Xsd extends TesterXdSchema {
                         outFileName += "_ref";
                         outFileName += ".xsd";
 
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName));
-                        refSchemas[i].write(writer);
+                        try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName)) {
+                            refSchemas[i].write(writer);
+                        }
                     }
 
                     // Output XSD
@@ -219,8 +225,9 @@ public class TestXd2Xsd extends TesterXdSchema {
 
                         outFileName += ".xsd";
 
-                        BufferedWriter writer = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName));
-                        outputSchemas[i].write(writer);
+                        try (Writer writer = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + outFileName)) {
+                            outputSchemas[i].write(writer);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -235,8 +242,9 @@ public class TestXd2Xsd extends TesterXdSchema {
                 String refFileName = tmpFile.getName().replaceFirst("[.][^.]+$", "");
                 if (refFileName != null && !schemaNames.contains(refFileName)) {
                     try {
-                        BufferedWriter refWriter = new BufferedWriter(new FileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + fileName + "_unk_ref_" + i + ".xsd"));
-                        refSchemasAll[i].write(refWriter);
+                        try (Writer refWriter = createFileWriter(_outputFilesRoot.getAbsolutePath() + "\\" + fileName + "_unk_ref_" + i + ".xsd")) {
+                            refSchemasAll[i].write(refWriter);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -567,4 +575,10 @@ public class TestXd2Xsd extends TesterXdSchema {
         XDTester.setFulltestMode(true);
         runTest();
     }
+
+    @Test
+    public void testXd2Xsd() {
+        runTest();
+    }
+
 }

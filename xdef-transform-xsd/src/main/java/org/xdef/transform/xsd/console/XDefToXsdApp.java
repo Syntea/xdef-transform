@@ -44,6 +44,7 @@ public class XDefToXsdApp {
         } else {
             new HelpFormatter().printHelp("X-definition to XSD converter", cmdOptions);
         }
+
         System.exit(1);
     }
 

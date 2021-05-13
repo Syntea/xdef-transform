@@ -2,9 +2,16 @@ package test.xdutils;
 
 import org.xdef.sys.ReportWriter;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 
 public abstract class TesterXdSchema extends XDTester {
 
@@ -37,23 +44,31 @@ public abstract class TesterXdSchema extends XDTester {
         return xdFile;
     }
 
-    protected FileReader createFileReader(final String filePath, final String fileName, final String fileExt) throws FileNotFoundException {
-        return new FileReader(filePath + "\\" + fileName + fileExt);
+    protected static Reader createFileReader(final String file) throws FileNotFoundException {
+        return new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
     }
 
-    protected FileReader createInputFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
+    protected Reader createFileReader(final String filePath, final String fileName, final String fileExt) throws FileNotFoundException {
+        return createFileReader(filePath + "\\" + fileName + fileExt);
+    }
+
+    protected Reader createInputFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
         return createFileReader(_inputFilesRoot.getAbsolutePath() + "\\" + fileName, fileName, fileExt);
     }
 
-    protected FileReader createRefFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
+    protected Reader createRefFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
         return createFileReader(_refFilesRoot.getAbsolutePath() + "\\" + fileName, fileName, fileExt);
     }
 
-    protected FileReader createOutputFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
+    protected Reader createOutputFileReader(final String fileName, final String fileExt) throws FileNotFoundException {
         return createFileReader(_outputFilesRoot.getAbsolutePath(), fileName, fileExt);
     }
 
     protected File getXmlDataFile(final String testCase, final String fileName) throws FileNotFoundException {
         return getFile(_dataFilesRoot.getAbsolutePath() + "\\" + testCase + "\\data", fileName, ".xml");
+    }
+
+    protected Writer createFileWriter(String file) throws FileNotFoundException {
+        return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8));
     }
 }

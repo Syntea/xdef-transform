@@ -53,10 +53,10 @@
 
         <!-- test-phase -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
             <scope>test</scope>
+            <version>6.8.21</version>
         </dependency>
         <dependency>
             <groupId>org.xmlunit</groupId>
