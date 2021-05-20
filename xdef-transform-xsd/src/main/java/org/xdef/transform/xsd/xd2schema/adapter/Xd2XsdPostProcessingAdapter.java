@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.adapter;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaElement;

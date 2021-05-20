@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.model;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.xdef.impl.XData;
 import org.xdef.sys.ReportWriter;
@@ -168,7 +169,7 @@ public class UniqueConstraint {
                 variableKeys.put(xPath, keyList);
             }
 
-            keyList.add(new Pair<String, XmlSchemaAttribute>(xsdAttr.getName(), xsdAttr));
+            keyList.add(Pair.of(xsdAttr.getName(), xsdAttr));
         } else if (Type.IDREF.equals(type) || Type.CHKID.equals(type)) {
             SchemaLogger.print(LOG_INFO, TRANSFORMATION, XSD_KEY_AND_REF, "Add ref to unique set. Unique=" + getPath() + ", Name=" + xsdAttr.getName() + ", Path=" + xPath);
             final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableRefs = refs.get(varName);
@@ -178,7 +179,7 @@ public class UniqueConstraint {
                 variableRefs.put(xPath, refList);
             }
 
-            refList.add(new Pair<String, XmlSchemaAttribute>(xsdAttr.getName(), xsdAttr));
+            refList.add(Pair.of(xsdAttr.getName(), xsdAttr));
         }
     }
 

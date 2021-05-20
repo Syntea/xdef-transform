@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.schema2xd.model;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;

@@ -11,10 +11,6 @@
 
     <artifactId>xdef-transform-xsd</artifactId>
 
-    <properties>
-        <logback.version>1.2.3</logback.version>
-    </properties>
-
     <dependencies>
 
         <!-- third parties -->
@@ -33,23 +29,11 @@
             <artifactId>commons-lang3</artifactId>
             <version>3.11</version>
         </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-core</artifactId>
-            <version>${logback.version}</version>
-        </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>${logback.version}</version>
+            <version>1.2.3</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
-        </dependency>
-
 
         <!-- test-phase -->
         <dependency>

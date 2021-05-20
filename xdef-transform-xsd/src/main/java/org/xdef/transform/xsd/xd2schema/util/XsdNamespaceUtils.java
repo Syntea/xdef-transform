@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.util;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
@@ -220,7 +221,7 @@ public class XsdNamespaceUtils {
         }
 
         if (targetNamespaceError == true) {
-            return new Pair<String, String>(targetNamespacePrefix, targetNamespaceUri);
+            return Pair.of(targetNamespacePrefix, targetNamespaceUri);
         }
 
         // Try to find default namespace
@@ -234,7 +235,7 @@ public class XsdNamespaceUtils {
             }
         }
 
-        return new Pair<String, String>(targetNamespacePrefix, targetNamespaceUri);
+        return Pair.of(targetNamespacePrefix, targetNamespaceUri);
     }
 
     /**

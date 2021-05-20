@@ -1,7 +1,13 @@
 package org.xdef.transform.xsd.schema2xd;
 
-import javafx.util.Pair;
-import org.apache.ws.commons.schema.*;
+
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaExternal;
+import org.apache.ws.commons.schema.XmlSchemaGroup;
+import org.apache.ws.commons.schema.XmlSchemaObject;
+import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 import org.apache.ws.commons.schema.utils.NodeNamespaceContext;
@@ -217,14 +223,14 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
 
                 final Pair<String, XmlSchema> contentInfo = xmlSchemaContent.get(xsdStr);
                 if (contentInfo == null) {
-                    xmlSchemaContent.put(xsdStr, new Pair<String, XmlSchema>(schemaName, schema));
+                    xmlSchemaContent.put(xsdStr, Pair.of(schemaName, schema));
                     schemasToBeProcessed.add(schema);
                     SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Add schema to be processed. Name=" + schemaName);
                 } else {
                     if (rootSchema.equals(schema)) {
                         schemasToBeProcessed.remove(contentInfo.getValue());
                         SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Remove schema from processing. Name=" + contentInfo.getKey());
-                        xmlSchemaContent.put(xsdStr, new Pair<String, XmlSchema>(schemaName, schema));
+                        xmlSchemaContent.put(xsdStr, Pair.of(schemaName, schema));
                         schemasToBeProcessed.add(schema);
                         SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Add schema to be processed. Name=" + schemaName);
                     } else {
@@ -261,7 +267,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
             if (targetNamespace != null) {
                 adapterCtx.addTargetNamespace(xDefName, targetNamespace);
             } else {
-                adapterCtx.addTargetNamespace(xDefName, new Pair<String, String>("", ""));
+                adapterCtx.addTargetNamespace(xDefName, Pair.of("", ""));
             }
 
             final NodeNamespaceContext namespaceCtx = (NodeNamespaceContext)schema.getNamespaceContext();
@@ -288,7 +294,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
 
         final NamespacePrefixList namespaceCtx = schema.getNamespaceContext();
         final String nsPrefix = namespaceCtx.getPrefix(schema.getTargetNamespace());
-        return new Pair<String, String>(nsPrefix, schema.getTargetNamespace());
+        return Pair.of(nsPrefix, schema.getTargetNamespace());
     }
 
     /**

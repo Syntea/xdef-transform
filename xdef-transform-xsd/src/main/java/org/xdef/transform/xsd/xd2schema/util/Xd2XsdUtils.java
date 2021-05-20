@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.util;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaChoice;
@@ -207,7 +208,7 @@ public class Xd2XsdUtils {
             elementMaxOccursSum = Long.MAX_VALUE;
         }
 
-        return new Pair(elementMinOccursSum, elementMaxOccursSum);
+        return Pair.of(elementMinOccursSum, elementMaxOccursSum);
     }
 
     /**

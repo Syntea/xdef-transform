@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.factory;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
@@ -95,7 +96,7 @@ public class XsdSimpleContentFactory {
         if (parserInfo == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD026, parserName);
             SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xData, "Unsupported simple content parser! Parser=" + parserName);
-            parserInfo = new Pair(Constants.XSD_STRING, new DefaultFacetFactory());
+            parserInfo = Pair.of(Constants.XSD_STRING, new DefaultFacetFactory());
             unknownParser = true;
         }
 
@@ -259,7 +260,7 @@ public class XsdSimpleContentFactory {
         if (parserInfo == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD026, xParser.parserName());
             SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xData, "Unsupported simple content parser! Parser=" + xParser.parserName());
-            parserInfo = new Pair(Constants.XSD_STRING, new DefaultFacetFactory());
+            parserInfo = Pair.of(Constants.XSD_STRING, new DefaultFacetFactory());
             unknownParser = true;
         }
 

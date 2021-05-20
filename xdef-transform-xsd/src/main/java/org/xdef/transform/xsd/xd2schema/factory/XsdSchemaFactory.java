@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.factory;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaForm;
 import org.apache.ws.commons.schema.constants.Constants;
@@ -48,7 +49,7 @@ public class XsdSchemaFactory {
                     "systemName=" + xDef.getName() + ", targetNamespacePrefix=" + targetNamespace.getKey() + ", targetNamespaceUri=" + targetNamespace.getValue());
         } else {
             SchemaLogger.printP(LOG_INFO, INITIALIZATION, xDef, "Creating XSD document. SystemName=" + xDef.getName());
-            targetNamespace = new Pair<String, String>(null, null);
+            targetNamespace = Pair.of(null, null);
         }
 
         final String schemaName = XsdNameUtils.getSchemaName(xDef);

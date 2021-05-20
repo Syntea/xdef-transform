@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.util;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.xdef.XDNamedValue;
 import org.xdef.XDParser;
@@ -103,26 +104,26 @@ public class Xd2XsdParserMapping {
         defaultQNameMap.put(Constants.XSD_YEAR.getLocalPart(), Constants.XSD_YEAR);
 
         // Custom static facets
-        customFacetMap.put(AnFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new AnFacetFactory()));
-        customFacetMap.put(ContainerFacetFactory.XD_PARSER_NAME_LANGUAGES, new Pair(Constants.XSD_STRING, new ContainerFacetFactory("[a-zA-Z0-9]{2,3}")));
-        customFacetMap.put(ContainerFacetFactory.XD_PARSER_NAME_NC_NAMELIST, new Pair(Constants.XSD_STRING, new ContainerFacetFactory("[a-zA-Z0-9]+")));
-        customFacetMap.put(ContainsFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new ContainsFacetFactory(true)));
-        customFacetMap.put(ContainsFacetFactory.XD_PARSER_CI_NAME, new Pair(Constants.XSD_STRING, new ContainsFacetFactory(false)));
-        customFacetMap.put(EnumFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new EnumFacetFactory()));
-        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_XDATETIME_NAME, new Pair(Constants.XSD_STRING, new DateTimeFormatFacetFactory()));
-        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_DATETIME_NAME, new Pair(Constants.XSD_STRING, new DateTimeFormatFacetFactory("yyyyMMddHHmmss")));
-        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_EMAILDATE_NAME, new Pair(Constants.XSD_STRING, new DateTimeFormatFacetFactory("EEE, d MMM y HH:mm:ss[ ZZZZZ][ (z)]")));
-        customFacetMap.put(EndsFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new EndsFacetFactory(true)));
-        customFacetMap.put(EndsFacetFactory.XD_PARSER_CI_NAME, new Pair(Constants.XSD_STRING, new EndsFacetFactory(false)));
-        customFacetMap.put(EqFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new EqFacetFactory(true)));
-        customFacetMap.put(EqFacetFactory.XD_PARSER_CI_NAME, new Pair(Constants.XSD_STRING, new EqFacetFactory(false)));
-        customFacetMap.put(MD5FacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new MD5FacetFactory()));
-        customFacetMap.put(NumFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new NumFacetFactory()));
-        customFacetMap.put(RegexFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new RegexFacetFactory()));
-        customFacetMap.put(StartsFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new StartsFacetFactory(true)));
-        customFacetMap.put(StartsFacetFactory.XD_PARSER_CI_NAME, new Pair(Constants.XSD_STRING, new StartsFacetFactory(false)));
-        customFacetMap.put(TokensFacetFactory.XD_PARSER_NAME, new Pair(Constants.XSD_STRING, new TokensFacetFactory()));
-        customFacetMap.put(TokensRegexFacetFactory.XD_PARSER_CI_NAME, new Pair(Constants.XSD_STRING, new TokensRegexFacetFactory()));
+        customFacetMap.put(AnFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new AnFacetFactory()));
+        customFacetMap.put(ContainerFacetFactory.XD_PARSER_NAME_LANGUAGES, Pair.of(Constants.XSD_STRING, new ContainerFacetFactory("[a-zA-Z0-9]{2,3}")));
+        customFacetMap.put(ContainerFacetFactory.XD_PARSER_NAME_NC_NAMELIST, Pair.of(Constants.XSD_STRING, new ContainerFacetFactory("[a-zA-Z0-9]+")));
+        customFacetMap.put(ContainsFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new ContainsFacetFactory(true)));
+        customFacetMap.put(ContainsFacetFactory.XD_PARSER_CI_NAME, Pair.of(Constants.XSD_STRING, new ContainsFacetFactory(false)));
+        customFacetMap.put(EnumFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new EnumFacetFactory()));
+        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_XDATETIME_NAME, Pair.of(Constants.XSD_STRING, new DateTimeFormatFacetFactory()));
+        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_DATETIME_NAME, Pair.of(Constants.XSD_STRING, new DateTimeFormatFacetFactory("yyyyMMddHHmmss")));
+        customFacetMap.put(DateTimeFormatFacetFactory.XD_PARSER_EMAILDATE_NAME, Pair.of(Constants.XSD_STRING, new DateTimeFormatFacetFactory("EEE, d MMM y HH:mm:ss[ ZZZZZ][ (z)]")));
+        customFacetMap.put(EndsFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new EndsFacetFactory(true)));
+        customFacetMap.put(EndsFacetFactory.XD_PARSER_CI_NAME, Pair.of(Constants.XSD_STRING, new EndsFacetFactory(false)));
+        customFacetMap.put(EqFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new EqFacetFactory(true)));
+        customFacetMap.put(EqFacetFactory.XD_PARSER_CI_NAME, Pair.of(Constants.XSD_STRING, new EqFacetFactory(false)));
+        customFacetMap.put(MD5FacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new MD5FacetFactory()));
+        customFacetMap.put(NumFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new NumFacetFactory()));
+        customFacetMap.put(RegexFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new RegexFacetFactory()));
+        customFacetMap.put(StartsFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new StartsFacetFactory(true)));
+        customFacetMap.put(StartsFacetFactory.XD_PARSER_CI_NAME, Pair.of(Constants.XSD_STRING, new StartsFacetFactory(false)));
+        customFacetMap.put(TokensFacetFactory.XD_PARSER_NAME, Pair.of(Constants.XSD_STRING, new TokensFacetFactory()));
+        customFacetMap.put(TokensRegexFacetFactory.XD_PARSER_CI_NAME, Pair.of(Constants.XSD_STRING, new TokensRegexFacetFactory()));
 
     }
 
@@ -153,18 +154,18 @@ public class Xd2XsdParserMapping {
         // Custom dynamic facet factories
         if (res == null) {
             if (DecFacetFactory.XD_PARSER_NAME.equals(parserName) && adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR)) {
-                res = new Pair(Constants.XSD_STRING, new DecFacetFactory());
+                res = Pair.of(Constants.XSD_STRING, new DecFacetFactory());
             } else if (ListFacetFactory.XD_PARSER_NAME.equals(parserName)) {
                 final QName qName = determineListBaseType(parameters, adapterCtx);
-                res = new Pair(qName, new ListFacetFactory());
+                res = Pair.of(qName, new ListFacetFactory());
             } else if (UnionFacetFactory.XD_PARSER_NAME.equals(parserName)) {
-                res = new Pair(null, new UnionFacetFactory());
+                res = Pair.of(null, new UnionFacetFactory());
             } else if (/*ListRegexFacetFactory.XD_PARSER_NAME.equals(parserName) || */ListRegexFacetFactory.XD_PARSER_CI_NAME.equals(parserName)) {
                 ListRegexFacetFactory facetBuilder = new ListRegexFacetFactory(ListRegexFacetFactory.XD_PARSER_NAME.equals(parserName));
-                res = new Pair(facetBuilder.determineBaseType(parameters), facetBuilder);
+                res = Pair.of(facetBuilder.determineBaseType(parameters), facetBuilder);
             }/* else if (UnionRegexFacetFactory.XD_PARSER_NAME.equals(parserName)) {
                 UnionRegexFacetFactory facetBuilder = new UnionRegexFacetFactory();
-                res = new Pair(facetBuilder.determineBaseType(parameters), facetBuilder);
+                res = Pair.of(facetBuilder.determineBaseType(parameters), facetBuilder);
             }*/
         }
 
@@ -181,7 +182,7 @@ public class Xd2XsdParserMapping {
     public static Pair<QName, IXsdFacetFactory> findDefaultFacetFactory(final String parserName, final XsdAdapterCtx adapterCtx) {
         final QName qName = findDefaultParserQName(parserName, adapterCtx);
         if (qName != null) {
-            return new Pair(qName, new DefaultFacetFactory());
+            return Pair.of(qName, new DefaultFacetFactory());
         }
 
         return null;

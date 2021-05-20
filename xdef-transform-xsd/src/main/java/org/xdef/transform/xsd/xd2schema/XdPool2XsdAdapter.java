@@ -1,6 +1,7 @@
 package org.xdef.transform.xsd.xd2schema;
 
-import javafx.util.Pair;
+
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.xdef.XDPool;
 import org.xdef.impl.XDefinition;
@@ -103,7 +104,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
                     reportWriter.warning(XSD.XSD014, xDefName);
                     SchemaLogger.print(LOG_WARN, PREPROCESSING, XSD_DPOOL_ADAPTER,"Target namespace of x-definition is already defined. XDefinition=" + xDefName);
                 } else {
-                    xDefTargetNs.put(xDefName, new Pair(targetNamespace.getKey(), targetNamespace.getValue()));
+                    xDefTargetNs.put(xDefName, Pair.of(targetNamespace.getKey(), targetNamespace.getValue()));
                     SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER,"Add target namespace to x-definition. " +
                             "XDefinition=" + xDefName + ", naPrefix=" + targetNamespace.getKey() + ", nsUri=" + targetNamespace.getValue());
                 }
