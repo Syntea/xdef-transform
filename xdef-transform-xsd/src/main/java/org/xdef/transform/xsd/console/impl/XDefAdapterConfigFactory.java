@@ -7,7 +7,6 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.transform.xsd.console.XDefToXsdOptionsConst;
-import org.xdef.transform.xsd.util.SchemaLoggerDefs;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 
 import java.util.Arrays;
@@ -55,15 +54,6 @@ public class XDefAdapterConfigFactory {
             config.setTestingDataNeg(Arrays.asList(cmd.getOptionValues(XDefToXsdOptionsConst.VALIDATE_NEGATIVE_CASE)));
         }
 
-        if (cmd.hasOption(XDefToXsdOptionsConst.VERBOSE)) {
-            config.setVerbose(getVerboseLevel(cmd.getOptionValue(XDefToXsdOptionsConst.VERBOSE)));
-        }
-
-        if (config.getVerbose() >= SchemaLoggerDefs.LOG_INFO) {
-            System.out.println("Input configuration");
-            System.out.println(config);
-        }
-
         return config;
     }
 
@@ -87,8 +77,8 @@ public class XDefAdapterConfigFactory {
 
         try {
             cmd = featureParser.parse(XDefToXsdOptions.features(), features, true);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
+        } catch (ParseException ex) {
+            throw new RuntimeException("Error occurs while parsing input commands", ex);
         }
 
         if (cmd != null) {
@@ -111,22 +101,6 @@ public class XDefAdapterConfigFactory {
         }
 
         return EnumSet.copyOf(featureSet);
-    }
-
-    public int getVerboseLevel(final String verbose) {
-        int res = SchemaLoggerDefs.LOG_INFO;
-        try {
-            Integer verboseLevel = Integer.valueOf(verbose);
-            if (verboseLevel < SchemaLoggerDefs.LOG_NONE || verboseLevel > SchemaLoggerDefs.LOG_TRACE) {
-                System.out.println("Unknown verbose level, use default: " + SchemaLoggerDefs.LOG_INFO + " (info)");
-            } else {
-                res = verboseLevel;
-            }
-        } catch (NumberFormatException e) {
-            // Do nothing
-        }
-
-        return res;
     }
 
 }

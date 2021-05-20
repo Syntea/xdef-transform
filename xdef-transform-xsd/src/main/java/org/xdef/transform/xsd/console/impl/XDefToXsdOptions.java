@@ -39,10 +39,6 @@ public class XDefToXsdOptions {
         validateNeg.setArgs(Option.UNLIMITED_VALUES);
         options.addOption(validateNeg);
 
-        Option verbose = new Option("v", XDefToXsdOptionsConst.VERBOSE, true, "verbose mode (values: [0,5]; default: 3; no-verbose: 0)");
-        verbose.setRequired(false);
-        options.addOption(verbose);
-
         Option defaultFeatures = new Option("nf", XDefToXsdOptionsConst.NO_DEFAULT_FEATURES, false, "do not use default transformation features");
         defaultFeatures.setRequired(false);
         options.addOption(defaultFeatures);

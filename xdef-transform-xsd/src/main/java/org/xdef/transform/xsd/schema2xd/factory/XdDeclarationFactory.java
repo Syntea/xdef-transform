@@ -1,19 +1,19 @@
 package org.xdef.transform.xsd.schema2xd.factory;
 
 import org.apache.ws.commons.schema.XmlSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.DefaultTypeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 
@@ -21,6 +21,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
  * Creates x-definition declarations
  */
 public class XdDeclarationFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XdDeclarationFactory.class);
 
     /**
      * Input schema used for transformation
@@ -51,10 +53,11 @@ public class XdDeclarationFactory {
      * @param builder   x-definition declaration builder
      */
     public void createDeclaration(final XdDeclarationBuilder builder) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, builder.simpleType, "Creating declaration ...");
+        LOG.info("{}Creating declaration ...", logHeader(TRANSFORMATION, builder.simpleType));
         if (builder.parentNode == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD214);
-            SchemaLogger.printP(LOG_WARN, TRANSFORMATION, builder.simpleType, "Parent node is not set. Created declaration will be lost!");
+            LOG.warn("{}Parent node is not set. Created declaration is going to be lost!",
+                    logHeader(TRANSFORMATION, builder.simpleType));
             return;
         }
 
@@ -69,7 +72,7 @@ public class XdDeclarationFactory {
      * @return x-definition declaration content
      */
     public String createDeclarationContent(final XdDeclarationBuilder builder) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, builder.simpleType, "Creating declaration content ...");
+        LOG.info("{}Creating declaration content ...", logHeader(TRANSFORMATION, builder.simpleType));
         return builder.build();
     }
 

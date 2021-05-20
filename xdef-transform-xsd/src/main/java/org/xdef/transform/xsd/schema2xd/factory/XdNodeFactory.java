@@ -3,13 +3,14 @@ package org.xdef.transform.xsd.schema2xd.factory;
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaForm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.xml.KXmlUtils;
 
 import javax.xml.namespace.QName;
@@ -24,11 +25,12 @@ import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_E
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_SEQUENCE;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_XDEF;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_NAMESPACE_URI;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 public class XdNodeFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XdNodeFactory.class);
 
     /**
      * X-definition adapter context
@@ -64,27 +66,27 @@ public class XdNodeFactory {
     /**
      * Creates and initializes x-definition node in root of document
      * @param xDefName          X-definition name
-     * @param rootNodesName     X-definition root node's names
+     * @param rootNodeName      X-definition root node's names
      * @return x-definition node
      */
-    public Element createRootXdefinition(final String xDefName, final String rootNodesName) {
-        SchemaLogger.print(LOG_INFO, TRANSFORMATION, xDefName, "X-definition node in root");
+    public Element createRootXdefinition(final String xDefName, final String rootNodeName) {
+        LOG.info("{}X-definition node in root. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
         doc = KXmlUtils.newDocument(XD_NAMESPACE_URI, XD_ELEM_XDEF, null);
         final Element xDefRoot = doc.getDocumentElement();
-        initializeXDefinitionNode(xDefRoot, xDefName, rootNodesName);
+        initializeXDefinitionNode(xDefRoot, xDefName, rootNodeName);
         return xDefRoot;
     }
 
     /**
      * Creates and initializes x-definition node
      * @param xDefName          X-definition name
-     * @param rootNodesName     X-definition root node's names
+     * @param rootNodeName      X-definition root node's names
      * @return x-definition node
      */
-    public Element createXDefinition(final String xDefName, final String rootNodesName) {
-        SchemaLogger.print(LOG_INFO, TRANSFORMATION, xDefName, "X-definition node");
+    public Element createXDefinition(final String xDefName, final String rootNodeName) {
+        LOG.info("{}Creating X-definition node. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
         final Element xDef = doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_XDEF);
-        initializeXDefinitionNode(xDef, xDefName, rootNodesName);
+        initializeXDefinitionNode(xDef, xDefName, rootNodeName);
         return xDef;
     }
 
@@ -104,7 +106,7 @@ public class XdNodeFactory {
                 return xdElem;
             } else {
                 adapterCtx.getReportWriter().warning(XSD.XSD215);
-                SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xsdElem, "Unknown element reference QName!");
+                LOG.warn("{}Unknown element reference QName!", logHeader(TRANSFORMATION, xsdElem));
             }
         } else {
             final QName xsdQName = xsdElem.getQName();

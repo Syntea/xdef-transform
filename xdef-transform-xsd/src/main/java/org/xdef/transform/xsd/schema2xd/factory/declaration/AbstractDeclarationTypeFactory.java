@@ -1,21 +1,40 @@
 package org.xdef.transform.xsd.schema2xd.factory.declaration;
 
-import org.apache.ws.commons.schema.*;
+import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
+import org.apache.ws.commons.schema.XmlSchemaFacet;
+import org.apache.ws.commons.schema.XmlSchemaFractionDigitsFacet;
+import org.apache.ws.commons.schema.XmlSchemaLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxExclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxInclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMaxLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinExclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinInclusiveFacet;
+import org.apache.ws.commons.schema.XmlSchemaMinLengthFacet;
+import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
+import org.apache.ws.commons.schema.XmlSchemaTotalDigitsFacet;
+import org.apache.ws.commons.schema.XmlSchemaWhiteSpaceFacet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
  * Base class for transformation of facets
  */
 public abstract class AbstractDeclarationTypeFactory implements IDeclarationTypeFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDeclarationTypeFactory.class);
 
     /**
      * X-definition output declaration type
@@ -94,13 +113,13 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
         StringBuilder sb = new StringBuilder();
 
         if (Type.TOP_DECL.equals(this.type)) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, typeName, "Building top declaration. Type=" + type);
+            LOG.info("{}Building top declaration. type='{}'", logHeader(TRANSFORMATION), type);
             sb.append("type " + typeName + " " + type);
         } else if (Type.TEXT_DECL.equals(this.type)) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, null, "Building text declaration. Type=" + type);
+            LOG.info("{}Building text declaration. type='{}'", logHeader(TRANSFORMATION), type);
             sb.append("required " + type);
         } else if (Type.DATATYPE_DECL.equals(this.type)) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, null, "Building data type declaration. Type=" + type);
+            LOG.info("{}Building text declaration. type='{}'", logHeader(TRANSFORMATION), type);
             sb.append(type);
         }
 
@@ -165,45 +184,58 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
             for (XmlSchemaFacet facet : facets) {
                 if (facet instanceof XmlSchemaFractionDigitsFacet) {
                     facetSingleValues.put(FACET_FRACTIONS_DIGITS, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add fraction digits. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add fraction digits. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaLengthFacet) {
                     facetSingleValues.put(FACET_LENGTH, facet.getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add length. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add length. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMaxExclusiveFacet) {
                     facetSingleValues.put(FACET_MAX_EXCLUSIVE, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add max exclusive. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add max exclusive. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMaxInclusiveFacet) {
                     facetSingleValues.put(FACET_MAX_INCLUSIVE, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add max inclusive. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add max inclusive. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMaxLengthFacet) {
                     facetSingleValues.put(FACET_MAX_LENGTH, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add max length. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add max length. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMinLengthFacet) {
                     facetSingleValues.put(FACET_MIN_LENGTH, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add min length. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add min length. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMinExclusiveFacet) {
                     facetSingleValues.put(FACET_MIN_EXCLUSIVE, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add min exclusive. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add min exclusive. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaMinInclusiveFacet) {
                     facetSingleValues.put(FACET_MIN_INCLUSIVE, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add min inclusive. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add min inclusive. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaPatternFacet) {
                     final List<Object> patterns = getOrCreateValueList(FACET_PATTERN);
                     patterns.add((facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add pattern. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add pattern. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaTotalDigitsFacet) {
                     facetSingleValues.put(FACET_TOTAL_DIGITS, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add total digits. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add total digits. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaWhiteSpaceFacet) {
                     facetSingleValues.put(FACET_WHITESPACE, (facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add whitespace. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add whitespace. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else if (facet instanceof XmlSchemaEnumerationFacet) {
                     final List<Object> enumeration = getOrCreateValueList(FACET_ENUMERATION);
                     enumeration.add((facet).getValue());
-                    SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, typeName, "Declaration - Add enumeration. Value=" + facet.getValue());
+                    LOG.debug("{}Declaration - Add enumeration. value='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else {
                     reportWriter.warning(XSD.XSD216, facet.getClass().getSimpleName());
-                    SchemaLogger.print(LOG_WARN, TRANSFORMATION, typeName, "Declaration - Unsupported XSD facet! Clazz=" + facet.getClass().getSimpleName());
+                    LOG.warn("{}Declaration - Unsupported XSD facet! clazz='{}'",
+                            logHeader(TRANSFORMATION, typeName), facet.getClass().getSimpleName());
                 }
             }
         }

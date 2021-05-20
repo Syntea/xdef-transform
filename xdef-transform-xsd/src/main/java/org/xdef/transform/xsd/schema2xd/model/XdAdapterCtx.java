@@ -3,10 +3,11 @@ package org.xdef.transform.xsd.schema2xd.model;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,14 +15,15 @@ import java.util.Map;
 import java.util.Set;
 
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdLoggerDefs.XD_ADAPTER_CTX;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 
 /**
  * Basic x-definition context for transformation XSD document to x-definition
  */
 public class XdAdapterCtx {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XdAdapterCtx.class);
 
     /**
      * Enabled algorithm features
@@ -88,11 +90,13 @@ public class XdAdapterCtx {
     public void addTargetNamespace(final String xDefName, final Pair<String, String> targetNamespace) {
         if (targetNamespaces.containsKey(xDefName)) {
             reportWriter.warning(XSD.XSD217, xDefName);
-            SchemaLogger.print(LOG_WARN, PREPROCESSING, XD_ADAPTER_CTX, "X-definition target namespace already exists. XDefinition=" + xDefName);
+            LOG.warn("{}X-definition target namespace already exists. xDefinitionName='{}'",
+                    logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName);
             return;
         }
 
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XD_ADAPTER_CTX, "Add x-definition target namespace. XDefinition=" + xDefName + ", TargetNamespace=" + targetNamespace);
+        LOG.info("{}Add x-definition target namespace. xDefinitionName='{}', targetNsPrefix='{}', targetNsUri='{}'",
+                logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, targetNamespace.getLeft(), targetNamespace.getRight());
         targetNamespaces.put(xDefName, targetNamespace);
 
         Set<String> xDefNames = xDefTargetNamespaces.get(targetNamespace.getValue());
@@ -128,11 +132,13 @@ public class XdAdapterCtx {
 
         if (xDefNamespaces.containsKey(nsUri)) {
             reportWriter.warning(XSD.XSD218, xDefName, nsPrefix);
-            SchemaLogger.print(LOG_WARN, PREPROCESSING, XD_ADAPTER_CTX, "X-definition namespace already exists. XDefinition=" + xDefName + ", NsPrefix=" + nsPrefix);
+            LOG.warn("{}X-definition namespace already exists. xDefinitionName='{}', nsPrefix='{}'",
+                    logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, nsPrefix);
             return;
         }
 
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XD_ADAPTER_CTX, "Add x-definition namespace. XDefinition=" + xDefName + ", NsPrefix=" + nsPrefix + ", NsUri=" + nsUri);
+        LOG.info("{}Add x-definition namespace. xDefinitionName='{}', nsPrefix='{}', nsUri='{}'",
+                logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, nsPrefix, nsUri);
         namespaces.put(nsUri, nsPrefix);
     }
 
@@ -175,7 +181,7 @@ public class XdAdapterCtx {
      * @param schemaName    XSD document name
      */
     public void addXmlSchemaName(final XmlSchema schema, final String schemaName) {
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XD_ADAPTER_CTX, "Add x-definition. Name=" + schemaName);
+        LOG.info("{}Add x-definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaName);
         xsdNames.put(schema, schemaName);
     }
 

@@ -6,10 +6,8 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.xdef.XDPool;
 import org.xdef.impl.XDefinition;
 import org.xdef.model.XMDefinition;
-import org.xdef.msg.XDEF;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.adapter.AbstractXd2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.adapter.Xd2XsdPostProcessingAdapter;
 import org.xdef.transform.xsd.xd2schema.factory.XsdSchemaFactory;
@@ -22,13 +20,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_URI_EMPTY;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_DPOOL_ADAPTER;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDPOOL_ADAPTER;
 
 /**
  * Transformation of given x-definition pool to collection of XSD documents
@@ -80,7 +77,9 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
      * Initializes transformation algorithm
      */
     private void init() {
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER, "*** Initialize ***");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Initialize", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
+        LOG.info(HEADER_LINE);
 
         initTargetNamespaces();
         initXsdSchemas();
@@ -91,7 +90,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
      * Gathers target namespaces for all x-definitions from source x-definition pool
      */
     private void initTargetNamespaces() {
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER, "Initialize target namespaces ...");
+        LOG.info("{}Initialize target namespaces ...", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
 
         xDefsWithoutNs = new HashSet<String>();
         xDefTargetNs = new HashMap<String, Pair<String, String>>();
@@ -102,15 +101,20 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
             if (targetNamespace.getKey() != null && targetNamespace.getValue() != null) {
                 if (xDefTargetNs.containsKey(xDefName)) {
                     reportWriter.warning(XSD.XSD014, xDefName);
-                    SchemaLogger.print(LOG_WARN, PREPROCESSING, XSD_DPOOL_ADAPTER,"Target namespace of x-definition is already defined. XDefinition=" + xDefName);
+                    LOG.warn("{}Target namespace of x-definition is already defined. xDefName='{}'",
+                            logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName);
                 } else {
                     xDefTargetNs.put(xDefName, Pair.of(targetNamespace.getKey(), targetNamespace.getValue()));
-                    SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER,"Add target namespace to x-definition. " +
-                            "XDefinition=" + xDefName + ", naPrefix=" + targetNamespace.getKey() + ", nsUri=" + targetNamespace.getValue());
+                    LOG.info("{}Add target namespace to x-definition. xDefName='{}', nsPrefix='{}', nsUri='{}'",
+                            logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER),
+                            xDefName,
+                            targetNamespace.getKey(),
+                            targetNamespace.getValue());
                 }
             } else {
                 xDefsWithoutNs.add(xDefName);
-                SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER,"X-definition has no target namespace. XDefinition=" + xDefName);
+                LOG.info("{}X-definition has no target namespace. xDefName='{}'",
+                        logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName);
             }
         }
     }
@@ -119,7 +123,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
      * Initializes all XSD documents based on source x-definition from x-definition pool
      */
     private void initXsdSchemas() {
-        SchemaLogger.print(LOG_INFO, INITIALIZATION, XSD_DPOOL_ADAPTER,"Initialize XSD documents ...");
+        LOG.info("{}Initialize XSD documents ...", logHeader(INITIALIZATION, XSD_XDPOOL_ADAPTER));
 
         XsdSchemaFactory schemaFactory = new XsdSchemaFactory(adapterCtx);
         for (XMDefinition xDef : xdPool.getXMDefinitions()) {
@@ -131,7 +135,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
      * Creates schema location context based on x-definition target namespace and x-definition name
      */
     private void initSchemaLocations() {
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XSD_DPOOL_ADAPTER,"Initialize schema locations ...");
+        LOG.info("{}Initialize schema locations ...", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
 
         for (Map.Entry<String, Pair<String, String>> entry : xDefTargetNs.entrySet()) {
             final String nsUri = entry.getValue().getValue();
@@ -142,7 +146,8 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
         for (String xDefName : xDefsWithoutNs) {
             final String nsUri = XSD_NAMESPACE_URI_EMPTY;
             adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName));
-            SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XSD_DPOOL_ADAPTER,"Creating nsUri from x-definition name. XDefinition=" + xDefName + ", NamespaceURI=" + nsUri);
+            LOG.debug("{}Creating namespace URI from x-definition name. xDefName='{}', nsUri='{}'",
+                    logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName, nsUri);
         }
     }
 

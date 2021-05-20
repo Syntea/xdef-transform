@@ -8,7 +8,6 @@ import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.xdef.impl.XDefinition;
 import org.xdef.impl.XNode;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNameLocationMap;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNsLocationMap;
@@ -22,12 +21,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_XDEF_EXTRA_ADAPTER;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_EXTRA_ADAPTER;
 
 /**
  * Transforms x-definition nodes into org.xdef.transform.xsd nodes
@@ -66,7 +64,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
      * @return All namespaces which have been updated
      */
     protected Set<String> transformNodes(final Map<String, Map<String, XNode>> allNodesToResolve) {
-        SchemaLogger.printP(LOG_INFO, POSTPROCESSING, sourceXDefinition, "Transforming gathered nodes into extra schemas ...");
+        LOG.info("{}Transforming gathered nodes into extra schemas ...", logHeader(POSTPROCESSING, sourceXDefinition));
 
         final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPos(sourceXDefinition.getXDPosition());
         final Set<String> updatedNamespaces = new HashSet<String>();
@@ -90,7 +88,8 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                 }
 
                 if (schemasByNameToResolve.getValue().size() > 1) {
-                    SchemaLogger.printP(LOG_WARN, POSTPROCESSING, sourceXDefinition, "Multiple schemas with same namespace URI are not currently supported for postprocessing!");
+                    LOG.warn("{}Multiple schemas with same namespace URI are not currently supported for postprocessing!",
+                            logHeader(POSTPROCESSING, sourceXDefinition));
                     continue;
                 }
 
@@ -165,9 +164,10 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                                             final ArrayList<XNode> nodesInSchemaToResolve,
                                             final String targetNsUri,
                                             final XsdSchemaImportLocation importLocation) {
-            SchemaLogger.printG(LOG_INFO, XSD_XDEF_EXTRA_ADAPTER, "====================");
-            SchemaLogger.printG(LOG_INFO, XSD_XDEF_EXTRA_ADAPTER, "Post-processing XSD document. TargetNamespace=" + targetNsUri);
-            SchemaLogger.printG(LOG_INFO, XSD_XDEF_EXTRA_ADAPTER, "====================");
+            LOG.info(HEADER_LINE);
+            LOG.info("{}Post-processing XSD document. targetNamespaceUri='{}'",
+                    logHeader(XSD_XDEF_EXTRA_ADAPTER), targetNsUri);
+            LOG.info(HEADER_LINE);
 
             final String schemaName = createOrGetXsdSchema(namespaceCtx, targetNsUri, importLocation);
 
@@ -220,9 +220,9 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
             if (schema == null) {
                 adapterCtx.addSchemaName(schemaName);
                 schema = new XmlSchema(targetNsUri, schemaName, adapterCtx.getXmlSchemaCollection());
-                SchemaLogger.print(LOG_INFO, PREPROCESSING, schemaName, "Initialize new XSD document");
+                LOG.info("{}Initialize new XSD document. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
             } else {
-                SchemaLogger.print(LOG_INFO, PREPROCESSING, schemaName, "Schema already exists");
+                LOG.info("{}Schema already exists. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
             }
 
             return schema;
@@ -243,7 +243,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                                          final NamespaceMap namespaceCtx,
                                          final String targetNsUri,
                                          final XsdSchemaImportLocation importLocation) {
-            SchemaLogger.printP(LOG_DEBUG, POSTPROCESSING, sourceXDefinition, "Initializing namespace context ...");
+            LOG.debug("{}Initializing namespace context ...", logHeader(POSTPROCESSING, sourceXDefinition));
 
             // Namespace initialization
             final String targetNsPrefix = XsdNamespaceUtils.getNsPrefixFromExtraSchemaName(importLocation.getFileName());
@@ -274,14 +274,16 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * @param nodes             source nodes to transform
          */
         private void transformNodes(final Xd2XsdTreeAdapter treeAdapter, final ArrayList<XNode> nodes) {
-            SchemaLogger.printG(LOG_INFO, XSD_XDEF_EXTRA_ADAPTER, "*** Transformation of x-definition tree to schema ***");
+            LOG.info(HEADER_LINE);
+            LOG.info("{}Transformation of x-definition tree to schema", logHeader(XSD_XDEF_EXTRA_ADAPTER));
+            LOG.info(HEADER_LINE);
 
-            for (XNode n : nodes) {
-                final XmlSchemaObject xsdNode = treeAdapter.convertTree(n);
+            for (XNode node : nodes) {
+                final XmlSchemaObject xsdNode = treeAdapter.convertTree(node);
                 if (xsdNode instanceof XmlSchemaElement) {
-                    SchemaLogger.printP(LOG_INFO, POSTPROCESSING, n, "Add top-level element.");
+                    LOG.info("{}Add top-level element.", logHeader(POSTPROCESSING, node));
                 } else if (xsdNode instanceof XmlSchemaAttribute) {
-                    SchemaLogger.printP(LOG_INFO, POSTPROCESSING, n, "Add top-level attribute.");
+                    LOG.info("{}Add top-level attribute.", logHeader(POSTPROCESSING, node));
                 }
             }
         }

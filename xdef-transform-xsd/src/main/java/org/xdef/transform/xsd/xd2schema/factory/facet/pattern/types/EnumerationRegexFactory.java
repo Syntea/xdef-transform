@@ -3,9 +3,8 @@ package org.xdef.transform.xsd.xd2schema.factory.facet.pattern.types;
 import org.xdef.XDContainer;
 import org.xdef.XDNamedValue;
 import org.xdef.XDValue;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_ENUMERATION;
 
@@ -23,7 +22,7 @@ public class EnumerationRegexFactory extends AbstractRegexFactory {
             }
         }
 
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Pattern created=\"" + pattern + "\"");
+        LOG.debug("{}Pattern created. patternValue='{}'", logHeader(TRANSFORMATION), pattern);
         return pattern;
     }
 

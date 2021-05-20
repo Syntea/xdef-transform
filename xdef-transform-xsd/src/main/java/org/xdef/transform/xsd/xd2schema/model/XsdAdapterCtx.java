@@ -3,13 +3,14 @@ package org.xdef.transform.xsd.xd2schema.model;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.apache.ws.commons.schema.utils.XmlSchemaNamed;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
@@ -23,19 +24,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_ADAPTER_CTX;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_REFERENCE;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ADAPTER_CTX;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
  * Basic XSD context for transformation x-definition to XSD document
  */
 public class XsdAdapterCtx {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XsdAdapterCtx.class);
 
     /**
      * Names of created XSD documents
@@ -153,7 +153,7 @@ public class XsdAdapterCtx {
      */
     public void addSchemaName(final String name) throws SRuntimeException {
         if (!schemaNames.add(name)) {
-            SchemaLogger.printG(LOG_ERROR, XSD_ADAPTER_CTX, "Schema with this name has been already processed! Name=" + name);
+            LOG.error("{}Schema with given name already processed! schemaName='{}'", logHeader(XSD_ADAPTER_CTX), name);
             throw new SRuntimeException(XSD.XSD005);
         }
     }
@@ -245,7 +245,7 @@ public class XsdAdapterCtx {
      * @param xNode     X-definition node
      */
     public void addNodeToPostProcessing(final String nsUri, final XNode xNode) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xNode, "Add node to post-processing.");
+        LOG.info("{}Add node to post-processing.", logHeader(TRANSFORMATION, xNode));
 
         final String nodeName = xNode.getName();
         Map<String, XNode> ppNsNodes = nodesToBePostProcessed.get(nsUri);
@@ -256,7 +256,7 @@ public class XsdAdapterCtx {
         }
 
         if (ppNsNodes.containsKey(nodeName)) {
-            SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xNode, "Node is already marked for post-processing");
+            LOG.info("{}Node is already marked for post-processing.", logHeader(TRANSFORMATION, xNode));
         } else {
             ppNsNodes.put(nodeName, xNode);
         }
@@ -276,8 +276,7 @@ public class XsdAdapterCtx {
         XmlSchema[] schemas = xmlSchemaCollection.getXmlSchema(systemId);
         if (schemas == null || schemas.length == 0) {
             if (shouldExists == true) {
-                reportWriter.warning(XSD.XSD037, systemId);
-                SchemaLogger.printP(LOG_WARN, phase, "Schema with required name not found! Name=" + systemId);
+                reportWriter.error(XSD.XSD037, systemId);
                 throw new SRuntimeException(XSD.XSD007, systemId);
             }
 
@@ -286,7 +285,8 @@ public class XsdAdapterCtx {
 
         if (schemas.length > 1) {
             reportWriter.warning(XSD.XSD038, systemId);
-            SchemaLogger.printP(LOG_WARN, phase, "Multiple schemas with required name have been found! Name=" + systemId);
+            LOG.warn("{}Multiple schemas with required name have been found! schemaName='{}'",
+                    logHeader(phase), systemId);
         }
 
         return schemas[0];
@@ -314,7 +314,6 @@ public class XsdAdapterCtx {
 
         if (schemaNames == null && shouldExists) {
             reportWriter.warning(XSD.XSD039, nsUri);
-            SchemaLogger.printP(LOG_WARN, phase, "Schema with required name not found! Namespace=" + nsUri);
             throw new SRuntimeException(XSD.XSD009, nsUri);
         }
 
@@ -377,26 +376,27 @@ public class XsdAdapterCtx {
 
         final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
         if (refOrig != null && refOrig.getXsdNode() != null) {
-            SchemaLogger.printG(LOG_DEBUG, XSD_REFERENCE, "Node with this name is already defined. System=" + systemId + ", Path=" + nodePath + ", Node=" + node.getXdPosition());
+            LOG.debug("{}Node with this name is already defined. system='{}', nodePath='{}', nodePos='{}'",
+                    logHeader(XSD_REFERENCE), systemId, nodePath, node.getXdPosition());
             return node;
         }
 
         String msg = node.hasReference() ? " (with reference)" : "";
         if (refOrig != null) {
             refOrig.copyNodes(node);
-            msg = "Updating node" + msg + ". System=" + systemId + ", Path=" + nodePath + ", Node=" + node.getXdPosition();
+            msg = "Updating node" + msg + ". system='" + systemId + "', path='" + nodePath + "', node='" + node.getXdPosition() + '\'';
             if (node.getXsdNode() != null) {
-                msg += ", Xsd=" + node.getXsdNode().getClass().getSimpleName();
+                msg += ", Xsd='" + node.getXsdNode().getClass().getSimpleName() + '\'';
             }
-            SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, msg);
+            LOG.info("{}{}", logHeader(XSD_REFERENCE), msg);
             return refOrig;
         } else {
             xsdSystemRefs.put(nodePath, node);
-            msg = "Creating node" + msg + ". System=" + systemId + ", Path=" + nodePath + ", Node=" + node.getXdPosition();
+            msg = "Creating node" + msg + ". system='" + systemId + "', path='" + nodePath + "', node='" + node.getXdPosition() + '\'';
             if (node.getXsdNode() != null) {
-                msg += ", Xsd=" + node.getXsdNode().getClass().getSimpleName();
+                msg += ", Xsd='" + node.getXsdNode().getClass().getSimpleName() + '\'';
             }
-            SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, msg);
+            LOG.info("{}{}", logHeader(XSD_REFERENCE), msg);
             return node;
         }
     }
@@ -414,14 +414,16 @@ public class XsdAdapterCtx {
     }
 
     private void updateNode(final String systemId, String nodePath, final XmlSchemaNamed newXsdNode) {
-        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Updating xsd content of node. System=" + systemId + ", Path=" + nodePath + ", NewXsd=" + newXsdNode.getClass().getSimpleName());
+        LOG.info("{}Updating xsd content of node. system='{}', nodePath='{}', newXsdName='{}'",
+                logHeader(XSD_REFERENCE), systemId, nodePath, newXsdNode.getClass().getSimpleName());
 
         final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
         final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
 
         if (refOrig == null) {
             reportWriter.warning(XSD.XSD040, systemId, nodePath);
-            SchemaLogger.printG(LOG_WARN, XSD_REFERENCE, "Node does not exist in system! System=" + systemId + ", Path=" + nodePath);
+            LOG.warn("{}Node does not exist in system! system='{}', nodePath='{}'",
+                    logHeader(XSD_REFERENCE), systemId, nodePath);
             return;
         }
 
@@ -475,12 +477,13 @@ public class XsdAdapterCtx {
      * @param nodePath      x-definition node path
      */
     private void removeNode(final String systemId, final String nodePath) {
-        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Removing xsd node. System=" + systemId + ", Path=" + nodePath);
+        LOG.info("{}Removing xsd node. system='{}', nodePath='{}'", logHeader(XSD_REFERENCE), systemId, nodePath);
 
         final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
         final SchemaNode refOrig = xsdSystemRefs.remove(nodePath);
         if (refOrig != null) {
-            SchemaLogger.printG(LOG_DEBUG, XSD_REFERENCE, "Node has been removed! System=" + systemId + ", Path=" + nodePath + ", NodeName: " + refOrig.getXdName());
+            LOG.debug("{}Node has been removed! system='{}', nodePath='{}', nodeName='{}'",
+                    logHeader(XSD_REFERENCE), systemId, nodePath, refOrig.getXdName());
         }
     }
 
@@ -537,7 +540,9 @@ public class XsdAdapterCtx {
         UniqueConstraint uniqueConstraint = findUniqueConstraint(uniqueInfoMap, name, path);
 
         if (uniqueConstraint == null) {
-            SchemaLogger.printP(LOG_INFO, PREPROCESSING, "Creating unique set. Name=" + name + ", Path=" + path + ", System=" + systemId);
+            LOG.info("{}Creating unique set. name='{}', path='{}', system='{}'",
+                    logHeader(PREPROCESSING), name, path, systemId);
+
             List<UniqueConstraint> uniqueInfoList = uniqueInfoMap.get(path);
             if (uniqueInfoList == null) {
                 uniqueInfoList = new LinkedList<UniqueConstraint>();
@@ -547,7 +552,8 @@ public class XsdAdapterCtx {
             uniqueConstraint = new UniqueConstraint(name, systemId);
             uniqueInfoList.add(uniqueConstraint);
         } else {
-            SchemaLogger.printP(LOG_DEBUG, PREPROCESSING, "Creating unique set - already exists. Name=" + name + ", Path=" + path + ", System=" + systemId);
+            LOG.debug("{}Creating unique set - already exists. name='{}', path='{}', system='{}'",
+                    logHeader(PREPROCESSING), name, path, systemId);
         }
 
         return uniqueConstraint;
@@ -581,7 +587,7 @@ public class XsdAdapterCtx {
      * @return  unique constraint if exists, otherwise null
      */
     public UniqueConstraint findUniqueConst(final XData xData) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xData, "Finding unique set. Name=" + xData.getValueTypeName());
+        LOG.debug("{}Finding unique set. name='{}'", logHeader(TRANSFORMATION, xData), xData.getValueTypeName());
 
         // TODO: Finding of unique set not using variable name, ie. uniqueSet u int();
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xData.getXDPosition());
@@ -603,7 +609,8 @@ public class XsdAdapterCtx {
      * @return unique constraint if exists inside given map, otherwise null
      */
     private UniqueConstraint findUniqueConst(final String uniqueInfoName, final String systemId, String uniquestSetPath) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Finding unique set. UniqueName=" + uniqueInfoName + ", SystemId=" + systemId);
+        LOG.debug("{}Finding unique set. uniqueName='{}', systemId='{}'",
+                logHeader(TRANSFORMATION), uniqueInfoName, systemId);
 
         UniqueConstraint uniqueInfo = null;
         int slashPos;

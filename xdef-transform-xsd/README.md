@@ -40,11 +40,6 @@ java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o 
 java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -f a
 ```
 
-* Dále lze přepínačem `-v` omezit vypisování, například na úroveň warning (zde by mělo dojít k vypsání pouze ztrátových transformací, případně problémových transformací). Příklad:
-```console
-java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -f a -v 2
-```
-
 * Volání je možné rozšířit o validaci XML dat skrze interní nástroj (rozumějme knihovnu) Javy. Pokud chcete zvalidovat nějaký validní (myšleno vůči vstupní X-definici) XML soubor proti výstupu algoritmu (XML schema), potom stačí použít přepínač `-tp`. Je možné najednou testovat i více testovacích datových souboru. Zároveň je nutné pomocí přepínače `-r` určit i název kořenovou X-definice, resp. název XML schema souboru, vůči kterému budou data validována. Příklad volání s jedním datovým souborem:
 ```console
 java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -r "sisma" -tp "C:\syntea\projects\xdefinition\data\sisma.xml"

@@ -2,13 +2,14 @@ package test.xdutils;
 
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xdef.XDDocument;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.transform.xsd.schema2xd.Xsd2XDefAdapter;
 import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.util.XValidate;
 import org.xmlunit.builder.DiffBuilder;
 import org.xmlunit.diff.Diff;
@@ -24,9 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
-
 public class TestXsd2Xd extends TesterXdSchema {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TestXsd2Xd.class);
 
     private void init() {
         File dataDir = new File(getDataDir());
@@ -41,8 +42,6 @@ public class TestXsd2Xd extends TesterXdSchema {
         _outputFilesRoot = initFolder(dataDir, "xsd2xd\\output");
 
         _repWriter = new ArrayReporter();
-
-        SchemaLogger.setLogLevel(LOG_WARN);
     }
 
     private File getInputSchemaFile(final String fileName) {
@@ -96,8 +95,8 @@ public class TestXsd2Xd extends TesterXdSchema {
     }
 
     private void validateXDefinition(final String fileName, final String outputXDefinition) throws IOException {
-        if (PRINT_OUTPUT_TO_CONSOLE == true) {
-            System.out.println(outputXDefinition);
+        if (LOG_OUTPUT_ENABLED == true) {
+            LOG.info(outputXDefinition);
         }
 
         File refXDefFile = getRefXDefFile(fileName);

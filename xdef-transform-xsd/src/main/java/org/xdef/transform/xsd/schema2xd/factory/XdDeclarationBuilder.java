@@ -1,6 +1,15 @@
 package org.xdef.transform.xsd.schema2xd.factory;
 
-import org.apache.ws.commons.schema.*;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaFacet;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeContent;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeList;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeUnion;
+import org.apache.ws.commons.schema.XmlSchemaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;
@@ -10,22 +19,20 @@ import org.xdef.transform.xsd.schema2xd.factory.declaration.ListTypeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.UnionTypeFactory;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdTypeMapping;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
  * Creates x-definition declaration and declaration content for x-definition declarations
  */
 public class XdDeclarationBuilder {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XdDeclarationBuilder.class);
 
     /**
      * Input schema used for transformation
@@ -150,10 +157,10 @@ public class XdDeclarationBuilder {
     String build() {
         if (type == null) {
             reportWriter.error(XSD.XSD204);
-            SchemaLogger.printP(LOG_ERROR, TRANSFORMATION, simpleType, "Declaration type is not set!");
+            LOG.error("{}Declaration type is not set!", logHeader(TRANSFORMATION, simpleType));
         }
 
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, simpleType, "Building declaration. Type=" + type);
+        LOG.info("{}Building declaration. type='{}'", logHeader(TRANSFORMATION, simpleType), type);
 
         if (IDeclarationTypeFactory.Type.TOP_DECL.equals(type)) {
             return createTopDeclaration();
@@ -167,7 +174,7 @@ public class XdDeclarationBuilder {
      * @return x-definition declaration
      */
     private String createTopDeclaration() {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, simpleType, "Building top declaration content ...");
+        LOG.info("{}Building top declaration content ...", logHeader(TRANSFORMATION, simpleType));
         name = simpleType.getName();
         if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
             return createTop((XmlSchemaSimpleTypeRestriction) simpleType.getContent());
@@ -177,7 +184,7 @@ public class XdDeclarationBuilder {
 
         // TODO: union?
         reportWriter.warning(XSD.XSD205);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, simpleType, "Empty top declaration has been created!");
+        LOG.warn("{}Empty top declaration has been created!", logHeader(TRANSFORMATION, simpleType));
         return "";
     }
 
@@ -187,7 +194,8 @@ public class XdDeclarationBuilder {
      * @return x-definition declaration
      */
     private String createTop(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, simpleTypeRestriction, "Building declaration content. Name=" + name + ", Type=" + type);
+        LOG.info("{}Building declaration content. name='{}', type='{}'",
+                logHeader(TRANSFORMATION, simpleTypeRestriction), name, type);
 
         final QName baseType = simpleTypeRestriction.getBaseTypeName();
         IDeclarationTypeFactory xdDeclarationTypeFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType);
@@ -210,7 +218,8 @@ public class XdDeclarationBuilder {
         }
 
         if (IDeclarationTypeFactory.Type.TOP_DECL.equals(type) && !xdDeclarationFactory.canBeProcessed(name)) {
-            SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, simpleTypeRestriction, "Declaration has been already created. Name=" + name);
+            LOG.debug("{}Declaration has been already created. name='{}'",
+                    logHeader(TRANSFORMATION, simpleTypeRestriction), name);
             return null;
         }
 
@@ -246,7 +255,7 @@ public class XdDeclarationBuilder {
         }
 
         reportWriter.warning(XSD.XSD206);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, simpleType, "Empty set text declaration has been created!");
+        LOG.warn("{}Empty set text declaration has been created!", logHeader(TRANSFORMATION, simpleType));
         return "";
     }
 
@@ -275,7 +284,7 @@ public class XdDeclarationBuilder {
         }
 
         reportWriter.warning(XSD.XSD207);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, simpleTypeRestriction, "Empty restriction declaration has been created!");
+        LOG.warn("{}Empty restriction declaration has been created!", logHeader(TRANSFORMATION, simpleTypeRestriction));
         return "";
     }
 
@@ -334,7 +343,7 @@ public class XdDeclarationBuilder {
 
                 if (xdDeclarationFactory == null) {
                     reportWriter.warning(XSD.XSD208);
-                    SchemaLogger.printP(LOG_WARN, TRANSFORMATION, simpleTypeUnion, "Unknown XSD union base type!");
+                    LOG.warn("{}Unknown XSD union base type!", logHeader(TRANSFORMATION, simpleTypeUnion));
                     return null;
                 }
 
@@ -344,7 +353,7 @@ public class XdDeclarationBuilder {
         }
 
         reportWriter.warning(XSD.XSD209);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, simpleTypeUnion, "Empty union declaration has been created!");
+        LOG.warn("{}Empty union declaration has been created!", logHeader(TRANSFORMATION, simpleTypeUnion));
         return "";
     }
 
@@ -355,7 +364,8 @@ public class XdDeclarationBuilder {
      * @return x-definition declaration/declaration content
      */
     private String create(final XmlSchemaSimpleTypeList simpleTypeList, final List<XmlSchemaFacet> extraFacets) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, simpleTypeList, "Creating list declaration content. Name=" + name + ", Type=" + type);
+        LOG.info("{}Creating list declaration content. name='{}', type='{}'",
+                logHeader(TRANSFORMATION, simpleTypeList), name, type);
 
         String facetString = "";
         final QName baseType = simpleTypeList.getItemTypeName();
@@ -375,7 +385,7 @@ public class XdDeclarationBuilder {
         }
 
         if (facetString.isEmpty()) {
-            SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, simpleTypeList, "List declaration content empty");
+            LOG.debug("{}List declaration content empty.", logHeader(TRANSFORMATION, simpleTypeList));
         }
 
         if (extraFacets != null && !extraFacets.isEmpty()) {
@@ -389,7 +399,8 @@ public class XdDeclarationBuilder {
         }
 
         if (IDeclarationTypeFactory.Type.TOP_DECL.equals(type) && !xdDeclarationFactory.canBeProcessed(name)) {
-            SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, simpleTypeList, "Declaration has been already created. Name=" + name);
+            LOG.debug("{}Declaration has been already created. name='{}'",
+                    logHeader(TRANSFORMATION, simpleTypeList), name);
             return null;
         }
 

@@ -18,9 +18,6 @@ public interface XDefToXsdOptionsConst {
     // XML data file(s) for testing validation of negative case
     String VALIDATE_NEGATIVE_CASE = "validateNeg";
 
-    // Logging level (TODO: replace by logback)
-    String VERBOSE = "verbose";
-
     // Flag, if default algorithm features will be used
     String NO_DEFAULT_FEATURES = "noFeatures";
     // Algorithm features to be used

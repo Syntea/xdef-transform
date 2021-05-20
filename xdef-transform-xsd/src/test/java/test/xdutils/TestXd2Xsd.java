@@ -11,7 +11,6 @@ import org.xdef.XDFactory;
 import org.xdef.XDPool;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.sys.SUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
-
 public class TestXd2Xsd extends TesterXdSchema {
 
     private void init() {
@@ -48,8 +45,6 @@ public class TestXd2Xsd extends TesterXdSchema {
         _outputFilesRoot = initFolder(dataDir, "xd2xsd\\output");
 
         _repWriter = new ArrayReporter();
-
-        SchemaLogger.setLogLevel(LOG_WARN);
     }
 
     private File getInputXDefFile(final String path, final String fileName) throws FileNotFoundException {
@@ -155,7 +150,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         assertEq(outputSchemasAll.length, schemaCount + 1, "Invalid number of output schemas, fileName: " + fileName);
         //assertEq(realRefSchemas + 1, outputSchemasAll.length, "Expected same number of reference and output schemas, fileName: " + fileName);
 
-        if (PRINT_OUTPUT_TO_CONSOLE == true) {
+        if (LOG_OUTPUT_ENABLED == true) {
             for (XmlSchema outputSchema : outputSchemasAll) {
                 if (Constants.URI_2001_SCHEMA_XSD.equals(outputSchema.getLogicalTargetNamespace()) == false) {
                     outputSchema.write(System.out);

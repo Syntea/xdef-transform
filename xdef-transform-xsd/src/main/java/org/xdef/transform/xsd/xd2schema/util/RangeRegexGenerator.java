@@ -1,5 +1,8 @@
 package org.xdef.transform.xsd.xd2schema.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -12,6 +15,8 @@ import java.util.List;
  */
 public class RangeRegexGenerator
 {
+    private static final Logger LOG = LoggerFactory.getLogger(RangeRegexGenerator.class);
+
     /**
      * Return a list of regular expressions that match the numbers
      * that fall within the range of the given numbers, inclusive.
@@ -84,14 +89,15 @@ public class RangeRegexGenerator
     {
         if (list.size() > 0)
         {
-            System.out.print(String.format("%d-%d", list.get(0), list.get(1)));
+            LOG.trace(String.format("%d-%d", list.get(0), list.get(1)));
             int i = 2;
             while (i < list.size())
             {
-                System.out.print(String.format(", %d-%d", list.get(i), list.get(i + 1)));
+                LOG.trace(String.format(", %d-%d", list.get(i), list.get(i + 1)));
                 i = i + 2;
             }
-            System.out.println();
+
+            LOG.trace("");
         }
     }
 

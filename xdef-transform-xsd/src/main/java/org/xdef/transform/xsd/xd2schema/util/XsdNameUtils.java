@@ -5,19 +5,20 @@ import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaForm;
 import org.apache.ws.commons.schema.constants.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.XDNamedValue;
 import org.xdef.XDParser;
 import org.xdef.XDValue;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.model.XMDefinition;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import javax.xml.namespace.QName;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_FORMAT;
@@ -45,6 +46,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_
  * Utils related to working with node name, reference name and qualified name
  */
 public class XsdNameUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XsdNameUtils.class);
 
     /**
      * Parse x-definition reference node name from given x-definition reference position
@@ -340,7 +343,7 @@ public class XsdNameUtils {
      */
     public static String getSchemaName(final XMDefinition xDef) {
         if (xDef.getName() == null || xDef.getName().isEmpty()) {
-            SchemaLogger.printP(LOG_WARN, INITIALIZATION, xDef, "Initialize XSD document - X-definition name is blank.");
+            LOG.warn("{}Initialize XSD document - X-definition name is blank.", logHeader(INITIALIZATION, xDef));
             return "blank_name";
         }
 

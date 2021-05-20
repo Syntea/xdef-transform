@@ -2,9 +2,33 @@ package org.xdef.transform.xsd.schema2xd.adapter;
 
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.ws.commons.schema.*;
+import org.apache.ws.commons.schema.XmlSchema;
+import org.apache.ws.commons.schema.XmlSchemaAll;
+import org.apache.ws.commons.schema.XmlSchemaAllMember;
+import org.apache.ws.commons.schema.XmlSchemaAny;
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaAttributeOrGroupRef;
+import org.apache.ws.commons.schema.XmlSchemaChoice;
+import org.apache.ws.commons.schema.XmlSchemaChoiceMember;
+import org.apache.ws.commons.schema.XmlSchemaComplexContent;
+import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaComplexType;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaGroup;
+import org.apache.ws.commons.schema.XmlSchemaGroupParticle;
+import org.apache.ws.commons.schema.XmlSchemaGroupRef;
+import org.apache.ws.commons.schema.XmlSchemaParticle;
+import org.apache.ws.commons.schema.XmlSchemaSequence;
+import org.apache.ws.commons.schema.XmlSchemaSequenceMember;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContent;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
+import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.factory.XdAttributeFactory;
@@ -15,17 +39,13 @@ import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFact
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
 
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_REQUIRED;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
@@ -34,6 +54,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_
  * Transforms XSD tree node structure to x-definition tree node structure
  */
 public class Xsd2XdTreeAdapter {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Xsd2XdTreeAdapter.class);
 
     /**
      * Output x-definition name
@@ -79,7 +101,7 @@ public class Xsd2XdTreeAdapter {
      * @return concatenate names in required format of x-definition
      */
     public String loadXsdRootElementNames() {
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, xDefName, "Loading root elements of XSD");
+        LOG.info("{}Loading root elements of XSD", logHeader(PREPROCESSING, xDefName));
 
         String targetNsPrefix = "";
         final Pair<String, String> targetNamespace = adapterCtx.findTargetNamespace(xDefName);
@@ -140,19 +162,24 @@ public class Xsd2XdTreeAdapter {
      * @param parentNode        parent x-definition node
      */
     private void createElement(final XmlSchemaElement xsdElementNode, final Element parentNode) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xsdElementNode, "Creating element ...");
+        LOG.info("{}Creating element ...", logHeader(TRANSFORMATION, xsdElementNode));
+
         final Element xdElem = xdFactory.createElement(xsdElementNode, xDefName);
 
         final QName xsdElemQName = xsdElementNode.getSchemaTypeName();
         if (xsdElemQName != null && XSD_NAMESPACE_PREFIX_EMPTY.equals(xsdElemQName.getPrefix())) {
             if (xsdElementNode.getSchemaType() != null) {
                 if (xsdElementNode.getSchemaType() instanceof XmlSchemaComplexType) {
-                    SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xsdElementNode, "Element is referencing to complex type. Reference=" + xsdElemQName);
+                    LOG.info("{}Element is referencing to complex type. reference='{}'",
+                            logHeader(TRANSFORMATION, xsdElementNode), xsdElemQName);
+
                     if (!externalRef(xsdElemQName, xdElem, false)) {
                         xdAttrFactory.addAttrRef(xdElem, xsdElemQName);
                     }
                 } else if (xsdElementNode.getSchemaType() instanceof XmlSchemaSimpleType) {
-                    SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xsdElementNode, "Element is referencing to simple type. Reference=" + xsdElemQName);
+                    LOG.info("{}Element is referencing to simple type. reference='{}'",
+                            logHeader(TRANSFORMATION, xsdElementNode), xsdElemQName);
+
                     final XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType) xsdElementNode.getSchemaType();
                     if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                         final XdDeclarationBuilder b = xdDeclarationFactory.createBuilder()
@@ -165,7 +192,7 @@ public class Xsd2XdTreeAdapter {
                 }
             } else {
                 adapterCtx.getReportWriter().warning(XSD.XSD211, xsdElemQName);
-                SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xsdElementNode, "Element reference has not found! Reference=" + xsdElemQName);
+                LOG.warn("{}Element reference has not found! reference='{}'", logHeader(TRANSFORMATION, xsdElementNode), xsdElemQName);
             }
         } else if (xsdElementNode.getSchemaType() != null) {
             if (xsdElementNode.getSchemaType() instanceof XmlSchemaComplexType) {
@@ -200,7 +227,8 @@ public class Xsd2XdTreeAdapter {
      * @param parentNode        parent x-definition node
      */
     private void createTopNonRootElement(final XmlSchemaComplexType xsdComplexNode, final Element parentNode) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xsdComplexNode, "Creating top level non-root element ...");
+        LOG.info("{}Creating top level non-root element ...", logHeader(TRANSFORMATION, xsdComplexNode));
+
         final Element xdElem = xdFactory.createEmptyElement(xsdComplexNode, xDefName);
         createElementFromComplex(xdElem, xsdComplexNode);
         parentNode.appendChild(xdElem);
@@ -278,7 +306,8 @@ public class Xsd2XdTreeAdapter {
      * @param mixed             flag, if attribute xd:text should be created
      */
     private void createGroupParticle(final XmlSchemaGroupParticle xsdParticleNode, final Element parentNode, final boolean mixed) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xsdParticleNode, "Creating group particle ...");
+        LOG.info("{}Creating group particle ...", logHeader(TRANSFORMATION, xsdParticleNode));
+
         Element xdParticle = null;
         if (xsdParticleNode instanceof XmlSchemaSequence) {
             final XmlSchemaSequence xsdSequence = (XmlSchemaSequence)xsdParticleNode;
@@ -348,7 +377,7 @@ public class Xsd2XdTreeAdapter {
      * @param parentNode        x-definition node, which will be filled
      */
     private void createElementGroup(final XmlSchemaGroup xsdGroupNode, final Element parentNode) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xsdGroupNode, "Creating group.");
+        LOG.debug("{}Creating group.", logHeader(TRANSFORMATION, xsdGroupNode));
 
         final Element group = xdFactory.createEmptyNamedMixed(xsdGroupNode.getName());
         if (xsdGroupNode.getParticle() != null) {
@@ -364,7 +393,7 @@ public class Xsd2XdTreeAdapter {
      * @param parentNode            x-definition node, which will be filled
      */
     private void createElementGroupRef(final XmlSchemaGroupRef xsdGroupRefNode, final Element parentNode) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xsdGroupRefNode, "Creating group reference.");
+        LOG.debug("{}Creating group reference.", logHeader(TRANSFORMATION, xsdGroupRefNode));
 
         // TODO: mixed ref cannot be part of sequence/choice/mixed? requires advanced processing
         final XmlSchemaGroup group = Xsd2XdUtils.findGroupByQName(schema, xsdGroupRefNode.getRefName());
@@ -375,11 +404,14 @@ public class Xsd2XdTreeAdapter {
         } else {
             final Element groupRef = xdFactory.createEmptyMixed();
             XdAttributeFactory.addAttrRef(groupRef, xsdGroupRefNode.getRefName());
+
             adapterCtx.getReportWriter().warning(XSD.XSD212);
-            SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xsdGroupRefNode, "Group reference possible inside sequence/choice/mixed node");
+            LOG.warn("{}Group reference possible inside sequence/choice/mixed node",
+                    logHeader(TRANSFORMATION, xsdGroupRefNode));
             if (xsdGroupRefNode.getMaxOccurs() > 1) {
                 adapterCtx.getReportWriter().error(XSD.XSD203);
-                SchemaLogger.printP(LOG_ERROR, TRANSFORMATION, xsdGroupRefNode, "Group reference is using multiple occurence - prohibited in x-definition.");
+                LOG.error("{}Group reference is using multiple occurence - prohibited in x-definition.",
+                        logHeader(TRANSFORMATION, xsdGroupRefNode));
             }
 
             parentNode.appendChild(groupRef);
@@ -392,7 +424,8 @@ public class Xsd2XdTreeAdapter {
      * @param parentNode        x-definition node, which will be filled
      */
     private void createAny(final XmlSchemaAny xsdAnyNode, final Element parentNode) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xsdAnyNode, "Creating any.");
+        LOG.debug("{}Creating any.", logHeader(TRANSFORMATION, xsdAnyNode));
+
         final Element xdAny = xdFactory.createEmptyAny();
         xdAttrFactory.addOccurrence(xdAny, xsdAnyNode);
         parentNode.appendChild(xdAny);

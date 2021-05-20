@@ -4,24 +4,26 @@ import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import org.apache.ws.commons.schema.XmlSchemaComplexContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaGroupRef;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
 import java.util.Map;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_REFERENCE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 
 /**
  * Factory which is creating schema nodes, which pairs up x-definition nodes with XSD nodes
  */
 public class SchemaNodeFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SchemaNodeFactory.class);
 
     /**
      * Creates schema node and reference schema node based on element node
@@ -155,9 +157,11 @@ public class SchemaNodeFactory {
         if (ref == null) {
             ref = new SchemaNode(nodePos);
             xsdSystemRefs.put(nodePath, ref);
-            SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Creating reference definition node. System=" + systemId + ", RefName=" + localName);
+            LOG.info("{}Creating reference definition node. systemId='{}', refLocalName='{}'",
+                    logHeader(XSD_REFERENCE), systemId, localName);
         } else {
-            SchemaLogger.printG(LOG_DEBUG, XSD_REFERENCE, "Reference definition of node already exists. System=" + systemId + ", RefName=" + localName);
+            LOG.debug("{}Reference definition of node already exists. systemId='{}', refLocalName='{}'",
+                    logHeader(XSD_REFERENCE), systemId, localName);
         }
 
         return ref;

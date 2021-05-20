@@ -13,16 +13,16 @@ import org.apache.ws.commons.schema.XmlSchemaMinLengthFacet;
 import org.apache.ws.commons.schema.XmlSchemaPatternFacet;
 import org.apache.ws.commons.schema.XmlSchemaTotalDigitsFacet;
 import org.apache.ws.commons.schema.XmlSchemaWhiteSpaceFacet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.XDNamedValue;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_FORMAT;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_INTERNAL_FACET_OUTFORMAT;
@@ -44,6 +44,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_
  */
 public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
 
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
+
     /**
      * XSD adapter context
      */
@@ -61,7 +63,7 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
 
     @Override
     public List<XmlSchemaFacet> build(final XDNamedValue[] params) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Building facets ...");
+        LOG.debug("{}\"Building facets ...", logHeader(TRANSFORMATION));
 
         List<XmlSchemaFacet> facets = new ArrayList<XmlSchemaFacet>();
         if (params != null && params.length > 0) {
@@ -69,10 +71,11 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
                 build(facets, param);
             }
         } else {
-            SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"No basic facets will be built - no input params");
+            LOG.debug("{}No basic facets will be built - no input params",
+                    logHeader(TRANSFORMATION));
         }
 
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Building extra facets ...");
+        LOG.debug("{}Building extra facets ...", logHeader(TRANSFORMATION));
         extraFacets(facets);
         return facets;
     }
@@ -119,7 +122,7 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
 
     @Override
     public XmlSchemaPatternFacet pattern(String value) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(), "Pattern. Value=" + value);
+        LOG.debug("{}Pattern. value='{}'", logHeader(TRANSFORMATION), value);
         XmlSchemaPatternFacet facet = new XmlSchemaPatternFacet();
         facet.setValue(value);
         return facet;
@@ -165,7 +168,8 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
      * @param param     x-definition parameter
      */
     protected void build(final List<XmlSchemaFacet> facets, final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(), "Creating Facet. Type=" + param.getName());
+        LOG.debug("{}Creating Facet. typeName='{}'",
+                logHeader(TRANSFORMATION), param.getName());
 
         XmlSchemaFacet facet = null;
 
@@ -197,7 +201,8 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
             // Do nothing
         } else if (!customFacet(facets, param)) {
             adapterCtx.getReportWriter().warning(XSD.XSD032, param.getName());
-            SchemaLogger.print(LOG_WARN, TRANSFORMATION, this.getClass().getSimpleName(),"Unsupported restriction parameter. Parameter=" + param.getName());
+            LOG.warn("{}Unsupported restriction parameter. parameterName='{}'",
+                    logHeader(TRANSFORMATION), param.getName());
         }
 
         if (facet != null) {

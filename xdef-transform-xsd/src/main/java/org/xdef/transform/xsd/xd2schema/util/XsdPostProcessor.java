@@ -20,10 +20,11 @@ import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
 import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
@@ -38,20 +39,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_TRACE;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_PP_PROCESOR;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_PP_PROCESSOR;
 
 
 /**
  * All partial transforming algorithms for post processing of nodes structures and linking
  */
 public class XsdPostProcessor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XsdPostProcessor.class);
 
     private final XsdAdapterCtx adapterCtx;
 
@@ -63,12 +64,15 @@ public class XsdPostProcessor {
      * Updates XSD references which are currently breaking XSD document rules
      */
     public void processRefs() {
-        SchemaLogger.print(LOG_INFO, POSTPROCESSING, XSD_PP_PROCESOR,"*** Updating references ***");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Updating reference", logHeader(POSTPROCESSING, XSD_PP_PROCESSOR));
+        LOG.info(HEADER_LINE);
 
         final List<SchemaNode> nodesToRemove = new ArrayList<SchemaNode>();
 
         for (Map.Entry<String, Map<String, SchemaNode>> systemRefEntry : adapterCtx.getNodes().entrySet()) {
-            SchemaLogger.print(LOG_INFO, POSTPROCESSING, XSD_PP_PROCESOR,"Updating references - phase 1. System=" + systemRefEntry.getKey());
+            LOG.info("{}Updating references - phase 1. systemId='{}'",
+                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), systemRefEntry.getKey());
 
             final XmlSchema xmlSchema = adapterCtx.findSchema(systemRefEntry.getKey(), true, POSTPROCESSING);
             final XsdNodeFactory xsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
@@ -102,7 +106,8 @@ public class XsdPostProcessor {
         }
 
         for (Map.Entry<String, Map<String, SchemaNode>> systemRefEntry : adapterCtx.getNodes().entrySet()) {
-            SchemaLogger.print(LOG_INFO, POSTPROCESSING, XSD_PP_PROCESOR,"Updating references - phase 2. System=" + systemRefEntry.getKey());
+            LOG.info("{}Updating references - phase 2. systemId='{}'",
+                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), systemRefEntry.getKey());
             for (Map.Entry<String, SchemaNode> refEntry : systemRefEntry.getValue().entrySet()) {
                 final SchemaNode node = refEntry.getValue();
 
@@ -120,13 +125,13 @@ public class XsdPostProcessor {
      * @param node  node to be decomposed
      */
     private void elementRootDecomposition(final SchemaNode node) {
-        SchemaLogger.printP(LOG_DEBUG, POSTPROCESSING, (XNode)node.getXdNode(), "Decomposition of root element with pointers ...");
+        LOG.debug("{}Decomposition of root element with pointers ...", logHeader(POSTPROCESSING, node.getXdNode()));
 
         final XmlSchemaElement xsdElem = node.toXsdElem();
 
         if (xsdElem.getSchemaType() == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD041);
-            SchemaLogger.printP(LOG_WARN, POSTPROCESSING, (XNode)node.getXdNode(), "Schema type has been expected!");
+            LOG.warn("{}Schema type has been expected!", logHeader(POSTPROCESSING, node.getXdNode()));
             return;
         }
 
@@ -163,7 +168,7 @@ public class XsdPostProcessor {
             return;
         }
 
-        SchemaLogger.printP(LOG_INFO, POSTPROCESSING, (XNode)node.getXdNode(), "Updating top-level element reference ...");
+        LOG.info("{}Updating top-level element reference ...", logHeader(POSTPROCESSING, node.getXdNode()));
 
         elementTopToComplex(node, xsdFactory);
 
@@ -185,7 +190,7 @@ public class XsdPostProcessor {
      * @param xsdFactory    XSD element factory
      */
     private void elementTopToComplex(final SchemaNode node, final XsdNodeFactory xsdFactory) {
-        SchemaLogger.printP(LOG_INFO, POSTPROCESSING, (XNode)node.getXdNode(), "Converting top-level element to complex-type ...");
+        LOG.info("{}Converting top-level element to complex-type ...", logHeader(POSTPROCESSING, node.getXdNode()));
 
         final XmlSchemaElement xsdElem = node.toXsdElem();
         final XElement xElem = node.toXdElem();
@@ -240,8 +245,10 @@ public class XsdPostProcessor {
                             xsdPtrElem.setName(newPtrElemName);
                             xsdPtrElem.setSchemaTypeName(newPtrQName);
 
-                            SchemaLogger.printP(LOG_INFO, POSTPROCESSING, (XNode) node.getXdNode(), "Change element reference to schema type." +
-                                    " Elem=" + ptrNode.getXdName() + ", NewQName=" + newPtrQName + ", OldQName=" + ptrQName);
+                            LOG.info("{}Change element reference to schema type. " +
+                                            "elementXDefName='{}', newQName='{}', oldQName='{}'",
+                                    logHeader(POSTPROCESSING, node.getXdNode()),
+                                    ptrNode.getXdName(), newPtrQName, ptrQName);
                         }
                     }
                 } else if (ptrNode.isXsdComplexExt()) {
@@ -250,8 +257,9 @@ public class XsdPostProcessor {
                     final QName newPtrQName = new QName(ptrQName.getNamespaceURI(), newLocalName);
                     xsdPtrExt.setBaseTypeName(newPtrQName);
 
-                    SchemaLogger.printP(LOG_INFO, POSTPROCESSING, (XNode) node.getXdNode(), "Change complex extension base." +
-                            " Elem=" + ptrNode.getXdName() + ", NewQName=" + newPtrQName + ", OldQName=" + ptrQName);
+                    LOG.info("{}Change complex extension base. elementXDefName='{}', newQName='{}', oldQName='{}'",
+                            logHeader(POSTPROCESSING, node.getXdNode()),
+                            ptrNode.getXdName(), newPtrQName, ptrQName);
                 }
             }
         }
@@ -307,19 +315,19 @@ public class XsdPostProcessor {
      * @param node  XSD node
      */
     private static void updateRefType(final SchemaNode node) {
-        SchemaLogger.printP(LOG_DEBUG, POSTPROCESSING, node.getXdNode(), "Updating reference type");
+        LOG.debug("{}Updating reference type", logHeader(POSTPROCESSING, node.getXdNode()));
 
         if (node.getReference() != null) {
             if (node.getReference().isXsdElem() && node.isXsdElem() && node.toXsdElem().getRef().getTargetQName() == null) {
                 // Reference element to element
-                SchemaLogger.printP(LOG_TRACE, POSTPROCESSING, node.getXdNode(), "Update reference to element");
+                LOG.trace("{}Update reference to element", logHeader(POSTPROCESSING, node.getXdNode()));
                 XmlSchemaElement xsdElem = node.toXsdElem();
                 xsdElem.getRef().setNamedObject(null);
                 xsdElem.getRef().setTargetQName(xsdElem.getSchemaTypeName());
                 xsdElem.setSchemaTypeName(null);
             } else if (node.getReference().isXsdComplexType() && node.isXsdElem() && node.toXsdElem().getTargetQName() != null) {
                 // Reference element to complex type
-                SchemaLogger.printP(LOG_TRACE, POSTPROCESSING, node.getXdNode(), "Update reference to complex type");
+                LOG.trace("{}\"Update reference to complex type", logHeader(POSTPROCESSING, node.getXdNode()));
                 XmlSchemaElement xsdElem = node.toXsdElem();
                 xsdElem.setSchemaTypeName(xsdElem.getTargetQName());
                 xsdElem.getRef().setTargetQName(null);
@@ -334,7 +342,7 @@ public class XsdPostProcessor {
      * @param defEl         x-definition element node
      */
     public void elementComplexType(final XmlSchemaComplexType complexType, final XElement defEl) {
-        SchemaLogger.printP(LOG_DEBUG, POSTPROCESSING, defEl, "Updating complex content of element");
+        LOG.debug("{}Updating complex content of element", logHeader(POSTPROCESSING, defEl));
 
         if (complexType.getParticle() instanceof XmlSchemaAll) {
             final XmlSchemaChoice newGroupChoice = groupParticleAllToChoice((XmlSchemaAll)complexType.getParticle());
@@ -343,12 +351,17 @@ public class XsdPostProcessor {
             }
         }
 
-        // element contains simple content and particle -> XSD does not support restrictions for text if element contains elements
+        // element contains simple content and particle
+        // -> XSD does not support restrictions for text if element contains elements
+
         // We have to use mixed attribute for root element and remove simple content
         if (adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING_MIXED)) {
-            if (complexType.getParticle() != null && complexType.getContentModel() != null && complexType.getContentModel() instanceof XmlSchemaSimpleContent) {
+            if (complexType.getParticle() != null
+                    && complexType.getContentModel() != null
+                    && complexType.getContentModel() instanceof XmlSchemaSimpleContent) {
                 adapterCtx.getReportWriter().warning(XSD.XSD042);
-                SchemaLogger.printP(LOG_WARN, POSTPROCESSING, defEl, "!Lossy transformation! Remove simple content from element due to existence of complex content. Use mixed attr.");
+                LOG.warn("{}!Lossy transformation! Remove simple content from element due to existence " +
+                        "of complex content. Use mixed attr.", logHeader(POSTPROCESSING, defEl));
 
                 // Copy attributes from simple content
                 XmlSchemaContent content = complexType.getContentModel().getContent();
@@ -363,7 +376,8 @@ public class XsdPostProcessor {
                 //Xd2XsdUtils.removeItem(schema, complexType.getContentModel());
                 complexType.setContentModel(null);
                 complexType.setMixed(true);
-                complexType.setAnnotation(XsdNodeFactory.createAnnotation("Text content has been originally restricted by x-definition", adapterCtx));
+                complexType.setAnnotation(XsdNodeFactory.createAnnotation(
+                        "Text content has been originally restricted by x-definition", adapterCtx));
             }
         }
     }
@@ -410,21 +424,25 @@ public class XsdPostProcessor {
             return null;
         }
 
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle xsd:all to xsd:choice ...");
+        LOG.debug("{}Converting group particle xsd:all to xsd:choice ...", logHeader(TRANSFORMATION));
         adapterCtx.getReportWriter().warning(XSD.XSD043);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node xsd:sequency/choice contains xsd:all node -> converting xsd:all node to xsd:choice!");
+        LOG.warn("{}!Lossy transformation! Node xsd:sequence/choice contains xsd:all node -> " +
+                "converting xsd:all node to xsd:choice!", logHeader(TRANSFORMATION));
 
         final XmlSchemaChoice newGroupChoice = new XmlSchemaChoice();
-        newGroupChoice.setAnnotation(XsdNodeFactory.createAnnotation("Original group particle: all", adapterCtx));
+        newGroupChoice.setAnnotation(XsdNodeFactory.createAnnotation(
+                "Original group particle: all", adapterCtx));
 
         long elementMinOccursSum = 0;
         long elementMaxOccursSum = 0;
 
         // Calculate member occurrences
         if (!unbounded) {
-            final Pair<Long, Long> memberOccurence = Xd2XsdUtils.calculateGroupAllMembersOccurrence(groupParticleAll, adapterCtx);
-            elementMinOccursSum = memberOccurence.getKey();
-            elementMaxOccursSum = memberOccurence.getValue();
+            final Pair<Long, Long> memberOccurrence = Xd2XsdUtils.calculateGroupAllMembersOccurrence(
+                    groupParticleAll,
+                    adapterCtx);
+            elementMinOccursSum = memberOccurrence.getKey();
+            elementMaxOccursSum = memberOccurrence.getValue();
         } else {
             elementMinOccursSum = groupParticleAll.getMinOccurs();
             elementMaxOccursSum = Long.MAX_VALUE;
@@ -445,7 +463,8 @@ public class XsdPostProcessor {
      * @param simpleTypeRestriction     XSD simple-type restriction node
      * @param attr                      XSD attribute node
      */
-    public void simpleTypeRestrictionToAttr(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction, final XmlSchemaAttribute attr) {
+    public void simpleTypeRestrictionToAttr(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction,
+                                            final XmlSchemaAttribute attr) {
         if (simpleTypeRestriction.getFacets().isEmpty()) {
             attr.setSchemaTypeName(simpleTypeRestriction.getBaseTypeName());
             if (attr.getAnnotation() != null) {
@@ -465,7 +484,7 @@ public class XsdPostProcessor {
      * @param schemaChoice          XSD group choice node
      */
     private void copyAllMembersToChoice(final XmlSchemaAll groupParticleAll, final XmlSchemaChoice schemaChoice) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Converting group particle's members of xsd:all to xsd:choice");
+        LOG.debug("{}Converting group particle's members of xsd:all to xsd:choice", logHeader(TRANSFORMATION));
         for (XmlSchemaAllMember member : groupParticleAll.getItems()) {
             allMemberToChoiceMember(member);
             schemaChoice.getItems().add((XmlSchemaChoiceMember) member);
@@ -505,9 +524,11 @@ public class XsdPostProcessor {
         }
         final CXmlSchemaChoice newGroupChoice = new CXmlSchemaChoice(new XmlSchemaChoice());
         newGroupChoice.setTransformDirection(transformDirection);
-        newGroupChoice.xsd().setAnnotation(XsdNodeFactory.createAnnotation("Original group particle: all", adapterCtx));
+        newGroupChoice.xsd().setAnnotation(XsdNodeFactory.createAnnotation(
+                "Original group particle: all", adapterCtx));
         adapterCtx.getReportWriter().warning(XSD.XSD043);
-        SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "!Lossy transformation! Node xsd:sequency/choice contains xsd:all node -> converting xsd:all node to xsd:choice!");
+        LOG.warn("{}!Lossy transformation! Node xsd:sequence/choice contains xsd:all node -> " +
+                "converting xsd:all node to xsd:choice!", logHeader(TRANSFORMATION));
         return newGroupChoice;
     }
 }

@@ -4,13 +4,12 @@ import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.xdef.XDContainer;
 import org.xdef.XDNamedValue;
 import org.xdef.XDValue;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 public class UnionRegexFacetFactory extends AbstractArrayFacetFactory {
@@ -40,13 +39,13 @@ public class UnionRegexFacetFactory extends AbstractArrayFacetFactory {
 
     @Override
     protected void createPatterns(final String parserName, final XDNamedValue[] params) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Creating patterns ...");
+        LOG.debug("{}Creating patterns ...", logHeader(TRANSFORMATION));
         facetPatterns.add(parserParamsToRegex(parserName, params));
     }
 
     @Override
     protected void createPatternFacets(final List<XmlSchemaFacet> facets) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Creating pattern facets ...");
+        LOG.debug("{}Creating pattern facets ...", logHeader(TRANSFORMATION));
 
         if (!facetPatterns.isEmpty()) {
             // Enumeration with list inside

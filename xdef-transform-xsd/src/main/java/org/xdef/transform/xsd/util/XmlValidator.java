@@ -23,7 +23,7 @@ public class XmlValidator {
         this.schemaSource = schemaSource;
     }
 
-    public boolean validate(boolean printEx) {
+    public boolean validate() {
         if (xmlSource == null || schemaSource == null) {
             throw new InternalException("xml == null || schema == null");
         }
@@ -36,16 +36,8 @@ public class XmlValidator {
             Validator validator = schema.newValidator();
             validator.validate(xmlSource);
             return true;
-        } catch (SAXException e) {
-            if (printEx) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
-            if (printEx) {
-                e.printStackTrace();
-            }
+        } catch (SAXException | IOException ex) {
+            throw new RuntimeException("Error occurs while validating XML schema", ex);
         }
-
-        return false;
     }
 }

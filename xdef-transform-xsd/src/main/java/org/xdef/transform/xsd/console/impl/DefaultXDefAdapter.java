@@ -15,8 +15,7 @@ import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SUtils;
 import org.xdef.transform.xsd.console.XDefAdapter;
 import org.xdef.transform.xsd.error.FormattedRuntimeException;
-import org.xdef.transform.xsd.util.SchemaLogger;
-import org.xdef.transform.xsd.util.SchemaLoggerDefs;
+import org.xdef.transform.xsd.error.UnexpectedValidationResultException;
 import org.xdef.transform.xsd.util.XmlValidator;
 import org.xdef.transform.xsd.xd2schema.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
@@ -53,8 +52,6 @@ public class DefaultXDefAdapter implements XDefAdapter {
         LOG.info("Preparing XDef2Xsd transformation ... ");
         StopWatch watch = StopWatch.createStarted();
 
-        SchemaLogger.setLogLevel(config.getVerbose());
-
         XDPool inputXD;
 
         try {
@@ -86,8 +83,6 @@ public class DefaultXDefAdapter implements XDefAdapter {
     public XDefTransformResult transform(XDPool xdPool) {
         LOG.info("Transforming XDPool to XML schema ... ");
         StopWatch watch = StopWatch.createStarted();
-
-        SchemaLogger.setLogLevel(config.getVerbose());
 
         final XDefTransformResult transformResult = new XDefTransformResult();
         final Optional<Pair<String, Path>> outputRootSchema;
@@ -149,10 +144,8 @@ public class DefaultXDefAdapter implements XDefAdapter {
         if (config.getFeatures() != null) {
             features.addAll(config.getFeatures());
         }
+
         adapter.setFeatures(features);
-        if (config.getVerbose() >= SchemaLoggerDefs.LOG_INFO) {
-            System.out.println("Enabled features: " + features);
-        }
         return adapter;
     }
 
@@ -229,8 +222,20 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
     private void validateXmlAgainstXsd(final File xmlDataFile, final StreamSource outputRootSchema, boolean expectedResult) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlDataFile), outputRootSchema);
-        if (expectedResult != validator.validate(config.getVerbose() > SchemaLoggerDefs.LOG_NONE)) {
-            LOG.info("Xml validation {} failed, fileName: '{}'", expectedResult ? "positive" : "negative", xmlDataFile);
+        LOG.info("Xml validation {} failed, fileName: '{}'", expectedResult ? "positive" : "negative", xmlDataFile);
+
+        try {
+            validator.validate();
+        } catch (Exception ex) {
+            if (expectedResult) {
+                throw new UnexpectedValidationResultException(ex, "ExpectedResult={}, currResult={}", expectedResult, false);
+            }
+
+            throw ex;
+        }
+
+        if (!expectedResult) {
+            throw new UnexpectedValidationResultException("ExpectedResult={}, currResult={}", expectedResult, true);
         }
     }
 

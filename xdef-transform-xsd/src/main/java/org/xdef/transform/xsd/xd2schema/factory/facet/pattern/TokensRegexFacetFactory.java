@@ -2,13 +2,12 @@ package org.xdef.transform.xsd.xd2schema.factory.facet.pattern;
 
 import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.xdef.XDNamedValue;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.factory.facet.pattern.types.EnumerationRegexFactory;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 public class TokensRegexFacetFactory extends AbstractArrayFacetFactory {
@@ -26,7 +25,7 @@ public class TokensRegexFacetFactory extends AbstractArrayFacetFactory {
 
     @Override
     protected void createPatternFacets(final List<XmlSchemaFacet> facets) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Creating pattern facets ...");
+        LOG.debug("{}Creating pattern facets ...", logHeader(TRANSFORMATION));
         facets.add(super.pattern(regex));
     }
 

@@ -1,5 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.adapter;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
@@ -11,6 +13,8 @@ import java.util.Set;
  * Base class for all adapters transforming x-definition to XSD document
  */
 public abstract class AbstractXd2XsdAdapter {
+
+    protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     /**
      * Adapter context

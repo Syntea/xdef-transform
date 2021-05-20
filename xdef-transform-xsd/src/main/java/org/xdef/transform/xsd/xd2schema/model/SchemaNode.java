@@ -8,19 +8,20 @@ import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.utils.XmlSchemaNamed;
 import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
 import javax.xml.namespace.QName;
 import java.util.LinkedList;
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_REFERENCE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
  * Couples x-definition nodes with XSD nodes. Saves binding between element references.
@@ -38,6 +39,8 @@ import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_REFEREN
  *      group ({@link XmlSchemaGroup})
  */
 public class SchemaNode {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SchemaNode.class);
 
     /**
      * X-definition position of node
@@ -266,7 +269,8 @@ public class SchemaNode {
      * @param ref
      */
     public static void createBinding(final SchemaNode ptr, final SchemaNode ref) {
-        SchemaLogger.printG(LOG_INFO, XSD_REFERENCE, "Creating binding between nodes. From=" + ptr.getXdPosition() + ", To=" + ref.getXdPosition());
+        LOG.info("{}Creating binding between nodes. from='{}', to='{}'",
+                logHeader(XSD_REFERENCE), ptr.getXdPosition(), ref.getXdPosition());
 
         ptr.setReference(ref);
         ref.addPointer(ptr);

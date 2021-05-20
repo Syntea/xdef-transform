@@ -3,13 +3,14 @@ package org.xdef.transform.xsd.xd2schema.util;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.constants.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.XDNamedValue;
 import org.xdef.XDParser;
 import org.xdef.XDValue;
 import org.xdef.impl.XData;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.IXsdFacetFactory;
@@ -37,9 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_CDATA;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_ISODATE;
@@ -52,6 +51,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_P
  * Definition of transformation x-definition data types to XSD data types
  */
 public class Xd2XsdParserMapping {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Xd2XsdParserMapping.class);
 
     /**
      * Transformation map of x-definition data types to XSD QNames using XSD default facet factory
@@ -225,7 +226,7 @@ public class Xd2XsdParserMapping {
      *          if parameters are using unknown parser, then exception will be raised
      */
     private static QName determineListBaseType(final XDNamedValue[] parameters, final XsdAdapterCtx adapterCtx) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "Determination of list QName ...");
+        LOG.debug("{}Determination of list QName ...", logHeader(TRANSFORMATION));
 
         String parserName = null;
         boolean allParsersSame = true;
@@ -239,7 +240,7 @@ public class Xd2XsdParserMapping {
                     parserName = ((XDParser) xVal).parserName();
                 } else {
                     if (allParsersSame == true && !parserName.equals(((XDParser) xVal).parserName())) {
-                        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, "List/Union - parsers are not same!");
+                        LOG.debug("{}List/Union - parsers are not same!", logHeader(TRANSFORMATION));
                         allParsersSame = false;
                     }
                 }
@@ -247,14 +248,14 @@ public class Xd2XsdParserMapping {
         }
 
         if (parserName == null || allParsersSame == false) {
-            SchemaLogger.printP(LOG_ERROR, TRANSFORMATION, "Expected parser type or multiple parsers used!");
+            LOG.error("{}Expected parser type or multiple parsers used!", logHeader(TRANSFORMATION));
             throw new SRuntimeException(XSD.XSD006);
         }
 
         QName res = findDefaultParserQName(parserName, adapterCtx);
         if (res == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD026, parserName);
-            SchemaLogger.printP(LOG_WARN, TRANSFORMATION, "Unsupported simple content parser! Parser=" + parserName);
+            LOG.warn("{}Unsupported simple content parser! parserName='{}'", logHeader(TRANSFORMATION), parserName);
             res = Constants.XSD_STRING;
         }
 

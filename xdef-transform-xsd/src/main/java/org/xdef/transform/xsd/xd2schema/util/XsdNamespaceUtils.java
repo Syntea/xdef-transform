@@ -5,26 +5,28 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.XDConstants;
 import org.xdef.impl.XDefinition;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import java.util.Map;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_UTILS;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_UTILS;
 
 /**
  * Utils related to working with namespaces
  */
 public class XsdNamespaceUtils {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XsdNamespaceUtils.class);
 
     /**
      * Add new namespace info to namespace context
@@ -36,7 +38,7 @@ public class XsdNamespaceUtils {
      */
     public static void addNamespaceToCtx(final NamespaceMap namespaceMap, final String nsPrefix, final String nsUri, final String systemId, final AlgPhase phase) {
         namespaceMap.add(nsPrefix, nsUri);
-        SchemaLogger.print(LOG_DEBUG, phase, systemId, "Add namespace. Prefix=" + nsPrefix + ", Uri=" + nsUri);
+        LOG.debug("{}Add namespace. nsPrefix='{}', nsUri='{}'", logHeader(phase, systemId), nsPrefix, nsUri);
     }
 
     /**
@@ -192,12 +194,13 @@ public class XsdNamespaceUtils {
         if (xDef._rootSelection != null) {
             for (Map.Entry<String, XNode> root : xDef._rootSelection.entrySet()) {
                 final String rootName = root.getKey();
-                String tmpNs = getNamespacePrefix(rootName);
+                String tmpNsPrefix = getNamespacePrefix(rootName);
                 if (targetNamespacePrefix == null) {
-                    targetNamespacePrefix = tmpNs;
-                } else if (tmpNs != null && !targetNamespacePrefix.equals(tmpNs)) {
-                    adapterCtx.getReportWriter().error(XSD.XSD001, targetNamespacePrefix, tmpNs);
-                    SchemaLogger.printG(LOG_ERROR, XSD_UTILS, xDef, "Expected different namespace prefix. Expected=" + targetNamespacePrefix + ", Actual=" + tmpNs);
+                    targetNamespacePrefix = tmpNsPrefix;
+                } else if (tmpNsPrefix != null && !targetNamespacePrefix.equals(tmpNsPrefix)) {
+                    adapterCtx.getReportWriter().error(XSD.XSD001, targetNamespacePrefix, tmpNsPrefix);
+                    LOG.error("{}Expected different namespace prefix. expectedTargetNsPrefix='{}', currTargetNsPrefix='{}'",
+                            logHeader(XSD_UTILS, xDef), targetNamespacePrefix, tmpNsPrefix);
                     targetNamespaceError = true;
                     break;
                 }
@@ -216,7 +219,8 @@ public class XsdNamespaceUtils {
 
         if (targetNamespacePrefix != null && targetNamespaceUri == null) {
             adapterCtx.getReportWriter().error(XSD.XSD046, targetNamespacePrefix);
-            SchemaLogger.printG(LOG_ERROR, XSD_UTILS, xDef, "Target namespace URI has been not found for prefix. Prefix=" + targetNamespacePrefix);
+            LOG.error("{}Target namespace URI has been not found for prefix. targetNsPrefix='{}'",
+                    logHeader(XSD_UTILS, xDef), targetNamespacePrefix);
             targetNamespaceError = true;
         }
 

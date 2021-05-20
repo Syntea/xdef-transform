@@ -11,6 +11,8 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespacePrefixList;
 import org.apache.ws.commons.schema.utils.NodeNamespaceContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.adapter.AbstractXsd2XdAdapter;
@@ -20,7 +22,6 @@ import org.xdef.transform.xsd.schema2xd.factory.XdNodeFactory;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.xml.KXmlUtils;
 
 import javax.xml.namespace.QName;
@@ -31,10 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdLoggerDefs.XD_ADAPTER;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
@@ -43,6 +42,8 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
  * Transforms XSD schema to x-definition or x-definiton pool
  */
 public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDefAdapter<XmlSchema> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(Xsd2XDefAdapter.class);
 
     /**
      * X-definition XML node factory
@@ -53,7 +54,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
     public String createXDefinition(final XmlSchema rootSchema, final String xDefName) {
         if (rootSchema == null) {
             reportWriter.error(XSD.XSD002);
-            SchemaLogger.print(LOG_ERROR, INITIALIZATION, xDefName, "Input XSD document is not set!");
+            LOG.error("{}Input XSD document is not set!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -67,7 +68,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
 
         if (schemas == null || schemas.length < 1) {
             reportWriter.error(XSD.XSD200);
-            SchemaLogger.print(LOG_ERROR, INITIALIZATION, xDefName, "Input XSD document collection is empty!");
+            LOG.error("{}Input XSD document collection is empty!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -80,7 +81,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
 
         if (schemasToBeProcessed.isEmpty()) {
             reportWriter.error(XSD.XSD201);
-            SchemaLogger.print(LOG_ERROR, INITIALIZATION, xDefName, "No XSD document to be processed found!");
+            LOG.error("{}No XSD document to be processed found!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -89,7 +90,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
         Element xdRootElem;
 
         if (schemasToBeProcessed.size() > 1) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, XD_ADAPTER, "Creating x-definition collection ...");
+            LOG.info("{}Creating x-definition collection ...", logHeader(TRANSFORMATION, XD_ADAPTER));
             xdRootElem = elementFactory.createPool();
 
             // First transform root XSD document
@@ -104,7 +105,7 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
                 xdRootElem.appendChild(createXDef(schemaName, schema, true));
             }
         } else {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, XD_ADAPTER, "Creating single x-definition ...");
+            LOG.info("{}Creating single x-definition ...", logHeader(TRANSFORMATION, XD_ADAPTER));
             xdRootElem = createXDef(xDefName, rootSchema, false);
         }
 
@@ -121,8 +122,13 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
      * @param xDefName          x-definition name
      * @param schema            input XSD document to be transformed
      */
-    private void transformXsdTree(final Xsd2XdTreeAdapter treeAdapter, final Element xdDefRootElem, final String xDefName, final XmlSchema schema) {
-        SchemaLogger.print(LOG_INFO, TRANSFORMATION, xDefName, "*** Transformation of XSD tree ***");
+    private void transformXsdTree(final Xsd2XdTreeAdapter treeAdapter,
+                                  final Element xdDefRootElem,
+                                  final String xDefName,
+                                  final XmlSchema schema) {
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Transformation of XSD tree", logHeader(TRANSFORMATION, xDefName));
+        LOG.info(HEADER_LINE);
 
         final Map<QName, XmlSchemaType> schemaTypeMap = schema.getSchemaTypes();
         if (schemaTypeMap != null && !schemaTypeMap.isEmpty()) {
@@ -182,12 +188,13 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
         final String refSchemaFileName = XdNameUtils.getSchemaName(schemaLocation);
         if (refSchemaSavedName == null) {
             schemaNames.put(schema, refSchemaFileName);
-            SchemaLogger.print(LOG_INFO, PREPROCESSING, XD_ADAPTER, "Add schema name. Name=" + refSchemaFileName);
+            LOG.info("{}Add schema name. refSchemaSavedName='{}'", logHeader(PREPROCESSING, XD_ADAPTER), refSchemaFileName);
         } else if (!refSchemaFileName.equals(refSchemaSavedName)) {
             reportWriter.warning(XSD.XSD210, refSchemaSavedName, refSchemaFileName);
-            SchemaLogger.print(LOG_WARN, PREPROCESSING, XD_ADAPTER, "Schema already exists, but with different name! Original=" + refSchemaSavedName + ", Current=" + refSchemaFileName);
+            LOG.warn("{}Schema already exists, but with different name! originalRefSchemaName='{}', currRefSchemaName='{}'",
+                    logHeader(PREPROCESSING, XD_ADAPTER), refSchemaSavedName, refSchemaFileName);
         } else {
-            SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Schema already exists. Name=" + refSchemaFileName);
+            LOG.debug("{}Schema already exists. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER), refSchemaFileName);
         }
     }
 
@@ -199,9 +206,9 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
      * @return
      */
     private ArrayList<XmlSchema> initializeSchemas(final XmlSchema[] schemas, final XmlSchema rootSchema, final String xDefName) {
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "Schemas pre-processing");
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Schemas pre-processing", logHeader(XD_ADAPTER));
+        LOG.info(HEADER_LINE);
 
         final Map<XmlSchema, String> schemaNames = initializeSchemaNames(schemas, rootSchema, xDefName);
         final Map<String, Pair<String, XmlSchema>> xmlSchemaContent = new HashMap<String, Pair<String, XmlSchema>>();
@@ -225,29 +232,37 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
                 if (contentInfo == null) {
                     xmlSchemaContent.put(xsdStr, Pair.of(schemaName, schema));
                     schemasToBeProcessed.add(schema);
-                    SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Add schema to be processed. Name=" + schemaName);
+                    LOG.debug("{}Add schema to be processed. schemaName='{}'",
+                            logHeader(PREPROCESSING, XD_ADAPTER), schemaName);
                 } else {
                     if (rootSchema.equals(schema)) {
                         schemasToBeProcessed.remove(contentInfo.getValue());
-                        SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Remove schema from processing. Name=" + contentInfo.getKey());
+                        LOG.debug("{}Remove schema from processing. schemaName='{}'",
+                                logHeader(PREPROCESSING, XD_ADAPTER), contentInfo.getKey());
                         xmlSchemaContent.put(xsdStr, Pair.of(schemaName, schema));
                         schemasToBeProcessed.add(schema);
-                        SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Add schema to be processed. Name=" + schemaName);
+                        LOG.debug("{}Add schema to be processed. schemaName='{}'",
+                                logHeader(PREPROCESSING, XD_ADAPTER), schemaName);
                     } else {
                         xmlSchemaContent.put(xsdStr, contentInfo);
-                        SchemaLogger.print(LOG_DEBUG, PREPROCESSING, XD_ADAPTER, "Schema is already defined. Name=" + schemaName + ", OriginalName=" + contentInfo.getKey());
+                        LOG.debug("{}Schema is already defined. schemaName='{}', originalName='{}'",
+                                logHeader(PREPROCESSING, XD_ADAPTER), schemaName, contentInfo.getKey());
                     }
                 }
 
                 adapterCtx.addXmlSchemaName(schema, schemaName);
             } catch (UnsupportedEncodingException e) {
                 reportWriter.error(XSD.XSD202, schemaName);
-                SchemaLogger.print(LOG_ERROR, PREPROCESSING, XD_ADAPTER, "Unsuccessful loading of XSD document. Name=" + schemaName);
+                LOG.error("{}Unsuccessful loading of XSD document. schemaName='{}'",
+                        logHeader(PREPROCESSING, XD_ADAPTER), schemaName);
             }
         }
 
-        SchemaLogger.print(LOG_INFO, PREPROCESSING, XD_ADAPTER, "Schemas to be processed." +
-                " Count=" + schemasToBeProcessed.size() + ", InputCount=" + (rootSchema.getParent() != null ? schemas.length - 1 : schemas.length));
+        LOG.info("{}Schemas to be processed. count={}, inputCount={}",
+                logHeader(PREPROCESSING, XD_ADAPTER),
+                schemasToBeProcessed.size(),
+                rootSchema.getParent() != null ? schemas.length - 1 : schemas.length
+        );
 
         return schemasToBeProcessed;
     }
@@ -257,9 +272,9 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
      * @param schemaToBeProcessed   XSD documents to be initialized
      */
     private void initializeNamespaces(ArrayList<XmlSchema> schemaToBeProcessed) {
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "Namespace initialization");
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Namespace initialization", logHeader(XD_ADAPTER));
+        LOG.info(HEADER_LINE);
 
         for (XmlSchema schema : schemaToBeProcessed) {
             final String xDefName = adapterCtx.findXmlSchemaName(schema);
@@ -323,9 +338,9 @@ public class Xsd2XDefAdapter extends AbstractXsd2XdAdapter implements Schema2XDe
      * @return root node of x-definition
      */
     private Element createXDef(final String schemaName, final XmlSchema schema, final boolean pool) {
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "Creating x-definition. Name=" + schemaName);
-        SchemaLogger.printG(LOG_INFO, XD_ADAPTER, "====================");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Creating x-definition. name='{}'", logHeader(XD_ADAPTER), schemaName);
+        LOG.info(HEADER_LINE);
 
         final Xsd2XdTreeAdapter treeAdapter = new Xsd2XdTreeAdapter(schemaName, schema, elementFactory, adapterCtx);
         final String rootElements = treeAdapter.loadXsdRootElementNames();

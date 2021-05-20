@@ -2,11 +2,12 @@ package org.xdef.transform.xsd.xd2schema.factory;
 
 import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
@@ -15,16 +16,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_NAME_FACTORY;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_NAME_FACTORY;
 
 /**
  * Creates names of specific types of nodes.
  * Internally stores top-level nodes names.
  */
 public class XsdNameFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XsdNameFactory.class);
 
     final private XsdAdapterCtx adapterCtx;
 
@@ -81,7 +83,7 @@ public class XsdNameFactory {
             return findTopLevelNameByPath(xData);
         }
 
-        SchemaLogger.printG(LOG_DEBUG, XSD_NAME_FACTORY, xData, "Finding top level simple-type name ...");
+        LOG.debug("{}Finding top level simple-type name ...", logHeader(XSD_NAME_FACTORY, xData));
 
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xData.getXDPosition());
         final Map<String, List<XMNode>> mapBaseName = getOrCreateTopLevelBaseNameMap(systemId);
@@ -101,7 +103,7 @@ public class XsdNameFactory {
      */
     private String findTopLevelNameByPath(final XNode xNode) {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
-        SchemaLogger.printG(LOG_DEBUG, XSD_NAME_FACTORY, xNode, "Finding top level " + nodeType + "-type name ...");
+        LOG.debug("{}Finding top level " + nodeType + "-type name ...", logHeader(XSD_NAME_FACTORY, xNode));
 
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xNode.getXDPosition());
         final Map<String, String> mapName = getOrCreateTopLevelNameMap(systemId);
@@ -152,7 +154,7 @@ public class XsdNameFactory {
         }
 
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
-        SchemaLogger.printG(LOG_DEBUG, XSD_NAME_FACTORY, xNode, "Generating top level " + nodeType + "-type name ...");
+        LOG.debug("{}Generating top level " + nodeType + "-type name ...", logHeader(XSD_NAME_FACTORY, xNode));
 
         final List<XMNode> nodeList = addNodeWithBaseName(xNode, baseName);
         String realName = baseName;
@@ -164,7 +166,8 @@ public class XsdNameFactory {
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xNode.getXDPosition());
         final Map<String, String> mapName = getOrCreateTopLevelNameMap(systemId);
         mapName.put(xNode.getXDPosition(), realName);
-        SchemaLogger.printG(LOG_INFO, XSD_NAME_FACTORY, xNode, "Add top-level " + nodeType + "-type name. RealName=" + realName + ", SystemId=" + systemId);
+        LOG.info("{}Add top-level " + nodeType + "-type name. realName='{}', systemId='{}'",
+                logHeader(XSD_NAME_FACTORY, xNode), realName, systemId);
         return realName;
     }
 
@@ -178,7 +181,7 @@ public class XsdNameFactory {
             return;
         }
 
-        SchemaLogger.printG(LOG_DEBUG, XSD_NAME_FACTORY, xData, "Saving top level simple-type name ...");
+        LOG.debug("{}Saving top level simple-type name ...", logHeader(XSD_NAME_FACTORY, xData));
         addNodeWithBaseName(xData, baseName);
     }
 
@@ -241,7 +244,8 @@ public class XsdNameFactory {
         final List<XMNode> nodeList = getOrCreateListNodesInBaseNameMap(mapBaseName, nodeBaseName);
 
         nodeList.add(xNode);
-        SchemaLogger.printG(LOG_INFO, XSD_NAME_FACTORY, xNode, "Add top-level " + nodeType + "-type base name. Name=" + nodeBaseName + ", SystemId=" + systemId);
+        LOG.info("{}Add top-level " + nodeType + "-type base name. baseName='{}', systemId='{}'",
+                logHeader(XSD_NAME_FACTORY, xNode), nodeBaseName, systemId);
         return nodeList;
     }
 

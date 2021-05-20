@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 public abstract class TesterXdSchema extends XDTester {
 
-    static protected boolean PRINT_OUTPUT_TO_CONSOLE = false;
+    static protected boolean LOG_OUTPUT_ENABLED = false;
     static protected boolean WRITE_OUTPUT_INTO_FILE = true;
     static protected boolean VALIDATE_XML_AGAINST_REF_FILE = true;
     static protected boolean PRINT_XML_VALIDATION_ERRORS = true;

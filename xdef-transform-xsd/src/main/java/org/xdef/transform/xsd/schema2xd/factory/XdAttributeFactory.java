@@ -1,13 +1,19 @@
 package org.xdef.transform.xsd.schema2xd.factory;
 
-import org.apache.ws.commons.schema.*;
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaForm;
+import org.apache.ws.commons.schema.XmlSchemaParticle;
+import org.apache.ws.commons.schema.XmlSchemaSimpleTypeRestriction;
+import org.apache.ws.commons.schema.XmlSchemaUse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import javax.xml.namespace.QName;
 
@@ -16,14 +22,15 @@ import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_A
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_NAMESPACE_URI;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_EXPLICIT_OCCURRENCE;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_MIXED_REQUIRED;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
  * Creates x-definition node's attributes
  */
 public class XdAttributeFactory {
+
+    private static final Logger LOG = LoggerFactory.getLogger(XdAttributeFactory.class);
 
     /**
      * X-definition adapter context
@@ -47,7 +54,7 @@ public class XdAttributeFactory {
      * @param attrValue     attribute value
      */
     public static void addAttr(final Element el, final String attrName, final String attrValue) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, el, "Add attribute. Name=" + attrName + ", Value=" + attrValue);
+        LOG.debug("{}Add attribute. name='{}', value='{}'", logHeader(TRANSFORMATION, el), attrName, attrValue);
         el.setAttribute(attrName, attrValue);
     }
 
@@ -58,7 +65,7 @@ public class XdAttributeFactory {
      * @param xDefName          XSD document name
      */
     public void addAttr(final Element el, final XmlSchemaAttribute xsdAttr, final String xDefName) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, el, "Add attribute. QName=" + xsdAttr.getQName());
+        LOG.debug("Add attribute. qName='{}'", logHeader(TRANSFORMATION, el), xsdAttr.getQName());
 
         final String attribute = createAttribute(xsdAttr);
 
@@ -69,7 +76,7 @@ public class XdAttributeFactory {
                 el.setAttributeNS(xsdQName.getNamespaceURI(), qualifiedName, attribute);
             } else {
                 adapterCtx.getReportWriter().warning(XSD.XSD213);
-                SchemaLogger.printP(LOG_WARN, TRANSFORMATION, xsdAttr, "Unknown attribute reference QName!");
+                LOG.warn("{}Unknown attribute reference QName!", logHeader(TRANSFORMATION, xsdAttr));
             }
         } else {
             final QName xsdQName = xsdAttr.getQName();
@@ -109,7 +116,8 @@ public class XdAttributeFactory {
      * @param value     attribute value
      */
     private static void addAttrXDef(final Element el, final String qName, final String value) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, el, "Add x-definition attribute. QName=" + qName + ", Value=" + value);
+        LOG.debug("{}Add x-definition attribute. qName='{}', value='{}'",
+                logHeader(TRANSFORMATION, el), qName, value);
         final String localName = XdNameUtils.getLocalName(qName);
         final Attr attr = el.getAttributeNodeNS(XD_NAMESPACE_URI, localName);
         if (attr != null) {
@@ -185,7 +193,7 @@ public class XdAttributeFactory {
      * @return x-definition attribute
      */
     private String createAttribute(final XmlSchemaAttribute xsdAttr) {
-        SchemaLogger.printP(LOG_DEBUG, TRANSFORMATION, xsdAttr, "Creating attribute.");
+        LOG.debug("{}Creating attribute.", logHeader(TRANSFORMATION, xsdAttr));
 
         final StringBuilder valueBuilder = new StringBuilder();
         if (XmlSchemaUse.REQUIRED.equals(xsdAttr.getUse())) {

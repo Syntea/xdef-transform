@@ -11,7 +11,6 @@ import org.xdef.model.XMElement;
 import org.xdef.msg.XDEF;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.adapter.AbstractXd2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.adapter.Xd2XsdPostProcessingAdapter;
 import org.xdef.transform.xsd.xd2schema.adapter.Xd2XsdReferenceAdapter;
@@ -24,10 +23,11 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import java.util.Set;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_XDEF_ADAPTER;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_ADAPTER;
 
 /**
  * Transformation of given x-definition or x-definition pool to collection of XSD documents
@@ -57,10 +57,10 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
         if (xDef == null) {
             throw new SRuntimeException(XDEF.XDEF705);
         }
-        
-        SchemaLogger.printG(LOG_INFO, XSD_XDEF_ADAPTER, "====================");
-        SchemaLogger.printG(LOG_INFO, XSD_XDEF_ADAPTER, "Transforming x-definition. Name=" + xDef.getName());
-        SchemaLogger.printG(LOG_INFO, XSD_XDEF_ADAPTER, "====================");
+
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Transforming x-definition. xdefName='{}'", logHeader(XSD_XDEF_ADAPTER), xDef.getName());
+        LOG.info(HEADER_LINE);
 
         boolean poolPostProcessing = true;
 
@@ -98,7 +98,9 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
      * @param treeAdapter   transformation algorithm
      */
     private void transformXdef(final Xd2XsdTreeAdapter treeAdapter) {
-        SchemaLogger.printP(LOG_INFO, TRANSFORMATION, xDefinition, "*** Transformation of x-definition tree ***");
+        LOG.info(HEADER_LINE);
+        LOG.info("{}Transformation of x-definition tree", logHeader(TRANSFORMATION, xDefinition));
+        LOG.info(HEADER_LINE);
 
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(xDefinition.getName());
 
@@ -106,7 +108,8 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
             for (XMElement elem : xDefinition.getModels()) {
                 if (rootNodeNames.contains(elem.getName())) {
                     treeAdapter.convertTree(elem);
-                    SchemaLogger.printP(LOG_INFO, TRANSFORMATION, elem, "Adding root element to schema. Element=" + elem.getName());
+                    LOG.info("{}Adding root element to schema. elementName='{}'",
+                            logHeader(TRANSFORMATION, elem), elem.getName());
                 }
             }
         }
@@ -118,8 +121,11 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
     private XmlSchema createXsdSchema() {
         Pair<String, String> targetNamespace = XsdNamespaceUtils.getSchemaTargetNamespace(xDefinition, adapterCtx);
 
-        SchemaLogger.printP(LOG_INFO, INITIALIZATION, xDefinition, "Creating XSD document. " +
-                "systemName=" + xDefinition.getName() + ", targetNamespacePrefix=" + targetNamespace.getKey() + ", targetNamespaceUri=" + targetNamespace.getValue());
+        LOG.info("{}Creating XSD document. systemName='{}', targetNsPrefix='{}', targetNsUri='{}'",
+                logHeader(INITIALIZATION, xDefinition),
+                xDefinition.getName(),
+                targetNamespace.getKey(),
+                targetNamespace.getValue());
 
         XsdSchemaFactory schemaFactory = new XsdSchemaFactory(adapterCtx);
         return schemaFactory.createXsdSchema(xDefinition, targetNamespace);

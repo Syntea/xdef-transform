@@ -17,12 +17,11 @@ import org.xdef.XDContainer;
 import org.xdef.XDNamedValue;
 import org.xdef.XDValue;
 import org.xdef.impl.code.DefLong;
-import org.xdef.transform.xsd.util.SchemaLogger;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.factory.facet.IXsdFacetFactory.ValueType.DECIMAL_FLOATING;
 import static org.xdef.transform.xsd.xd2schema.factory.facet.IXsdFacetFactory.ValueType.DECIMAL_INTEGER;
@@ -34,7 +33,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMinInclusiveFacet minInclusive(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet minInclusive");
+        LOG.debug("{}Add facet minInclusive", logHeader(TRANSFORMATION));
         XmlSchemaMinInclusiveFacet facet = new XmlSchemaMinInclusiveFacet();
         setValue(facet, param.getValue());
         return facet;
@@ -42,7 +41,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMaxInclusiveFacet maxInclusive(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet maxInclusive");
+        LOG.debug("{}Add facet maxInclusive", logHeader(TRANSFORMATION));
         XmlSchemaMaxInclusiveFacet facet = new XmlSchemaMaxInclusiveFacet();
         setValue(facet, param.getValue());
         return facet;
@@ -50,7 +49,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMinExclusiveFacet minExclusive(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet minExclusive");
+        LOG.debug("{}Add facet minExclusive", logHeader(TRANSFORMATION));
         XmlSchemaMinExclusiveFacet facet = new XmlSchemaMinExclusiveFacet();
         setValue(facet, param.getValue());
         return facet;
@@ -58,7 +57,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMaxExclusiveFacet maxExclusive(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet maxExclusive");
+        LOG.debug("{}Add facet maxExclusive", logHeader(TRANSFORMATION));
         XmlSchemaMaxExclusiveFacet facet = new XmlSchemaMaxExclusiveFacet();
         setValue(facet, param.getValue());
         return facet;
@@ -66,7 +65,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMaxLengthFacet maxLength(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet maxLength");
+        LOG.debug("{}Add facet maxLength", logHeader(TRANSFORMATION));
         XmlSchemaMaxLengthFacet facet = new XmlSchemaMaxLengthFacet();
         facet.setValue(param.getValue().intValue());
         return facet;
@@ -74,7 +73,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaMinLengthFacet minLength(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet minLength");
+        LOG.debug("{}Add facet minLength", logHeader(TRANSFORMATION));
         XmlSchemaMinLengthFacet facet = new XmlSchemaMinLengthFacet();
         facet.setValue(param.getValue().intValue());
         return facet;
@@ -82,7 +81,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaLengthFacet length(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet length");
+        LOG.debug("{}Add facet length", logHeader(TRANSFORMATION));
         XmlSchemaLengthFacet facet = new XmlSchemaLengthFacet();
         facet.setValue(param.getValue().intValue());
         return facet;
@@ -90,7 +89,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaWhiteSpaceFacet whitespace(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet whitespace");
+        LOG.debug("{}Add facet whitespace", logHeader(TRANSFORMATION));
         XmlSchemaWhiteSpaceFacet facet = new XmlSchemaWhiteSpaceFacet();
         facet.setValue(param.getValue().stringValue());
         return facet;
@@ -98,7 +97,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public List<XmlSchemaPatternFacet> pattern(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet pattern");
+        LOG.debug("{}Add facet pattern", logHeader(TRANSFORMATION));
 
         List<XmlSchemaPatternFacet> facets = new ArrayList<XmlSchemaPatternFacet>();
         String[] patterns = param.getValue().stringValue().split("\n");
@@ -111,7 +110,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public List<XmlSchemaEnumerationFacet> enumeration(XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet enumeration");
+        LOG.debug("{}Add facet enumeration", logHeader(TRANSFORMATION));
 
         List<XmlSchemaEnumerationFacet> facets = new ArrayList<XmlSchemaEnumerationFacet>();
         if (param.getValue().getItemId() == XDValue.XD_CONTAINER) {
@@ -128,7 +127,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaFractionDigitsFacet fractionDigits(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet fractionDigits");
+        LOG.debug("{}Add facet fractionDigits", logHeader(TRANSFORMATION));
         XmlSchemaFractionDigitsFacet facet = new XmlSchemaFractionDigitsFacet();
         facet.setValue(param.getValue().intValue());
         return facet;
@@ -136,7 +135,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public XmlSchemaTotalDigitsFacet totalDigits(final XDNamedValue param) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet totalDigits");
+        LOG.debug("{}Add facet totalDigits", logHeader(TRANSFORMATION));
         XmlSchemaTotalDigitsFacet facet = new XmlSchemaTotalDigitsFacet();
         facet.setValue(param.getValue().intValue());
         return facet;

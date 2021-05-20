@@ -2,14 +2,13 @@ package org.xdef.transform.xsd.xd2schema.factory.facet.pattern.types;
 
 import org.xdef.XDNamedValue;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
+import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.util.RangeRegexGenerator;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_ERROR;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_EXCLUSIVE;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_INCLUSIVE;
@@ -52,10 +51,12 @@ public class IntegerRegexFactory extends AbstractRegexFactory {
             pattern = Xd2XsdUtils.regexCollectionToSingle(regex);
         } catch (NumberFormatException ex) {
             adapterCtx.getReportWriter().error(XSD.XSD045, ex.getMessage());
-            SchemaLogger.print(LOG_ERROR, TRANSFORMATION, this.getClass().getSimpleName(),"Exception occurs while converting range to regex. Error=" + ex.getMessage());
+            LOG.error(StringFormatter.format("{}Exception occurs while converting range to regex.",
+                    logHeader(TRANSFORMATION)),
+                    ex);
         }
 
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Pattern created=\"" + pattern + "\"");
+        LOG.debug("{}Pattern created. patternValue='{}'", logHeader(TRANSFORMATION), pattern);
         return pattern;
     }
 }

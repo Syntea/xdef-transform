@@ -3,10 +3,11 @@ package org.xdef.transform.xsd.xd2schema.model;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
@@ -17,10 +18,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_INFO;
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_WARN;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_KEY_AND_REF;
+import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_KEY_AND_REF;
 
 /**
  * Model containing information gathered from x-definition uniqueSet.
@@ -29,6 +29,8 @@ import static org.xdef.transform.xsd.xd2schema.util.Xd2XsdLoggerDefs.XSD_KEY_AND
  * Stores position of ID and REF attributes using uniqueSet.
  */
 public class UniqueConstraint {
+
+    private static final Logger LOG = LoggerFactory.getLogger(UniqueConstraint.class);
 
     public enum Type {
         UNK,
@@ -118,7 +120,8 @@ public class UniqueConstraint {
         if (qName != null) {
             addVar(varName, qName);
         } else {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, XSD_KEY_AND_REF, "Unsupported variable of unique set. Unique=" + getPath() + ", VarName=" + varName);
+            LOG.info("{}Unsupported variable of unique set. uniquePath='{}', variableName='{}'",
+                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), varName);
         }
     }
 
@@ -132,7 +135,8 @@ public class UniqueConstraint {
             return;
         }
 
-        SchemaLogger.print(LOG_INFO, TRANSFORMATION, XSD_KEY_AND_REF, "Add variable to unique set. Unique=" + getPath() + ", VarName=" + name + ", QName=" + qName);
+        LOG.info("{}Add variable to unique set. uniquePath='{}', variableName='{}', variableQName='{}'",
+                logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), name, qName);
         variables.put(name, qName);
         if (!keys.containsKey(name)) {
             keys.put(name, new HashMap<String, List<Pair<String, XmlSchemaAttribute>>>());
@@ -156,12 +160,14 @@ public class UniqueConstraint {
         final String xPath = Xd2XsdUtils.xPathWithoutAttr(varPath);
         if (!variables.containsKey(varName)) {
             reportWriter.warning(XSD.XSD034, getPath(), varName);
-            SchemaLogger.print(LOG_WARN, TRANSFORMATION, XSD_KEY_AND_REF, "Unique set does not contain variable with given name. Unique=" + getPath() + ", VarName=" + varName);
+            LOG.warn("{}Unique set does not contain variable with given name. uniquePath='{}', variableName='{}'",
+                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), varName);
             return;
         }
 
         if (Type.ID.equals(type)) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, XSD_KEY_AND_REF, "Add key to unique set. Unique=" + getPath() + ", Name=" + xsdAttr.getName() + ", Path=" + xPath);
+            LOG.info("{}Add key to unique set. uniquePath='{}', keyName='{}', xPath='{}'",
+                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), xsdAttr.getName(), xPath);
             final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableKeys = keys.get(varName);
             List<Pair<String, XmlSchemaAttribute>> keyList = variableKeys.get(xPath);
             if (keyList == null) {
@@ -171,7 +177,8 @@ public class UniqueConstraint {
 
             keyList.add(Pair.of(xsdAttr.getName(), xsdAttr));
         } else if (Type.IDREF.equals(type) || Type.CHKID.equals(type)) {
-            SchemaLogger.print(LOG_INFO, TRANSFORMATION, XSD_KEY_AND_REF, "Add ref to unique set. Unique=" + getPath() + ", Name=" + xsdAttr.getName() + ", Path=" + xPath);
+            LOG.info("{}Add ref to unique set. uniquePath='{}', keyName='{}', xPath='{}'",
+                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), xsdAttr.getName(), xPath);
             final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableRefs = refs.get(varName);
             List<Pair<String, XmlSchemaAttribute>> refList = variableRefs.get(xPath);
             if (refList == null) {

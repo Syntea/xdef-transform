@@ -4,13 +4,12 @@ import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.xdef.XDContainer;
 import org.xdef.XDNamedValue;
 import org.xdef.XDValue;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.factory.facet.pattern.types.EnumerationRegexFactory;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_LENGTH;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_LENGTH;
@@ -46,7 +45,7 @@ public class ListRegexFacetFactory extends AbstractArrayFacetFactory {
 
     @Override
     protected void createPatterns(final String parserName, final XDNamedValue[] params) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Creating patterns ...");
+        LOG.debug("{}Creating patterns ...", logHeader(TRANSFORMATION));
         regex = parserParamsToRegex(parserName, params);
         if (!isCaseSensitive) {
             regex = Xd2XsdUtils.regex2CaseInsensitive(regex);
@@ -55,7 +54,7 @@ public class ListRegexFacetFactory extends AbstractArrayFacetFactory {
 
     @Override
     protected void createPatternFacets(final List<XmlSchemaFacet> facets) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Creating pattern facets ...");
+        LOG.debug("{}Creating pattern facets ...", logHeader(TRANSFORMATION));
 
         if (regex != null && !regex.isEmpty()) {
             String pattern = "((" + regex + ")\\s)";

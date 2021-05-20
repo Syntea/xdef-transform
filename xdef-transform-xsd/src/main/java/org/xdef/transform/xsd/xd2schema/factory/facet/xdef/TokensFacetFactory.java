@@ -3,12 +3,11 @@ package org.xdef.transform.xsd.xd2schema.factory.facet.xdef;
 import org.apache.ws.commons.schema.XmlSchemaEnumerationFacet;
 import org.apache.ws.commons.schema.XmlSchemaFacet;
 import org.xdef.XDNamedValue;
-import org.xdef.transform.xsd.util.SchemaLogger;
 import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 
 import java.util.List;
 
-import static org.xdef.transform.xsd.util.SchemaLoggerDefs.LOG_DEBUG;
+import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
 
@@ -27,7 +26,7 @@ public class TokensFacetFactory extends DefaultFacetFactory {
     }
 
     protected void enumeration(final String[] values, final List<XmlSchemaFacet> facets) {
-        SchemaLogger.print(LOG_DEBUG, TRANSFORMATION, this.getClass().getSimpleName(),"Add facet enumeration");
+        LOG.debug("{}Add facet enumeration", logHeader(TRANSFORMATION));
         for (String value : values) {
             XmlSchemaEnumerationFacet facet = new XmlSchemaEnumerationFacet();
             // Remove all new lines and leading whitespaces on new line

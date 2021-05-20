@@ -1,6 +1,5 @@
 package org.xdef.transform.xsd.console.impl;
 
-import org.xdef.transform.xsd.util.SchemaLoggerDefs;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 
 import java.util.EnumSet;
@@ -17,8 +16,6 @@ public class XDefAdapterConfig {
     private Optional<String> inputRoot;
     private List<String> testingDataPos;
     private List<String> testingDataNeg;
-
-    private int verbose = SchemaLoggerDefs.LOG_INFO;
 
     private boolean useDefaultFeatures = true;
     private EnumSet<Xd2XsdFeature> features = EnumSet.noneOf(Xd2XsdFeature.class);
@@ -79,14 +76,6 @@ public class XDefAdapterConfig {
         this.testingDataNeg = testingDataNeg;
     }
 
-    public int getVerbose() {
-        return verbose;
-    }
-
-    public void setVerbose(int verbose) {
-        this.verbose = verbose;
-    }
-
     public boolean useDefaultFeatures() {
         return useDefaultFeatures;
     }
@@ -125,7 +114,6 @@ public class XDefAdapterConfig {
                 ", outputFilePrefix='" + outputFilePrefix + '\'' +
                 ", testingDataPos=" + testingDataPos +
                 ", testingDataNeg=" + testingDataNeg +
-                ", verbose=" + verbose +
                 ", useDefaultFeatures=" + useDefaultFeatures +
                 ", features=" + features +
                 '}';
