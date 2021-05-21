@@ -392,9 +392,6 @@ public class TestXd2Xsd extends TesterXdSchema {
     public void test() {
         init();
 
-//        convertXd2XsdInternal("2020_08_03_tomas\\3.2", "2020_08_03");
-
-//                convertXd2XsdNoRef ("SoapRequestD6WS", null, null);
 
         // ============ XDef ============
 

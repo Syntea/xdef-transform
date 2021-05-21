@@ -1,5 +1,6 @@
 package org.xdef.transform.xsd.xd2schema.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xdef.sys.StringParser;
 
 import java.util.HashSet;
@@ -89,7 +90,7 @@ public class DateTimeFormatAdapter {
 	private static final String e = "[1-7]";
 
 	public static Set<String> getRegexes(String mask) {
-		Set<String> ret = new HashSet<String>();
+		Set<String> ret = new HashSet<>();
 		StringTokenizer st = new StringTokenizer(mask, "|");
 		while (st.hasMoreTokens()) {
 			String maskPart = st.nextToken();
@@ -103,11 +104,8 @@ public class DateTimeFormatAdapter {
 	}
 
 	private static String getRegex(String mask) {
-		if (mask == null) {
-			throw new NullPointerException("Given mask is null");
-		}
-		if (mask.length() == 0) {
-			throw new IllegalArgumentException("Given mask is empty");
+		if (mask == null || StringUtils.isBlank(mask)) {
+			throw new NullPointerException("Given mask is null or empty");
 		}
 		StringBuilder ret = new StringBuilder();
 		StringParser p = new StringParser(mask);

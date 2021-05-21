@@ -68,7 +68,7 @@ public class XsdPostProcessor {
         LOG.info("{}Updating reference", logHeader(POSTPROCESSING, XSD_PP_PROCESSOR));
         LOG.info(HEADER_LINE);
 
-        final List<SchemaNode> nodesToRemove = new ArrayList<SchemaNode>();
+        final List<SchemaNode> nodesToRemove = new ArrayList<>();
 
         for (Map.Entry<String, Map<String, SchemaNode>> systemRefEntry : adapterCtx.getNodes().entrySet()) {
             LOG.info("{}Updating references - phase 1. systemId='{}'",
@@ -140,7 +140,9 @@ public class XsdPostProcessor {
         final String localName = xsdElem.getName();
         String newLocalName = XsdNameFactory.createRootElemName(localName, schemaType);
         newLocalName = adapterCtx.getNameFactory().generateTopLevelName(xElem, newLocalName);
-        final String elemNsUri = xsdElem.getParent().getNamespaceContext().getNamespaceURI(XsdNamespaceUtils.getNamespacePrefix(xElem.getName()));
+        final String elemNsUri = xsdElem.getParent()
+                .getNamespaceContext()
+                .getNamespaceURI(XsdNamespaceUtils.getNamespacePrefixRequired(xElem.getName()));
 
         // Move element's schema type to top
         schemaType.setName(newLocalName);
@@ -173,7 +175,7 @@ public class XsdPostProcessor {
         elementTopToComplex(node, xsdFactory);
 
         if (isTopElement(refNode)) {
-            final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(refNode.getXdNode().getXDPosition());
+            final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refNode.getXdNode().getXDPosition());
             final XmlSchema xmlSchema = adapterCtx.findSchema(systemId, true, POSTPROCESSING);
             final XsdNodeFactory refXsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
             if (refNode.toXsdElem().isRef()) {

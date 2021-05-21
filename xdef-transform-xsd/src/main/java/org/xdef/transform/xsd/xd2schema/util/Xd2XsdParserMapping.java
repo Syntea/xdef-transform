@@ -36,6 +36,7 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
@@ -57,7 +58,7 @@ public class Xd2XsdParserMapping {
     /**
      * Transformation map of x-definition data types to XSD QNames using XSD default facet factory
      */
-    private static final Map<String, QName> defaultQNameMap = new HashMap<String, QName>();
+    private static final Map<String, QName> defaultQNameMap = new HashMap<>();
 
     /**
      * Transformation map of x-definition parsers to XSD QNames and custom implementation of XSD facet factory
@@ -131,26 +132,32 @@ public class Xd2XsdParserMapping {
     /**
      * Converts x-definition parser name to XSD qualified name
      * @param parserName    x-definition parser name
-     * @return  XSD QName if mapping exists, otherwise null
+     * @return  XSD QName if mapping exists,
+     *          otherwise {@link Optional#empty()}
      */
-    public static QName findDefaultParserQName(final String parserName, final XsdAdapterCtx adapterCtx) {
-        QName qName = defaultQNameMap.get(parserName);
-        if (qName == null) {
-            if (DecFacetFactory.XD_PARSER_NAME.equals(parserName) && !adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR)) {
+    public static Optional<QName> findDefaultParserQName(final String parserName, final XsdAdapterCtx adapterCtx) {
+        final QName qName = Optional.ofNullable(defaultQNameMap.get(parserName)).orElseGet(() -> {
+            if (DecFacetFactory.XD_PARSER_NAME.equals(parserName)
+                    && !adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR)) {
                 return Constants.XSD_DECIMAL;
             }
-        }
 
-        return qName;
+            return null;
+        });
+
+        return Optional.ofNullable(qName);
     }
 
     /**
      * Finds XSD qualified name and XSD facet factory for specific x-definition parser
      * @param parserName    x-definition parser name
      * @return  XSD data type with XSD facets factory if transformation exists
-     *          otherwise null
+     *          otherwise {@link Optional#empty()}
      */
-    public static Pair<QName, IXsdFacetFactory> findCustomFacetFactory(final String parserName, final XDNamedValue[] parameters, final XsdAdapterCtx adapterCtx) {
+    public static Optional<Pair<QName, IXsdFacetFactory>> findCustomFacetFactory(
+            final String parserName,
+            final XDNamedValue[] parameters,
+            final XsdAdapterCtx adapterCtx) {
         Pair<QName, IXsdFacetFactory> res = customFacetMap.get(parserName);
         // Custom dynamic facet factories
         if (res == null) {
@@ -170,7 +177,7 @@ public class Xd2XsdParserMapping {
             }*/
         }
 
-        return res;
+        return Optional.ofNullable(res);
     }
 
     /**
@@ -178,15 +185,14 @@ public class Xd2XsdParserMapping {
      * @param parserName    x-definition parser name
      * @param adapterCtx    XSD adapter context
      * @return  XSD QName with default facet factory if conversion of x-definition parser name to XSD QName exists
-     *          otherwise null
+     *          otherwise {@link Optional#empty()}
      */
-    public static Pair<QName, IXsdFacetFactory> findDefaultFacetFactory(final String parserName, final XsdAdapterCtx adapterCtx) {
-        final QName qName = findDefaultParserQName(parserName, adapterCtx);
-        if (qName != null) {
-            return Pair.of(qName, new DefaultFacetFactory());
-        }
-
-        return null;
+    public static Optional<Pair<QName, IXsdFacetFactory>> findDefaultFacetFactory(
+            final String parserName,
+            final XsdAdapterCtx adapterCtx) {
+        return findDefaultParserQName(parserName, adapterCtx).map(
+                qName -> Optional.of(Pair.of(qName, (IXsdFacetFactory)new DefaultFacetFactory()))
+        ).orElse(Optional.empty());
     }
 
     /**
@@ -194,27 +200,30 @@ public class Xd2XsdParserMapping {
      * @param xData         x-definition node
      * @param adapterCtx    XSD adapter context
      * @param hasNoFacets   check if parser contains any facet
-     * @return XSD QName if transformation without facets exists, otherwise null
+     * @return  XSD QName if transformation without facets exists
+     *          otherwise {@link Optional#empty()}
      */
-    public static QName getDefaultParserQName(final XData xData, final XsdAdapterCtx adapterCtx, boolean hasNoFacets) {
+    public static Optional<QName> getDefaultParserQName(final XData xData,
+                                                        final XsdAdapterCtx adapterCtx,
+                                                        boolean hasNoFacets) {
         final XDValue parseMethod = xData.getParseMethod();
         final String parserName = xData.getParserName();
-        final QName defaultQName = findDefaultParserQName(parserName, adapterCtx);
+        final Optional<QName> defaultQNameOpt = findDefaultParserQName(parserName, adapterCtx);
 
-        if (defaultQName != null) {
+        if (defaultQNameOpt.isPresent()) {
             if (parseMethod instanceof XDParser) {
                 final XDParser parser = ((XDParser) parseMethod);
                 final XDNamedValue parameters[] = parser.getNamedParams().getXDNamedItems();
-                if (findCustomFacetFactory(parserName, parameters, adapterCtx) == null) {
+                if (!findCustomFacetFactory(parserName, parameters, adapterCtx).isPresent()) {
                     if ((hasNoFacets && parameters.length == 0) || !hasNoFacets)
-                        return defaultQName;
+                        return defaultQNameOpt;
                 }
             } else {
-                return defaultQName;
+                return defaultQNameOpt;
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -229,35 +238,35 @@ public class Xd2XsdParserMapping {
         LOG.debug("{}Determination of list QName ...", logHeader(TRANSFORMATION));
 
         String parserName = null;
-        boolean allParsersSame = true;
+        boolean allParsersAreSame = true;
 
         for (int i = 0; i < parameters.length; i++) {
             XDValue xVal = parameters[i].getValue();
             if (xVal.getItemId() == XD_CONTAINER) {
-                allParsersSame = false;
+                allParsersAreSame = false;
             } else if (xVal instanceof XDParser) {
                 if (parserName == null) {
                     parserName = ((XDParser) xVal).parserName();
                 } else {
-                    if (allParsersSame == true && !parserName.equals(((XDParser) xVal).parserName())) {
+                    if (allParsersAreSame == true && !parserName.equals(((XDParser) xVal).parserName())) {
                         LOG.debug("{}List/Union - parsers are not same!", logHeader(TRANSFORMATION));
-                        allParsersSame = false;
+                        allParsersAreSame = false;
                     }
                 }
             }
         }
 
-        if (parserName == null || allParsersSame == false) {
+        if (parserName == null || allParsersAreSame == false) {
             LOG.error("{}Expected parser type or multiple parsers used!", logHeader(TRANSFORMATION));
             throw new SRuntimeException(XSD.XSD006);
         }
 
-        QName res = findDefaultParserQName(parserName, adapterCtx);
-        if (res == null) {
-            adapterCtx.getReportWriter().warning(XSD.XSD026, parserName);
-            LOG.warn("{}Unsupported simple content parser! parserName='{}'", logHeader(TRANSFORMATION), parserName);
-            res = Constants.XSD_STRING;
-        }
+        final String finalParserName = parserName;
+        final QName res = findDefaultParserQName(parserName, adapterCtx).orElseGet(() -> {
+            adapterCtx.getReportWriter().warning(XSD.XSD026, finalParserName);
+            LOG.warn("{}Unsupported simple content parser! parserName='{}'", logHeader(TRANSFORMATION), finalParserName);
+            return Constants.XSD_STRING;
+        });
 
         return res;
     }

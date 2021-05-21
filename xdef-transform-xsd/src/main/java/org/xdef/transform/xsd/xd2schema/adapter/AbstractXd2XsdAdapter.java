@@ -29,7 +29,7 @@ public abstract class AbstractXd2XsdAdapter {
     /**
      * Enabled algorithm features
      */
-    protected Set<Xd2XsdFeature> features = new HashSet<Xd2XsdFeature>();
+    protected Set<Xd2XsdFeature> features = new HashSet<>();
 
     /**
      * External setting of adapter context

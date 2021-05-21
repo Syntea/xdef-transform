@@ -85,7 +85,7 @@ public class XsdNameFactory {
 
         LOG.debug("{}Finding top level simple-type name ...", logHeader(XSD_NAME_FACTORY, xData));
 
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xData.getXDPosition());
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xData.getXDPosition());
         final Map<String, List<XMNode>> mapBaseName = getOrCreateTopLevelBaseNameMap(systemId);
 
         if (mapBaseName.containsKey(xData.getRefTypeName())) {
@@ -105,7 +105,7 @@ public class XsdNameFactory {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
         LOG.debug("{}Finding top level " + nodeType + "-type name ...", logHeader(XSD_NAME_FACTORY, xNode));
 
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xNode.getXDPosition());
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xNode.getXDPosition());
         final Map<String, String> mapName = getOrCreateTopLevelNameMap(systemId);
 
         String realName = mapName.get(xNode.getXDPosition());
@@ -163,7 +163,7 @@ public class XsdNameFactory {
             realName += "_" + nodeList.size();
         }
 
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xNode.getXDPosition());
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xNode.getXDPosition());
         final Map<String, String> mapName = getOrCreateTopLevelNameMap(systemId);
         mapName.put(xNode.getXDPosition(), realName);
         LOG.info("{}Add top-level " + nodeType + "-type name. realName='{}', systemId='{}'",
@@ -239,7 +239,7 @@ public class XsdNameFactory {
      */
     private List<XMNode> addNodeWithBaseName(final XNode xNode, final String nodeBaseName) {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xNode.getXDPosition());
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xNode.getXDPosition());
         final Map<String, List<XMNode>> mapBaseName = getOrCreateTopLevelBaseNameMap(systemId);
         final List<XMNode> nodeList = getOrCreateListNodesInBaseNameMap(mapBaseName, nodeBaseName);
 

@@ -144,7 +144,7 @@ public class XsdSchemaFactory {
             for (XNode xn : xDef._rootSelection.values()) {
                 if (xn.getKind() == XNode.XMELEMENT) {
                     XElement defEl = (XElement)xn;
-                    String tmpNs = XsdNamespaceUtils.getNamespacePrefix(defEl.getName());
+                    String tmpNs = XsdNamespaceUtils.getNamespacePrefix(defEl.getName()).orElse(null);
                     if (tmpNs != null && tmpNs.equals(targetNsPrefix)) {
                         LOG.debug("{}Some of root element has different namespace prefix." +
                                 " Element default form will be Qualified. expectedPrefix='{}'",
@@ -172,7 +172,7 @@ public class XsdSchemaFactory {
                 if (xn.getKind() == XNode.XMELEMENT) {
                     XElement defEl = (XElement)xn;
                     for (XMNode attr : defEl.getAttrs()) {
-                        String tmpNs = XsdNamespaceUtils.getNamespacePrefix(attr.getName());
+                        String tmpNs = XsdNamespaceUtils.getNamespacePrefix(attr.getName()).orElse(null);
                         if (tmpNs != null && tmpNs.equals(targetNsPrefix)) {
                             LOG.debug("{}Some of root attribute has different namespace prefix." +
                                     " Attribute default form will be Qualified. expectedPrefix='{}'",

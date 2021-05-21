@@ -16,10 +16,10 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.xdef.model.XMNode.XMCHOICE;
 import static org.xdef.model.XMNode.XMMIXED;
@@ -56,13 +56,14 @@ public class Xd2XsdUtils {
      * @return name of x-definition particle kind
      */
     public static String particleXKindToString(short kind) {
+        String result = "unknown";
         switch (kind) {
-            case XMSEQUENCE: return "sequence";
-            case XMMIXED: return "mixed";
-            case XMCHOICE: return "choise";
+            case XMSEQUENCE:    result = "sequence"; break;
+            case XMMIXED:       result = "mixed"; break;
+            case XMCHOICE:      result = "choise"; break;
         }
 
-        return null;
+        return result;
     }
 
     /**
@@ -75,7 +76,7 @@ public class Xd2XsdUtils {
         final StringBuilder stringBuilder = new StringBuilder();
         int lastMatchPos = 0;
         while (matcher.find()) {
-            stringBuilder.append(regex.substring(lastMatchPos, matcher.start()));
+            stringBuilder.append(regex, lastMatchPos, matcher.start());
             stringBuilder.append("[" + matcher.group(0).toLowerCase() + matcher.group(0).toUpperCase() + "]");
             lastMatchPos = matcher.end();
         }
@@ -89,16 +90,8 @@ public class Xd2XsdUtils {
      * @return single regular expression
      */
     public static String regexCollectionToSingle(Collection<String> regex) {
-        final StringBuilder stringBuilder = new StringBuilder();
-        if (!regex.isEmpty()) {
-            Iterator<String> itr = regex.iterator();
-            stringBuilder.append(itr.next());
-            while (itr.hasNext()) {
-                stringBuilder.append("|" + itr.next());
-            }
-        }
-
-        return stringBuilder.toString();
+        final String result = regex.stream().collect(Collectors.joining("|"));
+        return result;
     }
 
     /**
@@ -163,7 +156,8 @@ public class Xd2XsdUtils {
      * @param adapterCtx        XSD adapter context
      * @return total occurrence of nodes
      */
-    public static Pair<Long, Long> calculateGroupAllMembersOccurrence(final XmlSchemaAll groupParticleAll, final XsdAdapterCtx adapterCtx) {
+    public static Pair<Long, Long> calculateGroupAllMembersOccurrence(final XmlSchemaAll groupParticleAll,
+                                                                      final XsdAdapterCtx adapterCtx) {
         final XmlSchemaObjectBase[] members = new XmlSchemaObjectBase[groupParticleAll.getItems().size()];
         groupParticleAll.getItems().toArray(members);
         return calculateGroupParticleMembersOccurrence(members, adapterCtx);
@@ -175,13 +169,15 @@ public class Xd2XsdUtils {
      * @param adapterCtx            XSD adapter context
      * @return total occurrence of nodes
      */
-    public static Pair<Long, Long> calculateGroupChoiceMembersOccurrence(final XmlSchemaChoice groupParticleChoice, final XsdAdapterCtx adapterCtx) {
+    public static Pair<Long, Long> calculateGroupChoiceMembersOccurrence(final XmlSchemaChoice groupParticleChoice,
+                                                                         final XsdAdapterCtx adapterCtx) {
         final XmlSchemaObjectBase[] members = new XmlSchemaObjectBase[groupParticleChoice.getItems().size()];
         groupParticleChoice.getItems().toArray(members);
         return calculateGroupParticleMembersOccurrence(members, adapterCtx);
     }
 
-    private static Pair<Long, Long> calculateGroupParticleMembersOccurrence(final XmlSchemaObjectBase[] members, final XsdAdapterCtx adapterCtx) {
+    private static Pair<Long, Long> calculateGroupParticleMembersOccurrence(final XmlSchemaObjectBase[] members,
+                                                                            final XsdAdapterCtx adapterCtx) {
         long elementMaxOccursSum = 0;
         long elementMinOccursSum = 0;
 
@@ -216,7 +212,7 @@ public class Xd2XsdUtils {
      * @return default algorithm features
      */
     public static Set<Xd2XsdFeature> defaultFeatures() {
-        Set<Xd2XsdFeature> features = new HashSet();
+        final Set<Xd2XsdFeature> features = new HashSet();
         features.addAll(Xd2XsdFeature.DEFAULT_POSTPROCESSING_FEATURES);
         return features;
     }

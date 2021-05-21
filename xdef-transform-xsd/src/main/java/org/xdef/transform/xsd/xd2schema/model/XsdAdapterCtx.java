@@ -17,6 +17,7 @@ import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -345,7 +346,7 @@ public class XsdAdapterCtx {
      */
     public SchemaNode addOrUpdateNode(final SchemaNode node) {
         final String xPos = node.getXdNode().getXDPosition();
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xPos);
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xPos);
         final String nodePath = XsdNameUtils.getXNodePath(xPos);
         return addOrUpdateNode(systemId, nodePath, node);
     }
@@ -408,7 +409,7 @@ public class XsdAdapterCtx {
      */
     public void updateNode(final XMNode xNode, final XmlSchemaNamed newXsdNode) {
         final String xPos = xNode.getXDPosition();
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xPos);
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xPos);
         final String nodePath = XsdNameUtils.getXNodePath(xPos);
         updateNode(systemId, nodePath, newXsdNode);
     }
@@ -466,7 +467,7 @@ public class XsdAdapterCtx {
      */
     public void removeNode(final XNode xNode) {
         final String xPos = xNode.getXDPosition();
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xPos);
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xPos);
         final String nodePath = XsdNameUtils.getXNodePath(xPos);
         removeNode(systemId, nodePath);
     }
@@ -527,7 +528,7 @@ public class XsdAdapterCtx {
      * @param path      unique constraint path
      * @return Created or found unique constraint
      */
-    public UniqueConstraint addOrGetUniqueConst(final String name, String systemId, String path) {
+    public UniqueConstraint addOrGetUniqueConst(final String name, @Nullable String systemId, String path) {
         if (systemId == null) {
             systemId = "";
         }
@@ -590,7 +591,7 @@ public class XsdAdapterCtx {
         LOG.debug("{}Finding unique set. name='{}'", logHeader(TRANSFORMATION, xData), xData.getValueTypeName());
 
         // TODO: Finding of unique set not using variable name, ie. uniqueSet u int();
-        final String systemId = XsdNamespaceUtils.getSystemIdFromXPos(xData.getXDPosition());
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xData.getXDPosition());
         final String uniqueInfoName = XsdNameUtils.getUniqueSetName(xData.getValueTypeName());
         final String uniquestSetPath = "/" + XsdNameUtils.getXNodePath(xData.getXDPosition());
         UniqueConstraint uniqueInfo = findUniqueConst(uniqueInfoName, systemId, uniquestSetPath);

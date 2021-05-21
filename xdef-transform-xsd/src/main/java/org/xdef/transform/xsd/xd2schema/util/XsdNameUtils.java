@@ -17,6 +17,7 @@ import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import javax.xml.namespace.QName;
+import java.util.Optional;
 
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
@@ -234,7 +235,10 @@ public class XsdNameUtils {
         final int pos = varTypeName.lastIndexOf('.');
         if (pos != -1) {
             final String res = varTypeName.substring(pos + 1);
-            if (XD_UNIQUE_ID.equals(res) || XD_UNIQUE_IDREF.equals(res) || XD_UNIQUE_IDREFS.equals(res) || XD_UNIQUE_CHKID.equals(res)) {
+            if (XD_UNIQUE_ID.equals(res)
+                    || XD_UNIQUE_IDREF.equals(res)
+                    || XD_UNIQUE_IDREFS.equals(res)
+                    || XD_UNIQUE_CHKID.equals(res)) {
                 return getUniqueSetVarName(varTypeName.substring(0, pos));
             } else {
                 return res;
@@ -285,24 +289,21 @@ public class XsdNameUtils {
      * @param xData         x-definition node
      * @param adapterCtx    XSD adapter context
      * @return  reference name
+     *          otherwise {@link Optional#empty()}
      */
-    public static String createRefNameFromParser(final XData xData, final XsdAdapterCtx adapterCtx) {
+    public static Optional<String> createRefNameFromParser(final XData xData, final XsdAdapterCtx adapterCtx) {
         final XDValue parseMethod = xData.getParseMethod();
         final String parserName = xData.getParserName();
 
-        String name;
-        QName defaultQName = Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx);
-        if (defaultQName != null) {
-            name = defaultQName.getLocalPart();
-        } else {
-            name = parserName;
-        }
+        final String name = Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx)
+                .map(defaultQName -> defaultQName.getLocalPart())
+                .orElse(parserName);
 
         if (!Constants.XSD_STRING.getLocalPart().equals(name)
                 && !XD_PARSER_CDATA.equals(name)
                 && !Constants.XSD_INT.getLocalPart().equals(name)
                 && !Constants.XSD_LONG.getLocalPart().equals(name)) {
-            return null;
+            return Optional.empty();
         }
 
         final StringBuilder sb = new StringBuilder(name);
@@ -338,7 +339,7 @@ public class XsdNameUtils {
             }
         }
 
-        return name;
+        return Optional.of(sb.toString());
     }
 
     /**

@@ -66,8 +66,8 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     protected Set<String> transformNodes(final Map<String, Map<String, XNode>> allNodesToResolve) {
         LOG.info("{}Transforming gathered nodes into extra schemas ...", logHeader(POSTPROCESSING, sourceXDefinition));
 
-        final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPos(sourceXDefinition.getXDPosition());
-        final Set<String> updatedNamespaces = new HashSet<String>();
+        final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(sourceXDefinition.getXDPosition());
+        final Set<String> updatedNamespaces = new HashSet<>();
 
         SchemaNsLocationMap schemasByNsToResolve = (SchemaNsLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
         int lastSizeMap = schemasByNsToResolve.size();
@@ -99,12 +99,12 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
 
                 if (nodesInSchemaToResolve != null) {
                     // Filter nodes which should be resolved by current x-definition
-                    final ArrayList<XNode> nodesToResolve = new ArrayList<XNode>(nodesInSchemaToResolve.values());
+                    final ArrayList<XNode> nodesToResolve = new ArrayList<>(nodesInSchemaToResolve.values());
                     final Iterator<XNode> itr = nodesToResolve.iterator();
                     XNode n;
                     while (itr.hasNext()) {
                         n = itr.next();
-                        if (!sourceSystemId.equals(XsdNamespaceUtils.getSystemIdFromXPos(n.getXDPosition()))) {
+                        if (!sourceSystemId.equals(XsdNamespaceUtils.getSystemIdFromXPosRequired(n.getXDPosition()))) {
                             itr.remove();
                         }
                     }

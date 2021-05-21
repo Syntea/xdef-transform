@@ -57,6 +57,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
@@ -209,7 +210,7 @@ public class XsdNodeFactory {
     public XmlSchemaSimpleContent createTextBasedSimpleContent(final XData xDataText, boolean topLevel) {
         LOG.trace("{}Simple-content with extension. topLevel='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), topLevel);
 
-        QName qName = null;
+        final AtomicReference<QName> qName = new AtomicReference(null);
 
         final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xDataText);
         if (uniqueConstraint != null) {
@@ -217,18 +218,18 @@ public class XsdNodeFactory {
                     logHeader(TRANSFORMATION, xDataText), uniqueConstraint.getName());
             final UniqueConstraint.Type type = XsdNameUtils.getUniqueSetVarType(xDataText.getValueTypeName());
             if (UniqueConstraint.isStringConstraint(type)) {
-                qName = Constants.XSD_STRING;
+                qName.set(Constants.XSD_STRING);
             }
         }
 
         boolean extension = true;
 
-        if (qName == null) {
+        if (qName.get() == null) {
             if (xDataText.getRefTypeName() != null && topLevel) {
                 final String refTypeName = XsdNameFactory.createLocalSimpleTypeName(xDataText);
                 final String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refTypeName);
                 final String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
-                qName = new QName(nsUri, refTypeName);
+                qName.set(new QName(nsUri, refTypeName));
                 LOG.debug("{}Simple-content using reference. nsUri='{}', localName='{}'",
                         logHeader(XSD_ELEM_FACTORY, xDataText), nsUri, refTypeName);
             } else {
@@ -237,15 +238,19 @@ public class XsdNodeFactory {
                             logHeader(XSD_ELEM_FACTORY, xDataText));
                 }
 
-                qName = Xd2XsdParserMapping.getDefaultParserQName(xDataText, adapterCtx, false);
+                qName.set(Xd2XsdParserMapping.getDefaultParserQName(xDataText, adapterCtx, false)
+                        .orElse(null));
                 final XDValue parseMethod = xDataText.getParseMethod();
                 if (parseMethod instanceof XDParser) {
                     // Restriction facets
                     final XDNamedValue[] items = ((XDParser) parseMethod).getNamedParams().getXDNamedItems();
                     // Check if restriction contains only min-length equals 1 and string is optional => then use xs:extension instead of xs:restriction
-                    if (items.length == 0 ||
-                            (items.length == 1 && Constants.XSD_STRING.equals(qName) &&
-                            XSD_FACET_MIN_LENGTH.equals(items[0].getName()) && items[0].getValue().intValue() == 1 && xDataText.isOptional())) {
+                    if (items.length == 0
+                            || (items.length == 1
+                                && Constants.XSD_STRING.equals(qName.get())
+                                && XSD_FACET_MIN_LENGTH.equals(items[0].getName())
+                                && items[0].getValue().intValue() == 1
+                                && xDataText.isOptional())) {
                         extension = true;
                     } else {
                         extension = false;
@@ -253,27 +258,26 @@ public class XsdNodeFactory {
                 }
             }
 
-            if (qName == null) {
-                final String refParserName = XsdNameUtils.createRefNameFromParser(xDataText, adapterCtx);
-                if (refParserName != null) {
-                    qName = new QName(NAMESPACE_PREFIX_EMPTY, refParserName);
+            if (qName.get() == null) {
+                XsdNameUtils.createRefNameFromParser(xDataText, adapterCtx).ifPresent(refParserName -> {
+                    qName.set(new QName(NAMESPACE_PREFIX_EMPTY, refParserName));
                     LOG.debug("{}Simple-content using parser. refParserName='{}'",
                             logHeader(XSD_ELEM_FACTORY, xDataText), refParserName);
-                }
+                });
             } else {
                 LOG.debug("{}Simple-content using simple parser. localName='{}'",
-                        logHeader(XSD_ELEM_FACTORY, xDataText), qName.getLocalPart());
+                        logHeader(XSD_ELEM_FACTORY, xDataText), qName.get().getLocalPart());
             }
         }
 
-        if (qName != null) {
+        if (qName.get() != null) {
             XmlSchemaContent schemaContent;
             if (extension) {
-                schemaContent = createEmptySimpleContentExtension(qName);
-                LOG.info("{}Simple-content extension type. qName='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), qName);
+                schemaContent = createEmptySimpleContentExtension(qName.get());
+                LOG.info("{}Simple-content extension type. qName='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), qName.get());
             } else {
-                schemaContent = createEmptySimpleContentRestriction(qName);
-                LOG.info("{}Simple-content restriction type. qName='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), qName);
+                schemaContent = createEmptySimpleContentRestriction(qName.get());
+                LOG.info("{}Simple-content restriction type. qName='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), qName.get());
 
                 // Copy facets
                 final XmlSchemaSimpleTypeContent simpleTypeContent = createSimpleTypeContent(xDataText, null);

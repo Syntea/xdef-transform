@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.sys.ReportWriter;
+import org.xdef.transform.xsd.model.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
@@ -115,15 +116,14 @@ public class UniqueConstraint {
      */
     public void addVar(final XData xData, final XsdAdapterCtx adapterCtx) {
         final String parserName = xData.getParserName();
-        final QName qName = Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx);
+        final OptionalExt<QName> qNameOpt = new OptionalExt(Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx));
         final String varName = XsdNameUtils.getUniqueSetVarName(xData.getValueTypeName());
 
-        if (qName != null) {
-            addVar(varName, qName);
-        } else {
-            LOG.info("{}Unsupported variable of unique set. uniquePath='{}', variableName='{}'",
-                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), varName);
-        }
+        qNameOpt.ifPresent(qName -> addVar(varName, qName))
+                .orElse(() -> {
+                    LOG.info("{}Unsupported variable of unique set. uniquePath='{}', variableName='{}'",
+                            logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), varName);
+                });
     }
 
     /**
