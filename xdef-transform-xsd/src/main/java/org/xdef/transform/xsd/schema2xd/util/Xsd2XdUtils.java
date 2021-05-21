@@ -7,7 +7,7 @@ import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
 
 import javax.xml.namespace.QName;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_REQUIRED;
@@ -22,30 +22,24 @@ public class Xsd2XdUtils {
      * Finds XSD complex/simple schema type node in given schema by qualified name
      * @param schema    XSD document
      * @param qName     XSD qualified name to be searched
-     * @return XSD complex/simple schema type node if exists in given schema, otherwise null
+     * @return XSD complex/simple schema type node if exists in given schema, otherwise {@link Optional#empty()}
      */
-    public static XmlSchemaType findSchemaTypeByQName(final XmlSchema schema, final QName qName) {
-        final Map<QName, XmlSchemaType> schemaTypeMap = schema.getSchemaTypes();
-        if (schemaTypeMap != null) {
-            return schemaTypeMap.get(qName);
-        }
-
-        return null;
+    public static Optional<XmlSchemaType> findSchemaTypeByQName(final XmlSchema schema, final QName qName) {
+        return Optional.ofNullable(schema.getSchemaTypes())
+                .map(schemaTypeMap -> Optional.ofNullable(schemaTypeMap.get(qName)))
+                .orElse(Optional.empty());
     }
 
     /**
      * Finds XSD group node in given schema by qualified name
      * @param schema    XSD document
      * @param qName     XSD qualified name to be searched
-     * @return XSD group node if exists in given schema, otherwise null
+     * @return XSD group node if exists in given schema, otherwise {@link Optional#empty()}
      */
-    public static XmlSchemaGroup findGroupByQName(final XmlSchema schema, final QName qName) {
-        final Map<QName, XmlSchemaGroup> schemaTypeMap = schema.getGroups();
-        if (schemaTypeMap != null) {
-            return schemaTypeMap.get(qName);
-        }
-
-        return null;
+    public static Optional<XmlSchemaGroup> findGroupByQName(final XmlSchema schema, final QName qName) {
+        return Optional.ofNullable(schema.getGroups())
+                .map(groups -> Optional.ofNullable(groups.get(qName)))
+                .orElse(Optional.empty());
     }
 
     /**
@@ -53,8 +47,9 @@ public class Xsd2XdUtils {
      * @return default algorithm features
      */
     public static Set<Xsd2XdFeature> defaultFeatures() {
-        Set<Xsd2XdFeature> features = new HashSet<Xsd2XdFeature>();
+        final Set<Xsd2XdFeature> features = new HashSet<>();
         features.add(XD_TEXT_REQUIRED);
         return features;
     }
+
 }

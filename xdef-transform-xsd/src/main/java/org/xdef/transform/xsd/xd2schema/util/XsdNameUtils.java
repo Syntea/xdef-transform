@@ -18,6 +18,10 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import javax.xml.namespace.QName;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
@@ -40,7 +44,6 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_PATTERN;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_TOTAL_DIGITS;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_WHITESPACE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 
 /**
  * Utils related to working with node name, reference name and qualified name
@@ -55,12 +58,12 @@ public class XsdNameUtils {
      * @return x-definition reference node name
      */
     public static String getReferenceName(final String refPos) {
-        int xdefNamespaceSeparatorPos = refPos.indexOf(':');
+        int xdefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
         if (xdefNamespaceSeparatorPos != -1) {
             return refPos.substring(xdefNamespaceSeparatorPos + 1);
         }
 
-        int xdefSystemSeparatorPos = refPos.indexOf('#');
+        int xdefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
         if (xdefSystemSeparatorPos != -1) {
             return refPos.substring(xdefSystemSeparatorPos + 1);
         }
@@ -74,7 +77,7 @@ public class XsdNameUtils {
      * @return  position without x-definition name
      */
     public static String getXNodePath(final String nodePos) {
-        int xdefSystemSeparatorPos = nodePos.indexOf('#');
+        int xdefSystemSeparatorPos = nodePos.indexOf(XDEF_REF_DELIMITER);
         if (xdefSystemSeparatorPos != -1) {
             return nodePos.substring(xdefSystemSeparatorPos + 1);
         }
@@ -162,7 +165,7 @@ public class XsdNameUtils {
     public static void resolveAttributeSchemaTypeQName(final XmlSchema schema, final XmlSchemaAttribute xsdAttr) {
         if (XmlSchemaForm.QUALIFIED.equals(schema.getAttributeFormDefault())) {
             final QName schemaTypeName = xsdAttr.getSchemaTypeName();
-            if (schemaTypeName != null && !Constants.URI_2001_SCHEMA_XSD.equals(schemaTypeName.getNamespaceURI())) {
+            if (schemaTypeName != null && !XML_SCHEMA_DEFAULT_NAMESPACE_URI.equals(schemaTypeName.getNamespaceURI())) {
                 xsdAttr.setSchemaTypeName(new QName(schema.getTargetNamespace(), schemaTypeName.getLocalPart()));
             }
         }
@@ -176,7 +179,7 @@ public class XsdNameUtils {
     public static void resolveElementSchemaTypeQName(final XmlSchema schema, final XmlSchemaElement xsdElem) {
         if (XmlSchemaForm.QUALIFIED.equals(schema.getElementFormDefault())) {
             final QName schemaTypeName = xsdElem.getSchemaTypeName();
-            if (schemaTypeName != null && !Constants.URI_2001_SCHEMA_XSD.equals(schemaTypeName.getNamespaceURI())) {
+            if (schemaTypeName != null && !XML_SCHEMA_DEFAULT_NAMESPACE_URI.equals(schemaTypeName.getNamespaceURI())) {
                 xsdElem.setSchemaTypeName(new QName(schema.getTargetNamespace(), schemaTypeName.getLocalPart()));
             }
         }
@@ -189,7 +192,9 @@ public class XsdNameUtils {
      * @return true if x-definition node name is not using namespace prefix while XSD document yes
      */
     public static boolean isUnqualifiedName(final XmlSchema schema, final String name) {
-        return !XsdNamespaceUtils.containsNsPrefix(name) && schema.getSchemaNamespacePrefix() != null && !XSD_NAMESPACE_PREFIX_EMPTY.equals(schema.getSchemaNamespacePrefix());
+        return !XsdNamespaceUtils.containsNsPrefix(name)
+                && schema.getSchemaNamespacePrefix() != null
+                && !NAMESPACE_PREFIX_EMPTY.equals(schema.getSchemaNamespacePrefix());
     }
 
     /**
@@ -198,7 +203,7 @@ public class XsdNameUtils {
      * @return  x-definition node name
      */
     public static String getNodeNameWithoutPrefix(final String nodeName) {
-        int nsPos = nodeName.indexOf(':');
+        int nsPos = nodeName.indexOf(NAMESPACE_DELIMITER);
         if (nsPos != -1) {
             return nodeName.substring(nsPos + 1);
         }

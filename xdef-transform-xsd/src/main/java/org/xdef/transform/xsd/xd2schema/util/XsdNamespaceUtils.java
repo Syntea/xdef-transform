@@ -17,8 +17,11 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import java.util.Map;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_PREFIX;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_UTILS;
 
 /**
@@ -71,7 +74,7 @@ public class XsdNamespaceUtils {
      */
     public static boolean isRefInDifferentNamespacePrefix(final String nodeRefPos, final XmlSchema schema) {
         final String refNsPrefix = getReferenceNamespacePrefix(nodeRefPos);
-        return !XSD_NAMESPACE_PREFIX_EMPTY.equals(refNsPrefix) && !refNsPrefix.equals(schema.getSchemaNamespacePrefix());
+        return !NAMESPACE_PREFIX_EMPTY.equals(refNsPrefix) && !refNsPrefix.equals(schema.getSchemaNamespacePrefix());
     }
 
     /**
@@ -92,7 +95,7 @@ public class XsdNamespaceUtils {
      * @return  true if x-definition node name contains prefix
      */
     public static boolean containsNsPrefix(final String name) {
-        return name.indexOf(':') != -1;
+        return name.indexOf(NAMESPACE_DELIMITER) != -1;
     }
 
     /**
@@ -101,7 +104,7 @@ public class XsdNamespaceUtils {
      * @return  true if x-definition node name contains reference
      */
     public static boolean containsReference(final String name) {
-        return name.indexOf('#') != -1;
+        return name.indexOf(XDEF_REF_DELIMITER) != -1;
     }
 
     /**
@@ -110,7 +113,7 @@ public class XsdNamespaceUtils {
      * @return  x-definition name if it is part of name, otherwise null
      */
     public static String getSystemIdFromXPos(final String xPos) {
-        int systemSeparatorPos = xPos.indexOf('#');
+        int systemSeparatorPos = xPos.indexOf(XDEF_REF_DELIMITER);
         if (systemSeparatorPos != -1) {
             return xPos.substring(0, systemSeparatorPos);
         }
@@ -124,7 +127,7 @@ public class XsdNamespaceUtils {
      * @return  namespace prefix if it is part of name, otherwise null
      */
     public static String getNamespacePrefix(final String name) {
-        int nsPos = name.indexOf(':');
+        int nsPos = name.indexOf(NAMESPACE_DELIMITER);
         if (nsPos != -1) {
             return name.substring(0, nsPos);
         }
@@ -138,14 +141,14 @@ public class XsdNamespaceUtils {
      * @return  namespace prefix if it is part of reference node position, otherwise empty string
      */
     public static String getReferenceNamespacePrefix(final String refPos) {
-        int xdefNamespaceSeparatorPos = refPos.indexOf(':');
+        int xdefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
         if (xdefNamespaceSeparatorPos == -1) {
-            return XSD_NAMESPACE_PREFIX_EMPTY;
+            return NAMESPACE_PREFIX_EMPTY;
         }
 
-        int xdefSystemSeparatorPos = refPos.indexOf('#');
+        int xdefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
         if (xdefSystemSeparatorPos == -1) {
-            return XSD_NAMESPACE_PREFIX_EMPTY;
+            return NAMESPACE_PREFIX_EMPTY;
         }
 
         return refPos.substring(xdefSystemSeparatorPos + 1, xdefNamespaceSeparatorPos);
@@ -159,7 +162,7 @@ public class XsdNamespaceUtils {
     public static boolean isDefaultNamespacePrefix(final String prefix) {
         return Constants.XML_NS_PREFIX.equals(prefix)
                 || Constants.XMLNS_ATTRIBUTE.equals(prefix)
-                || XDConstants.XDEF_NS_PREFIX.equals(prefix);
+                || XDEF_DEFAULT_NAMESPACE_PREFIX.equals(prefix);
     }
 
     /**
@@ -169,7 +172,8 @@ public class XsdNamespaceUtils {
      * @return true if node name is using XSD document target namespace
      */
     public static boolean usingTargetNamespace(final XmlSchema schema, final String name) {
-        return schema.getSchemaNamespacePrefix() != null && name.startsWith(schema.getSchemaNamespacePrefix() + ':');
+        return schema.getSchemaNamespacePrefix() != null
+                && name.startsWith(schema.getSchemaNamespacePrefix() + NAMESPACE_DELIMITER);
     }
 
     /**

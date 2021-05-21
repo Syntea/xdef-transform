@@ -26,7 +26,7 @@ public class AbstractXsd2XdAdapter {
     /**
      * Enabled algorithm features
      */
-    protected Set<Xsd2XdFeature> features = new HashSet<Xsd2XdFeature>();
+    protected Set<Xsd2XdFeature> features = new HashSet<>();
 
     /**
      * Set output writer

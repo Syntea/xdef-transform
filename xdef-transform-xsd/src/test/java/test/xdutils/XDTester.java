@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
+
 /** Support of tests.
  *
  * Derived from x-definition library (class XDTester).
@@ -181,7 +183,7 @@ public abstract class XDTester extends STester {
 	 */
 	private static XMElement getXElement(final XMDefinition xdef,
 		final String key) {
-		int ndx = key.lastIndexOf('#');
+		int ndx = key.lastIndexOf(XDEF_REF_DELIMITER);
 		String lockey;
 		XMDefinition def;
 		if (ndx < 0) { //reference to this set, element with the name from key.

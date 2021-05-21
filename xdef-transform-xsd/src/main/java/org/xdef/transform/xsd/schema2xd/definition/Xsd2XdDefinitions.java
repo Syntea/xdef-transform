@@ -1,14 +1,9 @@
 package org.xdef.transform.xsd.schema2xd.definition;
 
-import org.xdef.XDConstants;
-
 /**
  * Definitions of constants used in XSD -> x-definition transform algorithm
  */
 public interface Xsd2XdDefinitions {
-
-    String XD_NAMESPACE_URI = XDConstants.XDEF40_NS_URI;
-    String XSD_DEFAULT_NAMESPACE_PREFIX = "xs";
 
     String XD_ELEM_POOL = "xd:collection";
     String XD_ELEM_XDEF = "xd:def";

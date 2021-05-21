@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 import org.xdef.XDDocument;
 import org.xdef.sys.ArrayReporter;
-import org.xdef.transform.xsd.schema2xd.Xsd2XDefAdapter;
+import org.xdef.transform.xsd.schema2xd.adapter.DefaultXsd2XDefAdapter;
 import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
 import org.xdef.util.XValidate;
@@ -70,8 +70,8 @@ public class TestXsd2Xd extends TesterXdSchema {
         return getFile(_inputFilesRoot.getAbsolutePath() + "\\" + fileName, fileName, ".xdef");
     }
 
-    private Xsd2XDefAdapter createXsdAdapter(Set<Xsd2XdFeature> additionalFeatures) {
-        final Xsd2XDefAdapter adapter = new Xsd2XDefAdapter();
+    private DefaultXsd2XDefAdapter createXsdAdapter(Set<Xsd2XdFeature> additionalFeatures) {
+        final DefaultXsd2XDefAdapter adapter = new DefaultXsd2XDefAdapter();
         final Set<Xsd2XdFeature> features = Xsd2XdUtils.defaultFeatures();
         if (additionalFeatures != null) {
             features.addAll(additionalFeatures);
@@ -232,7 +232,7 @@ public class TestXsd2Xd extends TesterXdSchema {
                                   List<String> validTestingData, List<String> invalidTestingData,
                                   boolean validateAgainstRef, Set<Xsd2XdFeature> additionalFeatures) {
         try {
-            Xsd2XDefAdapter adapter = createXsdAdapter(additionalFeatures);
+            DefaultXsd2XDefAdapter adapter = createXsdAdapter(additionalFeatures);
 
             // Convert XSD -> XD Schema
             XmlSchema inputXmlSchema = compileXsd(fileName);
@@ -290,6 +290,8 @@ public class TestXsd2Xd extends TesterXdSchema {
                 "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
 
         init();
+
+        convertXsd2XdPoolNoRef ("t011", Arrays.asList(new String[] {"t011"}), null);
 
         // ==============================
         // ============ XDef ============

@@ -2,7 +2,6 @@ package test.xdutils;
 
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
-import org.apache.ws.commons.schema.constants.Constants;
 import org.testng.annotations.Test;
 import org.xdef.XDBuilder;
 import org.xdef.XDConstants;
@@ -29,6 +28,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
+import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
 
 public class TestXd2Xsd extends TesterXdSchema {
 
@@ -140,7 +141,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         for (XmlSchema refSchema : refSchemasAll) {
             if (refSchema.getSourceURI() != null) {
                 realRefSchemas++;
-            } else if (Constants.URI_2001_SCHEMA_XSD.equals(refSchema.getLogicalTargetNamespace()) == false && xsdRootImported == false) {
+            } else if (!XML_SCHEMA_DEFAULT_NAMESPACE_URI.equals(refSchema.getLogicalTargetNamespace()) && !xsdRootImported) {
                 realRefSchemas++;
                 xsdRootImported = true;
             }
@@ -152,7 +153,7 @@ public class TestXd2Xsd extends TesterXdSchema {
 
         if (LOG_OUTPUT_ENABLED == true) {
             for (XmlSchema outputSchema : outputSchemasAll) {
-                if (Constants.URI_2001_SCHEMA_XSD.equals(outputSchema.getLogicalTargetNamespace()) == false) {
+                if (!XML_SCHEMA_DEFAULT_NAMESPACE_URI.equals(outputSchema.getLogicalTargetNamespace())) {
                     outputSchema.write(System.out);
                 }
             }

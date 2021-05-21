@@ -60,12 +60,12 @@ import java.util.Stack;
 
 import static org.xdef.impl.compile.CompileBase.UNIQUESET_M_VALUE;
 import static org.xdef.impl.compile.CompileBase.UNIQUESET_VALUE;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_EQ;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 
 /**
  * Transforms x-definition tree node structure to XSD tree node structure
@@ -298,7 +298,7 @@ public class Xd2XsdTreeAdapter {
                 String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refTypeName);
                 if (topLevel
                         && isPostProcessingPhase
-                        && XSD_NAMESPACE_PREFIX_EMPTY.equals(nsPrefix)
+                        && NAMESPACE_PREFIX_EMPTY.equals(nsPrefix)
                         && XsdNamespaceUtils.containsNsPrefix(xData.getName())) {
                     nsPrefix = schema.getSchemaNamespacePrefix();
                 }
@@ -665,7 +665,7 @@ public class Xd2XsdTreeAdapter {
             final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
             return new QName(nsUri, refLocalName);
         } else if (XsdNamespaceUtils.isRefInDifferentSystem(refXPos, xPos)) {
-            return new QName(XSD_NAMESPACE_PREFIX_EMPTY, refLocalName);
+            return new QName(NAMESPACE_PREFIX_EMPTY, refLocalName);
         } else if (Xd2XsdUtils.isAnyElement(xElem)) {
             String anyLocalName = refLocalName;
             final int anyPos = anyLocalName.indexOf("$any/$any");
@@ -675,7 +675,7 @@ public class Xd2XsdTreeAdapter {
             return new QName(refNsPrefix, anyLocalName);
         }
 
-        if (!XSD_NAMESPACE_PREFIX_EMPTY.equals(refNsPrefix)) {
+        if (!NAMESPACE_PREFIX_EMPTY.equals(refNsPrefix)) {
             adapterCtx.getReportWriter().warning(XSD.XSD022, refNsPrefix);
             LOG.warn("{}Element reference namespace prefix should be empty! refNsPrefix='{}'",
                     logHeader(TRANSFORMATION, xElem), refNsPrefix);

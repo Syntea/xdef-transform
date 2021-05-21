@@ -20,6 +20,8 @@ import javax.xml.namespace.QName;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
@@ -96,14 +98,17 @@ public class SchemaNode {
             final XmlSchemaNamed xsdNamedNode = (XmlSchemaNamed)xsdNode;
             final QName qName = xsdNamedNode.getQName();
             if (qName != null) {
-                final String nsPrefix = xsdNamedNode.getParent().getNamespaceContext().getPrefix(qName.getNamespaceURI());
+                final String nsPrefix = xsdNamedNode.getParent()
+                        .getNamespaceContext()
+                        .getPrefix(qName.getNamespaceURI());
 
-                int systemDelPos = xdPosition.indexOf('#');
+                int systemDelPos = xdPosition.indexOf(XDEF_REF_DELIMITER);
                 if (nsPrefix != null) {
                     if (systemDelPos != -1) {
-                        xdPosition = xdPosition.substring(0, systemDelPos + 1).concat(nsPrefix + ":" + xsdNamedNode.getName());
+                        xdPosition = xdPosition.substring(0, systemDelPos + 1)
+                                .concat(nsPrefix + NAMESPACE_DELIMITER + xsdNamedNode.getName());
                     } else {
-                        xdPosition = nsPrefix + ":" + xsdNamedNode.getName();
+                        xdPosition = nsPrefix + NAMESPACE_DELIMITER + xsdNamedNode.getName();
                     }
                 } else {
                     if (systemDelPos != -1) {

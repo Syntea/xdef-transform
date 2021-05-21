@@ -1,17 +1,20 @@
 package org.xdef.transform.xsd.schema2xd.model;
 
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.sys.ReportWriter;
+import org.xdef.transform.xsd.model.Namespace;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
+import org.xdef.transform.xsd.schema2xd.error.XdAdapterCtxException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdLoggerDefs.XD_ADAPTER_CTX;
@@ -33,28 +36,28 @@ public class XdAdapterCtx {
     /**
      * Target namespaces per x-definition
      * Key:     x-definition name
-     * Value:   target namespace prefix, target namespace URI
+     * Value:   target namespace
      */
-    private Map<String, Pair<String, String>> targetNamespaces;
+    private Map<String, Namespace> targetNamespaces;
 
     /**
      * All used namespaces per x-definition
      * Key:     x-definition name
-     * Value:   target namespace prefix, target namespace URI
+     * Value:   namespace map
      */
-    private Map<String, Map<String, String>> xDefNamespaces;
+    private Map<String, NamespaceMap> xDefNamespaces;
 
     /**
      * Target namespace URI per x-definition
      * Key:     target namespace URI
-     * Value:   x-definition name
+     * Value:   set of x-definition names
      */
     private Map<String, Set<String>> xDefTargetNamespaces;
 
     /**
      * Input XSD document file names
      * Key:     XML schema
-     * Value:   XML schema name
+     * Value:   XML schema file name
      */
     private Map<XmlSchema, String> xsdNames;
 
@@ -76,10 +79,10 @@ public class XdAdapterCtx {
      * Initializes XD adapter context
      */
     public void init() {
-        targetNamespaces = new HashMap<String, Pair<String, String>>();
-        xDefNamespaces = new HashMap<String, Map<String, String>>();
-        xDefTargetNamespaces = new HashMap<String, Set<String>>();
-        xsdNames = new HashMap<XmlSchema, String>();
+        targetNamespaces = new HashMap<>();
+        xDefNamespaces = new HashMap<>();
+        xDefTargetNamespaces = new HashMap<>();
+        xsdNames = new HashMap<>();
     }
 
     /**
@@ -87,23 +90,21 @@ public class XdAdapterCtx {
      * @param xDefName          X-definition name
      * @param targetNamespace   Target namespace information
      */
-    public void addTargetNamespace(final String xDefName, final Pair<String, String> targetNamespace) {
+    public void addTargetNamespace(final String xDefName, final Namespace targetNamespace) {
         if (targetNamespaces.containsKey(xDefName)) {
             reportWriter.warning(XSD.XSD217, xDefName);
-            LOG.warn("{}X-definition target namespace already exists. xDefinitionName='{}'",
+            LOG.warn("{}X-definition target namespace already registered. xDefinitionName='{}'",
                     logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName);
             return;
         }
 
         LOG.info("{}Add x-definition target namespace. xDefinitionName='{}', targetNsPrefix='{}', targetNsUri='{}'",
-                logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, targetNamespace.getLeft(), targetNamespace.getRight());
+                logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, targetNamespace.getPrefix(), targetNamespace.getUri());
         targetNamespaces.put(xDefName, targetNamespace);
 
-        Set<String> xDefNames = xDefTargetNamespaces.get(targetNamespace.getValue());
-        if (xDefNames == null) {
-            xDefNames = new HashSet<String>();
-            xDefTargetNamespaces.put(targetNamespace.getValue(), xDefNames);
-        }
+        final Set<String> xDefNames = xDefTargetNamespaces.computeIfAbsent(
+                targetNamespace.getUri(),
+                key -> new HashSet<>());
 
         xDefNames.add(xDefName);
     }
@@ -111,10 +112,10 @@ public class XdAdapterCtx {
     /**
      * Finds target namespace used by given x-definition
      * @param xDefName      X-definition name
-     * @return target namespace if exists, otherwise null
+     * @return
      */
-    public Pair<String, String> findTargetNamespace(final String xDefName) {
-        return targetNamespaces.get(xDefName);
+    public Optional<Namespace> findTargetNamespace(final String xDefName) {
+        return Optional.ofNullable(targetNamespaces.get(xDefName));
     }
 
     /**
@@ -124,31 +125,17 @@ public class XdAdapterCtx {
      * @param nsUri         Namespace URI
      */
     public void addNamespace(final String xDefName, final String nsPrefix, final String nsUri) {
-        Map<String, String> namespaces = xDefNamespaces.get(xDefName);
-        if (namespaces == null) {
-            namespaces = new HashMap<String, String>();
-            xDefNamespaces.put(xDefName, namespaces);
-        }
-
-        if (xDefNamespaces.containsKey(nsUri)) {
-            reportWriter.warning(XSD.XSD218, xDefName, nsPrefix);
-            LOG.warn("{}X-definition namespace already exists. xDefinitionName='{}', nsPrefix='{}'",
-                    logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, nsPrefix);
-            return;
-        }
-
-        LOG.info("{}Add x-definition namespace. xDefinitionName='{}', nsPrefix='{}', nsUri='{}'",
-                logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, nsPrefix, nsUri);
-        namespaces.put(nsUri, nsPrefix);
+        final NamespaceMap namespaceMap = xDefNamespaces.computeIfAbsent(xDefName, key -> new DefaultNamespaceMap(reportWriter));
+        namespaceMap.add(nsPrefix, nsUri, xDefName);
     }
 
     /**
      * Finds namespaces used by given x-definition
      * @param xDefName      X-definition name
-     * @return namespaces if exist, otherwise null
+     * @return
      */
-    public Map<String, String> findNamespaces(final String xDefName) {
-        return xDefNamespaces.get(xDefName);
+    public Optional<NamespaceMap> findNamespaces(final String xDefName) {
+        return Optional.ofNullable(xDefNamespaces.get(xDefName));
     }
 
     /**
@@ -157,32 +144,30 @@ public class XdAdapterCtx {
      * @param nsUri         Namespace URI
      * @return namespace prefix
      */
-    public String findNamespacePrefix(final String xDefName, final String nsUri) {
-        final Map<String, String> namespaces = xDefNamespaces.get(xDefName);
-        if (namespaces == null) {
-            return null;
-        }
-
-        return namespaces.get(nsUri);
+    public Optional<String> findNamespacePrefix(final String xDefName, final String nsUri) {
+        final Optional<NamespaceMap> namespaceMap = Optional.ofNullable(xDefNamespaces.get(xDefName));
+        return namespaceMap.map(namespaces -> namespaces.findByUri(nsUri))
+                .orElse(Optional.empty());
     }
 
     /**
      * Finds x-definitions by given target namespace URI
      * @param nsUri     Namespace URI
-     * @return x-definitions if exist, otherwise null
+     * @return x-definitions names. If not found, the result will be empty set.
      */
     public Set<String> findXDefByNamespace(final String nsUri) {
-        return xDefTargetNamespaces.get(nsUri);
+        return Optional.ofNullable(xDefTargetNamespaces.get(nsUri))
+                .orElse(Collections.emptySet());
     }
 
     /**
      * Add XSD document name to context
-     * @param schema        XSD document
-     * @param schemaName    XSD document name
+     * @param schema            XSD document
+     * @param schemaFileName    XSD file name
      */
-    public void addXmlSchemaName(final XmlSchema schema, final String schemaName) {
-        LOG.info("{}Add x-definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaName);
-        xsdNames.put(schema, schemaName);
+    public void addXmlSchemaFileName(final XmlSchema schema, final String schemaFileName) {
+        LOG.info("{}Add x-definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaFileName);
+        xsdNames.put(schema, schemaFileName);
     }
 
     /**
@@ -190,8 +175,9 @@ public class XdAdapterCtx {
      * @param schema        XSD document
      * @return XSD document name if exists, otherwise null
      */
-    public String findXmlSchemaName(final XmlSchema schema) {
-        return xsdNames.get(schema);
+    public String findXmlSchemaFileName(final XmlSchema schema) {
+        return Optional.ofNullable(xsdNames.get(schema))
+                .orElseThrow(() -> new XdAdapterCtxException("Required XML schema file not found."));
     }
 
     /**

@@ -23,6 +23,8 @@ public interface IDeclarationTypeFactory {
     String FACET_WHITESPACE = "WHITESPACE";
     String FACET_ENUMERATION = "ENUMERATION";
 
+    String XD_FACET_ENUMERATION_TYPE = "enum";
+
     enum Type {
         TOP_DECL,           // Used for top level xd:declaration nodes
         TEXT_DECL,          // Used for definition of text value of element

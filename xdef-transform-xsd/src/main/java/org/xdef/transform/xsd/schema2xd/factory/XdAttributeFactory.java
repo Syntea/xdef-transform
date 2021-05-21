@@ -17,9 +17,11 @@ import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 
 import javax.xml.namespace.QName;
 
+import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_SCRIPT;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_TEXT;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_NAMESPACE_URI;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_EXPLICIT_OCCURRENCE;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_MIXED_REQUIRED;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
@@ -65,7 +67,7 @@ public class XdAttributeFactory {
      * @param xDefName          XSD document name
      */
     public void addAttr(final Element el, final XmlSchemaAttribute xsdAttr, final String xDefName) {
-        LOG.debug("Add attribute. qName='{}'", logHeader(TRANSFORMATION, el), xsdAttr.getQName());
+        LOG.debug("{}Add attribute. qName='{}'", logHeader(TRANSFORMATION, el), xsdAttr.getQName());
 
         final String attribute = createAttribute(xsdAttr);
 
@@ -80,7 +82,8 @@ public class XdAttributeFactory {
             }
         } else {
             final QName xsdQName = xsdAttr.getQName();
-            if (xsdQName != null && xsdQName.getNamespaceURI() != null && !XmlSchemaForm.UNQUALIFIED.equals(xsdAttr.getForm())) {
+            if (xsdQName != null && xsdQName.getNamespaceURI() != null
+                    && !XmlSchemaForm.UNQUALIFIED.equals(xsdAttr.getForm())) {
                 final String qualifiedName = XdNameUtils.createQualifiedName(xsdQName, xDefName, adapterCtx);
                 el.setAttributeNS(xsdQName.getNamespaceURI(), qualifiedName, attribute);
             } else {
@@ -95,7 +98,7 @@ public class XdAttributeFactory {
      * @param qName     reference qualified name
      */
     public static void addAttrRef(final Element el, final QName qName) {
-        addAttrXDef(el, XD_ATTR_SCRIPT, "ref " + qName.getLocalPart());
+        addAttrXDef(el, XD_ATTR_SCRIPT, XDEF_REF + ' ' + qName.getLocalPart());
     }
 
     /**
@@ -105,7 +108,8 @@ public class XdAttributeFactory {
      * @param qName     reference qualified name
      */
     public static void addAttrRefInDiffXDef(final Element el, final String xDefName, final QName qName) {
-        addAttrXDef(el, XD_ATTR_SCRIPT, "ref " + xDefName + '#' + XdNameUtils.createQualifiedName(qName));
+        addAttrXDef(el, XD_ATTR_SCRIPT,
+                XDEF_REF + ' ' + xDefName + XDEF_REF_DELIMITER + XdNameUtils.createQualifiedName(qName));
     }
 
     /**
@@ -119,11 +123,11 @@ public class XdAttributeFactory {
         LOG.debug("{}Add x-definition attribute. qName='{}', value='{}'",
                 logHeader(TRANSFORMATION, el), qName, value);
         final String localName = XdNameUtils.getLocalName(qName);
-        final Attr attr = el.getAttributeNodeNS(XD_NAMESPACE_URI, localName);
+        final Attr attr = el.getAttributeNodeNS(XDEF_DEFAULT_NAMESPACE_URI, localName);
         if (attr != null) {
-            el.setAttributeNS(XD_NAMESPACE_URI, qName, attr.getValue() + "; " + value);
+            el.setAttributeNS(XDEF_DEFAULT_NAMESPACE_URI, qName, attr.getValue() + "; " + value);
         } else {
-            el.setAttributeNS(XD_NAMESPACE_URI, qName, value);
+            el.setAttributeNS(XDEF_DEFAULT_NAMESPACE_URI, qName, value);
         }
     }
 

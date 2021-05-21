@@ -1,7 +1,6 @@
 package org.xdef.transform.xsd.schema2xd.adapter;
 
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAllMember;
@@ -30,6 +29,7 @@ import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
+import org.xdef.transform.xsd.model.Namespace;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.factory.XdAttributeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.XdDeclarationBuilder;
@@ -40,15 +40,19 @@ import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_REQUIRED;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 
 /**
  * Transforms XSD tree node structure to x-definition tree node structure
@@ -103,27 +107,23 @@ public class Xsd2XdTreeAdapter {
     public String loadXsdRootElementNames() {
         LOG.info("{}Loading root elements of XSD", logHeader(PREPROCESSING, xDefName));
 
-        String targetNsPrefix = "";
-        final Pair<String, String> targetNamespace = adapterCtx.findTargetNamespace(xDefName);
-        if (targetNamespace != null && targetNamespace.getKey() != null && !targetNamespace.getKey().isEmpty()) {
-            targetNsPrefix = targetNamespace.getKey() + ":";
+        String targetNsPrefix = NAMESPACE_PREFIX_EMPTY;
+        final Optional<Namespace> targetNamespaceOpt = adapterCtx.findTargetNamespace(xDefName);
+        if (targetNamespaceOpt.isPresent() && !targetNamespaceOpt.get().isEmptyPrefix()) {
+            targetNsPrefix = targetNamespaceOpt.get().getPrefix() + NAMESPACE_DELIMITER;
         }
 
         final Map<QName, XmlSchemaElement> rootElements = schema.getElements();
-        if (rootElements == null) {
+        if (rootElements == null || rootElements.isEmpty()) {
             return "";
         }
 
-        final StringBuilder rootElemSb = new StringBuilder();
-        for (XmlSchemaElement xsdElem : rootElements.values()) {
-            if (rootElemSb.length() == 0) {
-                rootElemSb.append(targetNsPrefix + xsdElem.getName());
-            } else {
-                rootElemSb.append(" | " + targetNsPrefix + xsdElem.getName());
-            }
-        }
+        final String finalTargetNsPrefix = targetNsPrefix;
+        final String rootElement = rootElements.values().stream()
+                .map(xmlSchemaElement -> finalTargetNsPrefix + xmlSchemaElement.getName())
+                .collect(Collectors.joining(" | "));
 
-        return rootElemSb.toString();
+        return rootElement;
     }
 
     /**
@@ -167,7 +167,7 @@ public class Xsd2XdTreeAdapter {
         final Element xdElem = xdFactory.createElement(xsdElementNode, xDefName);
 
         final QName xsdElemQName = xsdElementNode.getSchemaTypeName();
-        if (xsdElemQName != null && XSD_NAMESPACE_PREFIX_EMPTY.equals(xsdElemQName.getPrefix())) {
+        if (xsdElemQName != null && NAMESPACE_PREFIX_EMPTY.equals(xsdElemQName.getPrefix())) {
             if (xsdElementNode.getSchemaType() != null) {
                 if (xsdElementNode.getSchemaType() instanceof XmlSchemaComplexType) {
                     LOG.info("{}Element is referencing to complex type. reference='{}'",
@@ -199,15 +199,16 @@ public class Xsd2XdTreeAdapter {
                 createElementFromComplex(xdElem, (XmlSchemaComplexType)xsdElementNode.getSchemaType());
             } else if (xsdElementNode.getSchemaType() instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType)xsdElementNode.getSchemaType();
-                if (xsdElemQName != null && (Constants.XSD_NMTOKENS.equals(xsdElemQName) || Constants.XSD_IDREFS.equals(xsdElemQName))) {
+                if (xsdElemQName != null
+                        && (Constants.XSD_NMTOKENS.equals(xsdElemQName) || Constants.XSD_IDREFS.equals(xsdElemQName))) {
                     xdElem.setTextContent(xdDeclarationFactory.createSimpleTextDeclaration(xsdElemQName));
                 } else {
-                    final XdDeclarationBuilder b = xdDeclarationFactory.createBuilder()
+                    final XdDeclarationBuilder builder = xdDeclarationFactory.createBuilder()
                             .setSimpleType(simpleType)
                             .setBaseType(xsdElemQName)
                             .setType(IDeclarationTypeFactory.Type.TEXT_DECL);
 
-                    xdElem.setTextContent(xdDeclarationFactory.createDeclarationContent(b));
+                    xdElem.setTextContent(xdDeclarationFactory.createDeclarationContent(builder));
                 }
             }
         }
@@ -269,6 +270,7 @@ public class Xsd2XdTreeAdapter {
                             }
                         }
                     }
+
                     addAttrsToElem(xdElem, xsdSimpleExtension.getAttributes());
                 }
                 // TODO: more types of extensions/restrictions?
@@ -396,7 +398,7 @@ public class Xsd2XdTreeAdapter {
         LOG.debug("{}Creating group reference.", logHeader(TRANSFORMATION, xsdGroupRefNode));
 
         // TODO: mixed ref cannot be part of sequence/choice/mixed? requires advanced processing
-        final XmlSchemaGroup group = Xsd2XdUtils.findGroupByQName(schema, xsdGroupRefNode.getRefName());
+        final XmlSchemaGroup group = Xsd2XdUtils.findGroupByQName(schema, xsdGroupRefNode.getRefName()).orElse(null);
         if (group != null) {
             // Copy group content into element
             convertTree(group.getParticle(), parentNode);
@@ -436,7 +438,7 @@ public class Xsd2XdTreeAdapter {
      * @param xdElem        x-definition element node
      * @param xsdAttrs      XSD attribute nodes
      */
-    private void addAttrsToElem(final Element xdElem, final List<XmlSchemaAttributeOrGroupRef> xsdAttrs) {
+    private void addAttrsToElem(final Element xdElem, final @Nullable List<XmlSchemaAttributeOrGroupRef> xsdAttrs) {
         if (xsdAttrs != null) {
             for (XmlSchemaAttributeOrGroupRef xsdAttrRef : xsdAttrs) {
                 if (xsdAttrRef instanceof XmlSchemaAttribute) {
@@ -451,11 +453,18 @@ public class Xsd2XdTreeAdapter {
      * @param baseType      reference qualified name
      * @param xdNode        x-definition element node
      * @param simple        flag, if reference is originally pointing to simple schema type in XSD document
-     * @return true if reference attribute has been successfully created
+     * @return  true if reference attribute has been successfully created
+     *          false otherwise
      */
     private boolean externalRef(final QName baseType, final Element xdNode, final boolean simple) {
         if (baseType.getNamespaceURI() != null && !baseType.getNamespaceURI().equals(schema.getTargetNamespace())) {
-            final String xDefRefName = XdNamespaceUtils.findReferenceSchemaName(schema.getParent(), baseType, adapterCtx, simple);
+            final String xDefRefName = XdNamespaceUtils.findReferenceSchemaName(
+                    schema.getParent(),
+                    baseType,
+                    adapterCtx,
+                    simple
+            ).orElse(null);
+
             return externalRef(baseType, xDefRefName, xdNode);
         }
 
@@ -467,9 +476,10 @@ public class Xsd2XdTreeAdapter {
      * @param baseType      reference qualified name
      * @param xDefRefName   name of reference x-definition
      * @param xdNode        x-definition element node
-     * @return
+     * @return  true if x-definition attribure reference has been created
+     *          false otherwise
      */
-    private boolean externalRef(final QName baseType, final String xDefRefName, final Element xdNode) {
+    private boolean externalRef(final QName baseType, final @Nullable String xDefRefName, final Element xdNode) {
         if (baseType.getNamespaceURI() != null && !baseType.getNamespaceURI().equals(schema.getTargetNamespace())) {
             if (xDefRefName != null && !xDefRefName.equals(xDefName)) {
                 XdAttributeFactory.addAttrRefInDiffXDef(xdNode, xDefRefName, baseType);

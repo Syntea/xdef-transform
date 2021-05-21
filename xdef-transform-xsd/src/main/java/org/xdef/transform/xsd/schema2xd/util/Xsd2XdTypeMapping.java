@@ -21,7 +21,7 @@ public class Xsd2XdTypeMapping {
     /**
      * Transformation map of XSD data types to x-definition data type
      */
-    private static final Map<QName, IDeclarationTypeFactory> defaultQNameMap = new HashMap<QName, IDeclarationTypeFactory>();
+    private static final Map<QName, IDeclarationTypeFactory> defaultQNameMap = new HashMap<>();
 
     static {
         defaultQNameMap.put(Constants.XSD_ANYURI, new TextTypeFactory("anyURI"));

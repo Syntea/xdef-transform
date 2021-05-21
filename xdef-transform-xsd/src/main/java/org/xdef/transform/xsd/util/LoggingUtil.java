@@ -9,6 +9,7 @@ import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
 
 import static org.xdef.model.XMNode.XMDEFINITION;
 import static org.xdef.model.XMNode.XMTEXT;
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 
 /**
  * @author smid
@@ -139,7 +140,7 @@ public class LoggingUtil {
                     }
                 }
 
-                pos = nodeName.indexOf('#');
+                pos = nodeName.indexOf(XDEF_REF_DELIMITER);
                 if (pos != -1) {
                     nodeName = nodeName.substring(pos + 1);
                 }

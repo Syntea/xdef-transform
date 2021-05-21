@@ -9,11 +9,11 @@
 
     <!-- *********** LOGGERS ********************************************** -->
     <!-- Možné úrovňe logování v logback jsou: ERROR,WARN,INFO,DEBUG a TRACE -->
-    <root level="INFO">
+    <root level="WARN">
         <appender-ref ref="Console" />
     </root>
 
-    <logger name="org.xdef.transform.xsd" level="INFO" additivity="false">
+    <logger name="org.xdef.transform.xsd" level="WARN" additivity="false">
         <appender-ref ref="Console" />
     </logger>
 

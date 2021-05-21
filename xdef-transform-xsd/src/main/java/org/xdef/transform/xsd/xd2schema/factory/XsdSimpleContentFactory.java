@@ -31,9 +31,9 @@ import java.util.List;
 import java.util.Set;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 
 /**
  * Creates multiple types of XSD simple content node
@@ -242,9 +242,9 @@ public class XsdSimpleContentFactory {
         }
 
         if (!refNames.isEmpty()) {
-            List<QName> refQNames = new LinkedList<QName>();
+            List<QName> refQNames = new LinkedList<>();
             for (String refName : refNames) {
-                refQNames.add(new QName(XSD_NAMESPACE_PREFIX_EMPTY, refName));
+                refQNames.add(new QName(NAMESPACE_PREFIX_EMPTY, refName));
             }
 
             union.setMemberTypesQNames(refQNames.toArray(new QName[refQNames.size()]));

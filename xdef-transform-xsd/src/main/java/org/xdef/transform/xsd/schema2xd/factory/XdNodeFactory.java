@@ -15,6 +15,7 @@ import org.xdef.xml.KXmlUtils;
 
 import javax.xml.namespace.QName;
 
+import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_NAME;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_ROOT_ELEMT;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_ANY;
@@ -24,7 +25,6 @@ import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_E
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_POOL;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_SEQUENCE;
 import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_XDEF;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_NAMESPACE_URI;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
@@ -59,7 +59,7 @@ public class XdNodeFactory {
      * @return x-definition pool node
      */
     public Element createPool() {
-        doc = KXmlUtils.newDocument(XD_NAMESPACE_URI, XD_ELEM_POOL, null);
+        doc = KXmlUtils.newDocument(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_POOL, null);
         return doc.getDocumentElement();
     }
 
@@ -71,7 +71,7 @@ public class XdNodeFactory {
      */
     public Element createRootXdefinition(final String xDefName, final String rootNodeName) {
         LOG.info("{}X-definition node in root. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
-        doc = KXmlUtils.newDocument(XD_NAMESPACE_URI, XD_ELEM_XDEF, null);
+        doc = KXmlUtils.newDocument(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_XDEF, null);
         final Element xDefRoot = doc.getDocumentElement();
         initializeXDefinitionNode(xDefRoot, xDefName, rootNodeName);
         return xDefRoot;
@@ -85,7 +85,7 @@ public class XdNodeFactory {
      */
     public Element createXDefinition(final String xDefName, final String rootNodeName) {
         LOG.info("{}Creating X-definition node. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
-        final Element xDef = doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_XDEF);
+        final Element xDef = doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_XDEF);
         initializeXDefinitionNode(xDef, xDefName, rootNodeName);
         return xDef;
     }
@@ -100,8 +100,16 @@ public class XdNodeFactory {
         if (xsdElem.isRef()) {
             final QName xsdQName = xsdElem.getRef().getTargetQName();
             if (xsdQName != null) {
-                final Element xdElem = doc.createElementNS(xsdQName.getNamespaceURI(), XdNameUtils.createQualifiedName(xsdQName));
-                final String refXDef = XdNamespaceUtils.findReferenceSchemaName(xsdElem.getParent().getParent(), xsdQName, adapterCtx, false);
+                final Element xdElem = doc.createElementNS(
+                        xsdQName.getNamespaceURI(),
+                        XdNameUtils.createQualifiedName(xsdQName));
+                final String refXDef = XdNamespaceUtils.findReferenceSchemaName(
+                        xsdElem.getParent().getParent(),
+                        xsdQName,
+                        adapterCtx,
+                        false
+                ).orElse(null);
+
                 XdAttributeFactory.addAttrRefInDiffXDef(xdElem, refXDef, xsdQName);
                 return xdElem;
             } else {
@@ -142,7 +150,7 @@ public class XdNodeFactory {
      * @return <xd:declaration/>
      */
     public Element createEmptyDeclaration() {
-        return doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_DECLARATION);
+        return doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_DECLARATION);
     }
 
     /**
@@ -150,7 +158,7 @@ public class XdNodeFactory {
      * @return <xd:sequence/>
      */
     public Element createEmptySequence() {
-        return doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_SEQUENCE);
+        return doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_SEQUENCE);
     }
 
     /**
@@ -158,7 +166,7 @@ public class XdNodeFactory {
      * @return <xd:choice/>
      */
     public Element createEmptyChoice() {
-        return doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_CHOICE);
+        return doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_CHOICE);
     }
 
     /**
@@ -166,7 +174,7 @@ public class XdNodeFactory {
      * @return <xd:mixed/>
      */
     public Element createEmptyMixed() {
-        return doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_MIXED);
+        return doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_MIXED);
     }
 
     /**
@@ -175,7 +183,7 @@ public class XdNodeFactory {
      * @return <xd:mixed name="{@paramref name}"/>
      */
     public Element createEmptyNamedMixed(final String name) {
-        final Element elem = doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_MIXED);
+        final Element elem = doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_MIXED);
         XdAttributeFactory.addAttr(elem, XD_ATTR_NAME, name);
         return elem;
     }
@@ -185,7 +193,7 @@ public class XdNodeFactory {
      * @return <xd:any/>
      */
     public Element createEmptyAny() {
-        return doc.createElementNS(XD_NAMESPACE_URI, XD_ELEM_ANY);
+        return doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_ANY);
     }
 
     /**

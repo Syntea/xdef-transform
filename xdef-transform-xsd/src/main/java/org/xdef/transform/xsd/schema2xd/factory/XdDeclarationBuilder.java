@@ -201,8 +201,8 @@ public class XdDeclarationBuilder {
         IDeclarationTypeFactory xdDeclarationTypeFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType);
 
         if (xdDeclarationTypeFactory == null) {
-            final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType);
-            if (itemSchemaType instanceof XmlSchemaSimpleType) {
+            final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType).orElse(null);
+            if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType schemaSimpleType = (XmlSchemaSimpleType)itemSchemaType;
                 if (IDeclarationTypeFactory.Type.TOP_DECL.equals(type)) {
                     xdDeclarationFactory.createDeclaration(clone().setSimpleType(schemaSimpleType));
@@ -310,8 +310,8 @@ public class XdDeclarationBuilder {
 
             final StringBuilder facetStringBuilder = new StringBuilder();
             for (QName qName : qNames) {
-                final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, qName);
-                if (itemSchemaType instanceof XmlSchemaSimpleType) {
+                final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, qName).orElse(null);
+                if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
                     final XmlSchemaSimpleType itemSimpleSchemaType = (XmlSchemaSimpleType) itemSchemaType;
                     if (itemSimpleSchemaType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                         if (facetStringBuilder.length() > 0) {
@@ -370,8 +370,8 @@ public class XdDeclarationBuilder {
         String facetString = "";
         final QName baseType = simpleTypeList.getItemTypeName();
         if (baseType != null) {
-            final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType);
-            if (itemSchemaType instanceof XmlSchemaSimpleType) {
+            final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType).orElse(null);
+            if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType itemSimpleSchemaType = (XmlSchemaSimpleType) itemSchemaType;
                 if (itemSimpleSchemaType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                     facetString = baseType.getLocalPart();

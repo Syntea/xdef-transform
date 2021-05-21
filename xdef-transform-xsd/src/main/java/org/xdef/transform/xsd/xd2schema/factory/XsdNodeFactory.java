@@ -59,10 +59,10 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MIN_LENGTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ELEM_FACTORY;
 
 /**
@@ -256,7 +256,7 @@ public class XsdNodeFactory {
             if (qName == null) {
                 final String refParserName = XsdNameUtils.createRefNameFromParser(xDataText, adapterCtx);
                 if (refParserName != null) {
-                    qName = new QName(XSD_NAMESPACE_PREFIX_EMPTY, refParserName);
+                    qName = new QName(NAMESPACE_PREFIX_EMPTY, refParserName);
                     LOG.debug("{}Simple-content using parser. refParserName='{}'",
                             logHeader(XSD_ELEM_FACTORY, xDataText), refParserName);
                 }

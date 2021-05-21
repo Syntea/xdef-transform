@@ -6,6 +6,9 @@ import javax.xml.namespace.QName;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+
 /**
  * Utils related to working with node name, reference name and qualified name
  */
@@ -20,7 +23,7 @@ public class XdNameUtils {
      * @return local part if is part of qualified name, otherwise whole qualified name
      */
     public static String getLocalName(final String qName) {
-        final int nsPrefixPos = qName.indexOf(':');
+        final int nsPrefixPos = qName.indexOf(NAMESPACE_DELIMITER);
         if (nsPrefixPos != -1) {
             return qName.substring(nsPrefixPos + 1);
         }
@@ -36,29 +39,31 @@ public class XdNameUtils {
      * @param qName             qualified name
      * @param xDefName          x-definition name
      * @param xdAdapterCtx      x-definition adapter context
-     * @return string qualified name
+     * @return qualified name
      */
     public static String createQualifiedName(final QName qName, final String xDefName, final XdAdapterCtx xdAdapterCtx) {
-        final String nsPrefix = xdAdapterCtx.findNamespacePrefix(xDefName, qName.getNamespaceURI());
-        if (nsPrefix == null || nsPrefix.isEmpty()) {
+        final String nsPrefix = xdAdapterCtx.findNamespacePrefix(xDefName, qName.getNamespaceURI())
+                .orElse(NAMESPACE_PREFIX_EMPTY);
+
+        if (NAMESPACE_PREFIX_EMPTY.equals(nsPrefix)) {
             return qName.getLocalPart();
         }
 
-        return nsPrefix + ":" + qName.getLocalPart();
+        return nsPrefix + NAMESPACE_DELIMITER + qName.getLocalPart();
     }
 
     /**
      * Creates string qualified name from given qualified name.
      * @param qName     qualified name
-     * @return string qualified name
+     * @return qualified name
      */
     public static String createQualifiedName(final QName qName) {
         final String nsPrefix = qName.getPrefix();
-        if (nsPrefix == null || nsPrefix.isEmpty()) {
+        if (nsPrefix == null || NAMESPACE_PREFIX_EMPTY.equals(nsPrefix)) {
             return qName.getLocalPart();
         }
 
-        return nsPrefix + ":" + qName.getLocalPart();
+        return nsPrefix + NAMESPACE_DELIMITER + qName.getLocalPart();
     }
 
     /**

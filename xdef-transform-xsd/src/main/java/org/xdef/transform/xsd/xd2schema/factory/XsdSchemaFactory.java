@@ -4,7 +4,6 @@ package org.xdef.transform.xsd.xd2schema.factory;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaForm;
-import org.apache.ws.commons.schema.constants.Constants;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +18,10 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import java.util.Map;
 
+import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_DEFAULT_SCHEMA_NAMESPACE_PREFIX;
 
 /**
  * Creates and initialize XSD document
@@ -84,7 +84,7 @@ public class XsdSchemaFactory {
 
         NamespaceMap namespaceCtx = new NamespaceMap();
         // Default XSD namespace with prefix xs
-        namespaceCtx.add(XSD_DEFAULT_SCHEMA_NAMESPACE_PREFIX, Constants.URI_2001_SCHEMA_XSD);
+        namespaceCtx.add(XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX, XML_SCHEMA_DEFAULT_NAMESPACE_URI);
 
         if (targetNsPrefix != null && targetNsUri != null) {
             XsdNamespaceUtils.addNamespaceToCtx(namespaceCtx, targetNsPrefix, targetNsUri, xDef.getName(), INITIALIZATION);

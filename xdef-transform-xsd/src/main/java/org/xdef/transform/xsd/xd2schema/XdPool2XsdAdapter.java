@@ -20,11 +20,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_URI_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_NAMESPACE_URI_EMPTY;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDPOOL_ADAPTER;
 
 /**
@@ -144,7 +144,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
         }
 
         for (String xDefName : xDefsWithoutNs) {
-            final String nsUri = XSD_NAMESPACE_URI_EMPTY;
+            final String nsUri = NAMESPACE_URI_EMPTY;
             adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName));
             LOG.debug("{}Creating namespace URI from x-definition name. xDefName='{}', nsUri='{}'",
                     logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName, nsUri);

@@ -51,13 +51,13 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
      * Map of facets with single value, which should be transformed.
      * Content is filled by {@link #parseFacets}
      */
-    private final Map<String, Object> facetSingleValues = new HashMap<String, Object>();
+    private final Map<String, Object> facetSingleValues = new HashMap<>();
 
     /**
      * Map of facets with possible multiple values, which should be transformed.
      * Content is filled by {@link #parseFacets}
      */
-    private final Map<String, List<Object>> facetMultipleValues = new HashMap<String, List<Object>>();
+    private final Map<String, List<Object>> facetMultipleValues = new HashMap<>();
 
     /**
      * Flag of x-definition declaration builder, if first XSD facet has been converted
@@ -90,9 +90,9 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
             }
         }
 
-        final String type = hasMultipleFacet(FACET_ENUMERATION) ? "enum" : getDataType();
+        final String type = hasMultipleFacet(FACET_ENUMERATION) ? XD_FACET_ENUMERATION_TYPE : getDataType();
 
-        StringBuilder facetStringBuilder = new StringBuilder();
+        final StringBuilder facetStringBuilder = new StringBuilder();
         buildFacets(facetStringBuilder);
         defaultBuildFacets(facetStringBuilder);
         return build(type, facetStringBuilder.toString());
@@ -114,16 +114,22 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
 
         if (Type.TOP_DECL.equals(this.type)) {
             LOG.info("{}Building top declaration. type='{}'", logHeader(TRANSFORMATION), type);
-            sb.append("type " + typeName + " " + type);
+            sb.append("type ")
+                    .append(typeName)
+                    .append(" ")
+                    .append(type);
         } else if (Type.TEXT_DECL.equals(this.type)) {
             LOG.info("{}Building text declaration. type='{}'", logHeader(TRANSFORMATION), type);
-            sb.append("required " + type);
+            sb.append("required ")
+                    .append(type);
         } else if (Type.DATATYPE_DECL.equals(this.type)) {
             LOG.info("{}Building text declaration. type='{}'", logHeader(TRANSFORMATION), type);
             sb.append(type);
         }
 
-        boolean useItemSyntax = facets != null && !facets.isEmpty() && (this instanceof ListTypeFactory || this instanceof UnionTypeFactory);
+        boolean useItemSyntax = facets != null
+                && !facets.isEmpty()
+                && (this instanceof ListTypeFactory || this instanceof UnionTypeFactory);
         boolean itemArraySyntax = this instanceof UnionTypeFactory;
 
         sb.append("(");
@@ -133,10 +139,12 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
                 sb.append("[");
             }
         }
+
         sb.append(facets);
         if (useItemSyntax && itemArraySyntax) {
             sb.append("]");
         }
+
         sb.append(")");
         if (!Type.DATATYPE_DECL.equals(this.type)) {
             sb.append(";");
@@ -154,8 +162,9 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
      */
     public AbstractDeclarationTypeFactory removeFacet(final String facetToRemove) {
         if (this.facetsToRemove == null) {
-            this.facetsToRemove = new HashSet<String>();
+            this.facetsToRemove = new HashSet<>();
         }
+
         this.facetsToRemove.add(facetToRemove);
         return this;
     }
@@ -167,8 +176,9 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
      */
     public AbstractDeclarationTypeFactory removeFacets(final Set<String> facetsToRemove) {
         if (this.facetsToRemove == null) {
-            this.facetsToRemove = new HashSet<String>();
+            this.facetsToRemove = new HashSet<>();
         }
+
         this.facetsToRemove.addAll(facetsToRemove);
         return this;
     }
@@ -309,7 +319,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
      */
     protected void facetBuilder(final StringBuilder sb, final Object value) {
         if (!builderFirstFacet) {
-            sb.append(", " + value);
+            sb.append(", ").append(value);
         } else {
             sb.append(value);
             builderFirstFacet = false;
@@ -391,12 +401,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
      * @return list of facet's values
      */
     protected List<Object> getOrCreateValueList(final String facet) {
-        List<Object> list = facetMultipleValues.get(facet);
-        if (list == null) {
-            list = new LinkedList<Object>();
-            facetMultipleValues.put(facet, list);
-        }
-
+        final List<Object> list = facetMultipleValues.computeIfAbsent(facet, key -> new LinkedList<>());
         return list;
     }
 

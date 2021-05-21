@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_KEY_AND_REF;
@@ -100,8 +101,8 @@ public class UniqueConstraint {
      * @return path
      */
     public String getPath() {
-        if (systemId != null && !"".equals(systemId)) {
-            return systemId + '#' + name;
+        if (systemId != null && !systemId.isEmpty()) {
+            return systemId + XDEF_REF_DELIMITER + name;
         }
 
         return name;

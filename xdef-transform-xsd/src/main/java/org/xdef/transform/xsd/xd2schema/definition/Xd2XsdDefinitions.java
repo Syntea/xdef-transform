@@ -5,10 +5,6 @@ package org.xdef.transform.xsd.xd2schema.definition;
  */
 public interface Xd2XsdDefinitions {
 
-    String XSD_NAMESPACE_PREFIX_EMPTY = "";
-    String XSD_NAMESPACE_URI_EMPTY = "";
-    String XSD_DEFAULT_SCHEMA_NAMESPACE_PREFIX = "xs";
-
     /**
      * X-definition parsers mapped to default org.xdef.transform.xsd parsers
      */

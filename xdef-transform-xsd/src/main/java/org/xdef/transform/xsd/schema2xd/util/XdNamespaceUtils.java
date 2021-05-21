@@ -1,13 +1,20 @@
 package org.xdef.transform.xsd.schema2xd.util;
 
-import org.apache.ws.commons.schema.*;
+import org.apache.ws.commons.schema.XmlSchemaAttribute;
+import org.apache.ws.commons.schema.XmlSchemaCollection;
+import org.apache.ws.commons.schema.XmlSchemaComplexType;
+import org.apache.ws.commons.schema.XmlSchemaElement;
+import org.apache.ws.commons.schema.XmlSchemaGroup;
+import org.apache.ws.commons.schema.XmlSchemaSimpleType;
+import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 
 import javax.xml.namespace.QName;
+import java.util.Optional;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XSD_DEFAULT_NAMESPACE_PREFIX;
+import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX;
 
 public class XdNamespaceUtils {
 
@@ -19,27 +26,30 @@ public class XdNamespaceUtils {
     public static boolean isDefaultNamespacePrefix(final String prefix) {
         return Constants.XML_NS_PREFIX.equals(prefix)
                 || Constants.XMLNS_ATTRIBUTE.equals(prefix)
-                || XSD_DEFAULT_NAMESPACE_PREFIX.equals(prefix);
+                || XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX.equals(prefix);
     }
 
     /**
      * Finds reference schema name from given parameters.
      *
-     * If multiple schemas using target namespace equals to reference namespace URI have been found, then we try to find proper schema name by searching
-     * node by reference qualified name in particular schema.
+     * If multiple schemas using target namespace equals to reference namespace URI have been found,
+     * then we try to find proper schema name by searching node by reference qualified name in particular schema.
      *
      * @param schemaCollection      XSD document collection
      * @param refQName              reference qualified name
      * @param xdAdapterCtx          x-definition adapter context
      * @param simple                flag, if only reference should be XSD simple type or XSD attribute node
-     * @return reference schema name if found, otherwise null
+     * @return
      */
-    public static String findReferenceSchemaName(final XmlSchemaCollection schemaCollection, final QName refQName, final XdAdapterCtx xdAdapterCtx, boolean simple) {
+    public static Optional<String> findReferenceSchemaName(final XmlSchemaCollection schemaCollection,
+                                                           final QName refQName,
+                                                           final XdAdapterCtx xdAdapterCtx,
+                                                           boolean simple) {
         String schemaName = null;
 
         final Set<String> refXDefs = xdAdapterCtx.findXDefByNamespace(refQName.getNamespaceURI());
-        if (refXDefs == null) {
-            return schemaName;
+        if (refXDefs.isEmpty()) {
+            return Optional.empty();
         }
 
         if (refXDefs.size() == 1) {
@@ -49,39 +59,39 @@ public class XdNamespaceUtils {
                 if (schemaName == null) {
                     final XmlSchemaType refSchemaType = schemaCollection.getTypeByQName(refQName);
                     if (refSchemaType != null && refSchemaType instanceof XmlSchemaComplexType) {
-                        schemaName = xdAdapterCtx.findXmlSchemaName(refSchemaType.getParent());
+                        schemaName = xdAdapterCtx.findXmlSchemaFileName(refSchemaType.getParent());
                     }
                 }
 
                 if (schemaName == null) {
                     final XmlSchemaGroup refGroup = schemaCollection.getGroupByQName(refQName);
                     if (refGroup != null) {
-                        schemaName = xdAdapterCtx.findXmlSchemaName(refGroup.getParent());
+                        schemaName = xdAdapterCtx.findXmlSchemaFileName(refGroup.getParent());
                     }
                 }
 
                 if (schemaName == null) {
                     final XmlSchemaElement refElem = schemaCollection.getElementByQName(refQName);
                     if (refElem != null) {
-                        schemaName = xdAdapterCtx.findXmlSchemaName(refElem.getParent());
+                        schemaName = xdAdapterCtx.findXmlSchemaFileName(refElem.getParent());
                     }
                 }
             } else {
                 if (schemaName == null) {
                     final XmlSchemaType refSchemaType = schemaCollection.getTypeByQName(refQName);
                     if (refSchemaType != null && refSchemaType instanceof XmlSchemaSimpleType) {
-                        schemaName = xdAdapterCtx.findXmlSchemaName(refSchemaType.getParent());
+                        schemaName = xdAdapterCtx.findXmlSchemaFileName(refSchemaType.getParent());
                     }
 
                     final XmlSchemaAttribute refAttr = schemaCollection.getAttributeByQName(refQName);
                     if (refAttr != null) {
-                        schemaName = xdAdapterCtx.findXmlSchemaName(refAttr.getParent());
+                        schemaName = xdAdapterCtx.findXmlSchemaFileName(refAttr.getParent());
                     }
                 }
             }
         }
 
-        return schemaName;
+        return Optional.ofNullable(schemaName);
     }
 
 }

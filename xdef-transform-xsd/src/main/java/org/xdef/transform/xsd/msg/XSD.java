@@ -87,7 +87,7 @@ public interface XSD {
 	public static final long XSD041 = 1180500008L;
 	/** !Lossy transformation! Remove simple content from element due to existence of complex content. Use mixed attr */
 	public static final long XSD042 = 1180500009L;
-	/** !Lossy transformation! Node xsd:sequency/choice contains xsd:all node -&gt; converting xsd:all node to oxsd:choice! */
+	/** !Lossy transformation! Node xsd:sequency/choice contains xsd:all node -&gt; converting xsd:all node to xsd:choice! */
 	public static final long XSD043 = 1180500010L;
 	/** Unknown group particle! Particle="&amp;{0}" */
 	public static final long XSD044 = 1180500011L;
