@@ -11,6 +11,7 @@ import org.xdef.model.XMNode;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
+import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
@@ -23,7 +24,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
@@ -46,12 +49,12 @@ public class XsdAdapterCtx {
     /**
      * Schemas location based on x-definition
      */
-    private SchemaNsLocationMap schemaLocationsCtx = null;
+    private SchemaNamespaceLocationMap schemaLocationsCtx = null;
 
     /**
      * Schemas locations which are created in post-processing
      */
-    private SchemaNsLocationMap extraSchemaLocationsCtx = null;
+    private SchemaNamespaceLocationMap extraSchemaLocationsCtx = null;
 
     /**
      * Collection of created XSD documents
@@ -109,14 +112,14 @@ public class XsdAdapterCtx {
      * Initializes XSD adapter context
      */
     public void init() {
-        schemaNames = new HashSet<String>();
-        schemaLocationsCtx = new SchemaNsLocationMap(reportWriter, "schemaLocations");
-        extraSchemaLocationsCtx = new SchemaNsLocationMap(reportWriter, "extraSchemaLocations");
+        schemaNames = new HashSet<>();
+        schemaLocationsCtx = new DefaultSchemaNamespaceLocationMap(reportWriter, "schemaLocations");
+        extraSchemaLocationsCtx = new DefaultSchemaNamespaceLocationMap(reportWriter, "extraSchemaLocations");
         xmlSchemaCollection = new XmlSchemaCollection();
-        nodes = new HashMap<String, Map<String, SchemaNode>>();
-        nodesToBePostProcessed = new HashMap<String, Map<String, XNode>>();
-        rootNodeNames = new HashMap<String, Set<String>>();
-        uniqueRestrictions = new HashMap<String, Map<String, List<UniqueConstraint>>>();
+        nodes = new HashMap<>();
+        nodesToBePostProcessed = new HashMap<>();
+        rootNodeNames = new HashMap<>();
+        uniqueRestrictions = new HashMap<>();
         nameFactory = new XsdNameFactory(this);
     }
 
@@ -124,7 +127,7 @@ public class XsdAdapterCtx {
         return schemaNames;
     }
 
-    public SchemaNsLocationMap getExtraSchemaLocationsCtx() {
+    public SchemaNamespaceLocationMap getExtraSchemaLocationsCtx() {
         return extraSchemaLocationsCtx;
     }
 
@@ -174,7 +177,7 @@ public class XsdAdapterCtx {
      * @return true if schema exists
      */
     public boolean existsSchemaLocation(final String nsUri, final String xsdName) {
-        return schemaLocationsCtx.findSchemaImport(nsUri, xsdName) != null;
+        return schemaLocationsCtx.findSchemaImport(nsUri, xsdName).isPresent();
     }
 
     /**
@@ -182,7 +185,7 @@ public class XsdAdapterCtx {
      * @param nsUri     XSD document namespace URI
      * @return XSD document location if exists, otherwise null
      */
-    public XsdSchemaImportLocation findSchemaLocation(final String nsUri, final String xsdName) {
+    public Optional<XsdSchemaImportLocation> findSchemaLocation(final String nsUri, final String xsdName) {
         return schemaLocationsCtx.findSchemaImport(nsUri, xsdName);
     }
 
@@ -200,7 +203,7 @@ public class XsdAdapterCtx {
      * @param nsUri     XSD document namespace URI
      * @return XSD document location if exists, otherwise null
      */
-    public XsdSchemaImportLocation findPostProcessingSchemaLocation(final String nsUri, final String schemaName) {
+    public Optional<XsdSchemaImportLocation> findPostProcessingSchemaLocation(final String nsUri, final String schemaName) {
         return extraSchemaLocationsCtx.findSchemaImport(nsUri, schemaName);
     }
 
@@ -237,7 +240,7 @@ public class XsdAdapterCtx {
      * @return true if XSD document should be created in post-processing
      */
     public boolean isPostProcessingNamespace(final String nsUri) {
-        return extraSchemaLocationsCtx.containsKey(nsUri);
+        return extraSchemaLocationsCtx.containsSchemaFileLocationMap(nsUri);
     }
 
     /**
@@ -302,16 +305,17 @@ public class XsdAdapterCtx {
      *          null if XSD document does not exist and {@paramref shouldExists} value is false
      */
     public Set<String> findSchemaNamesByNamespace(final String nsUri, boolean shouldExists, final AlgPhase phase) {
-        SchemaNameLocationMap schemaLocations = schemaLocationsCtx.get(nsUri);
+        LOG.debug("{}Finding schema names by namespace. nsUri='{}', shouldExists={}",
+                logHeader(phase), nsUri, shouldExists);
 
-        Set<String> schemaNames = null;
-        if (schemaLocations == null) {
-            schemaLocations = extraSchemaLocationsCtx.get(nsUri);
-        }
-
-        if (schemaLocations != null) {
-            schemaNames = schemaLocations.keySet();
-        }
+        final Set<String> schemaNames = Stream.of(
+                schemaLocationsCtx.findSchemaFileLocationMap(nsUri),
+                extraSchemaLocationsCtx.findSchemaFileLocationMap(nsUri)
+        ).filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .map(schemaLocations -> schemaLocations.getSchemaFileNames())
+                .orElse(null);
 
         if (schemaNames == null && shouldExists) {
             reportWriter.warning(XSD.XSD039, nsUri);
@@ -345,7 +349,7 @@ public class XsdAdapterCtx {
      *          otherwise already existing node with same node path merged with {@paramref node}
      */
     public SchemaNode addOrUpdateNode(final SchemaNode node) {
-        final String xPos = node.getXdNode().getXDPosition();
+        final String xPos = node.getXdNodeReq().getXDPosition();
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xPos);
         final String nodePath = XsdNameUtils.getXNodePath(xPos);
         return addOrUpdateNode(systemId, nodePath, node);
@@ -359,7 +363,7 @@ public class XsdAdapterCtx {
      *          otherwise already existing node with same node path merged with {@paramref node}
      */
     public SchemaNode addOrUpdateNodeInDiffNs(final SchemaNode node, final String systemId) {
-        final String xPos = node.getXdNode().getXDPosition();
+        final String xPos = node.getXdNodeReq().getXDPosition();
         final String nodePath = SchemaNode.getPostProcessingReferenceNodePath(xPos);
         return addOrUpdateNode(systemId, nodePath, node);
     }
@@ -376,28 +380,46 @@ public class XsdAdapterCtx {
         Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
 
         final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
-        if (refOrig != null && refOrig.getXsdNode() != null) {
+        if (refOrig != null && refOrig.getXsdNode().isPresent()) {
             LOG.debug("{}Node with this name is already defined. system='{}', nodePath='{}', nodePos='{}'",
                     logHeader(XSD_REFERENCE), systemId, nodePath, node.getXdPosition());
             return node;
         }
 
-        String msg = node.hasReference() ? " (with reference)" : "";
+        final StringBuilder sb = new StringBuilder();
         if (refOrig != null) {
             refOrig.copyNodes(node);
-            msg = "Updating node" + msg + ". system='" + systemId + "', path='" + nodePath + "', node='" + node.getXdPosition() + '\'';
-            if (node.getXsdNode() != null) {
-                msg += ", Xsd='" + node.getXsdNode().getClass().getSimpleName() + '\'';
+
+            sb.append("Updating node");
+            if (node.hasReference()) {
+                sb.append(" (with reference)");
             }
-            LOG.info("{}{}", logHeader(XSD_REFERENCE), msg);
+            sb.append(".");
+
+            sb.append(StringFormatter.format("systemId='{}', nodeXDefPath='{}', nodeXDefPos='{}'",
+                    systemId, nodePath, node.getXdPosition()));
+
+            node.getXsdNode().ifPresent(xmlNode -> sb.append(StringFormatter.format(", Xsd='{}'",
+                    node.getXsdNode().get().getClass().getSimpleName())));
+
+            LOG.info("{}{}", logHeader(XSD_REFERENCE), sb);
             return refOrig;
         } else {
             xsdSystemRefs.put(nodePath, node);
-            msg = "Creating node" + msg + ". system='" + systemId + "', path='" + nodePath + "', node='" + node.getXdPosition() + '\'';
-            if (node.getXsdNode() != null) {
-                msg += ", Xsd='" + node.getXsdNode().getClass().getSimpleName() + '\'';
+
+            sb.append("Creating node");
+            if (node.hasReference()) {
+                sb.append(" (with reference)");
             }
-            LOG.info("{}{}", logHeader(XSD_REFERENCE), msg);
+            sb.append(".");
+
+            sb.append(StringFormatter.format("systemId='{}', nodeXDefPath='{}', nodeXDefPos='{}'",
+                    systemId, nodePath, node.getXdPosition()));
+
+            node.getXsdNode().ifPresent(xmlNode -> sb.append(StringFormatter.format(", Xsd='{}'",
+                    node.getXsdNode().get().getClass().getSimpleName())));
+
+            LOG.info("{}{}", logHeader(XSD_REFERENCE), sb);
             return node;
         }
     }

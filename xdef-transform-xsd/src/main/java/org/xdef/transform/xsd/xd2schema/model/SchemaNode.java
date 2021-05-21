@@ -14,11 +14,14 @@ import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
+import org.xdef.transform.xsd.xd2schema.error.SchemaNodeException;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
 import javax.xml.namespace.QName;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
 import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
@@ -83,8 +86,8 @@ public class SchemaNode {
         return xdPosition;
     }
 
-    public XmlSchemaObjectBase getXsdNode() {
-        return xsdNode;
+    public Optional<XmlSchemaObjectBase> getXsdNode() {
+        return Optional.ofNullable(xsdNode);
     }
 
     /**
@@ -121,16 +124,21 @@ public class SchemaNode {
         }
     }
 
-    public XMNode getXdNode() {
-        return xdNode;
+    public Optional<XMNode> getXdNode() {
+        return Optional.ofNullable(xdNode);
     }
 
-    public SchemaNode getReference() {
-        return reference;
+    public XMNode getXdNodeReq() {
+        return getXdNode().orElseThrow(() -> new SchemaNodeException("Schema node does not contain required related " +
+                "X-definition node."));
+    }
+
+    public Optional<SchemaNode> getReference() {
+        return Optional.ofNullable(reference);
     }
 
     public List<SchemaNode> getPointers() {
-        return pointers;
+        return Optional.ofNullable(pointers).orElse(Collections.emptyList());
     }
 
     public void copyNodes(SchemaNode src) {
@@ -254,7 +262,7 @@ public class SchemaNode {
      */
     private void addPointer(final SchemaNode ptr) {
         if (pointers == null) {
-            pointers = new LinkedList<SchemaNode>();
+            pointers = new LinkedList<>();
         }
 
         pointers.add(ptr);
@@ -303,6 +311,6 @@ public class SchemaNode {
      * @return
      */
     public static String getPostProcessingNodePos(final String systemId, final String path) {
-        return systemId + "#" + path;
+        return systemId + XDEF_REF_DELIMITER + path;
     }
 }

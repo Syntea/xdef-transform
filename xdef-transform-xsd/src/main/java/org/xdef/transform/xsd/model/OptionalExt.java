@@ -16,6 +16,10 @@ public class OptionalExt<T> {
         this.optional = optional;
     }
 
+    public static <T> OptionalExt<T> of(Optional<T> optional) {
+        return new OptionalExt(optional);
+    }
+
     public void ifPresentOrElse(final Consumer<? super T> consumer, final IfNotPresentFunction function) {
         if (optional.isPresent()) {
             consumer.accept(optional.get());

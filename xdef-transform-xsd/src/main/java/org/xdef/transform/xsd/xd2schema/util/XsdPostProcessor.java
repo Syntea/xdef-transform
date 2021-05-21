@@ -101,7 +101,7 @@ public class XsdPostProcessor {
         }
 
         for (SchemaNode node : nodesToRemove) {
-            adapterCtx.removeNode((XNode)node.getXdNode());
+            adapterCtx.removeNode((XNode)node.getXdNodeReq());
             Xd2XsdUtils.removeNode(node.toXsdElem().getParent(), node.toXsdElem());
         }
 
@@ -113,7 +113,7 @@ public class XsdPostProcessor {
 
                 updateRefType(node);
 
-                if (node.getReference() == null && isQualifiedTopElementWithUnqualifiedPtr(node)) {
+                if (!node.getReference().isPresent() && isQualifiedTopElementWithUnqualifiedPtr(node)) {
                     elementRootDecomposition(node);
                 }
             }
@@ -125,13 +125,13 @@ public class XsdPostProcessor {
      * @param node  node to be decomposed
      */
     private void elementRootDecomposition(final SchemaNode node) {
-        LOG.debug("{}Decomposition of root element with pointers ...", logHeader(POSTPROCESSING, node.getXdNode()));
+        LOG.debug("{}Decomposition of root element with pointers ...", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
 
         final XmlSchemaElement xsdElem = node.toXsdElem();
 
         if (xsdElem.getSchemaType() == null) {
             adapterCtx.getReportWriter().warning(XSD.XSD041);
-            LOG.warn("{}Schema type has been expected!", logHeader(POSTPROCESSING, node.getXdNode()));
+            LOG.warn("{}Schema type has been expected!", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
             return;
         }
 
@@ -165,23 +165,23 @@ public class XsdPostProcessor {
      * @param xsdFactory    XSD element factory
      */
     private void elementRootRef(final SchemaNode node, final XsdNodeFactory xsdFactory) {
-        final SchemaNode refNode = node.getReference();
-        if (refNode == null || (refNode.isXsdComplexType() && !node.hasAnyPointer())) {
+        final SchemaNode refSchemaNode = node.getReference().orElse(null);
+        if (refSchemaNode == null || (refSchemaNode.isXsdComplexType() && !node.hasAnyPointer())) {
             return;
         }
 
-        LOG.info("{}Updating top-level element reference ...", logHeader(POSTPROCESSING, node.getXdNode()));
+        LOG.info("{}Updating top-level element reference ...", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
 
         elementTopToComplex(node, xsdFactory);
 
-        if (isTopElement(refNode)) {
-            final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refNode.getXdNode().getXDPosition());
+        if (isTopElement(refSchemaNode)) {
+            final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refSchemaNode.getXdNodeReq().getXDPosition());
             final XmlSchema xmlSchema = adapterCtx.findSchema(systemId, true, POSTPROCESSING);
             final XsdNodeFactory refXsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
-            if (refNode.toXsdElem().isRef()) {
-                elementRootRef(refNode, refXsdFactory);
+            if (refSchemaNode.toXsdElem().isRef()) {
+                elementRootRef(refSchemaNode, refXsdFactory);
             } else {
-                elementTopToComplex(refNode, refXsdFactory);
+                elementTopToComplex(refSchemaNode, refXsdFactory);
             }
         }
     }
@@ -192,7 +192,7 @@ public class XsdPostProcessor {
      * @param xsdFactory    XSD element factory
      */
     private void elementTopToComplex(final SchemaNode node, final XsdNodeFactory xsdFactory) {
-        LOG.info("{}Converting top-level element to complex-type ...", logHeader(POSTPROCESSING, node.getXdNode()));
+        LOG.info("{}Converting top-level element to complex-type ...", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
 
         final XmlSchemaElement xsdElem = node.toXsdElem();
         final XElement xElem = node.toXdElem();
@@ -234,35 +234,33 @@ public class XsdPostProcessor {
      */
     private static void updatePointers(final SchemaNode node, final String newLocalName) {
         // Update all pointers to element
-        if (node.getPointers() != null) {
-            for (SchemaNode ptrNode : node.getPointers()) {
-                if (ptrNode.isXsdElem()) {
-                    final XmlSchemaElement xsdPtrElem = ptrNode.toXsdElem();
-                    final QName ptrQName = xsdPtrElem.getRef().getTargetQName();
-                    if (ptrQName != null) {
-                        if (xsdPtrElem.getForm() == XmlSchemaForm.UNQUALIFIED) {
-                            xsdPtrElem.getRef().setTargetQName(null);
-                            final QName newPtrQName = new QName(ptrQName.getNamespaceURI(), newLocalName);
-                            final String newPtrElemName = XsdNameUtils.getReferenceName(ptrNode.getXdName());
-                            xsdPtrElem.setName(newPtrElemName);
-                            xsdPtrElem.setSchemaTypeName(newPtrQName);
+        for (SchemaNode ptrNode : node.getPointers()) {
+            if (ptrNode.isXsdElem()) {
+                final XmlSchemaElement xsdPtrElem = ptrNode.toXsdElem();
+                final QName ptrQName = xsdPtrElem.getRef().getTargetQName();
+                if (ptrQName != null) {
+                    if (xsdPtrElem.getForm() == XmlSchemaForm.UNQUALIFIED) {
+                        xsdPtrElem.getRef().setTargetQName(null);
+                        final QName newPtrQName = new QName(ptrQName.getNamespaceURI(), newLocalName);
+                        final String newPtrElemName = XsdNameUtils.getReferenceName(ptrNode.getXdName());
+                        xsdPtrElem.setName(newPtrElemName);
+                        xsdPtrElem.setSchemaTypeName(newPtrQName);
 
-                            LOG.info("{}Change element reference to schema type. " +
-                                            "elementXDefName='{}', newQName='{}', oldQName='{}'",
-                                    logHeader(POSTPROCESSING, node.getXdNode()),
-                                    ptrNode.getXdName(), newPtrQName, ptrQName);
-                        }
+                        LOG.info("{}Change element reference to schema type. " +
+                                        "elementXDefName='{}', newQName='{}', oldQName='{}'",
+                                logHeader(POSTPROCESSING, node.getXdNode().orElse(null)),
+                                ptrNode.getXdName(), newPtrQName, ptrQName);
                     }
-                } else if (ptrNode.isXsdComplexExt()) {
-                    final XmlSchemaComplexContentExtension xsdPtrExt = ptrNode.toXsdComplexExt();
-                    final QName ptrQName = xsdPtrExt.getBaseTypeName();
-                    final QName newPtrQName = new QName(ptrQName.getNamespaceURI(), newLocalName);
-                    xsdPtrExt.setBaseTypeName(newPtrQName);
-
-                    LOG.info("{}Change complex extension base. elementXDefName='{}', newQName='{}', oldQName='{}'",
-                            logHeader(POSTPROCESSING, node.getXdNode()),
-                            ptrNode.getXdName(), newPtrQName, ptrQName);
                 }
+            } else if (ptrNode.isXsdComplexExt()) {
+                final XmlSchemaComplexContentExtension xsdPtrExt = ptrNode.toXsdComplexExt();
+                final QName ptrQName = xsdPtrExt.getBaseTypeName();
+                final QName newPtrQName = new QName(ptrQName.getNamespaceURI(), newLocalName);
+                xsdPtrExt.setBaseTypeName(newPtrQName);
+
+                LOG.info("{}Change complex extension base. elementXDefName='{}', newQName='{}', oldQName='{}'",
+                        logHeader(POSTPROCESSING, node.getXdNode().orElse(null)),
+                        ptrNode.getXdName(), newPtrQName, ptrQName);
             }
         }
     }
@@ -317,19 +315,20 @@ public class XsdPostProcessor {
      * @param node  XSD node
      */
     private static void updateRefType(final SchemaNode node) {
-        LOG.debug("{}Updating reference type", logHeader(POSTPROCESSING, node.getXdNode()));
+        LOG.debug("{}Updating reference type", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
 
-        if (node.getReference() != null) {
-            if (node.getReference().isXsdElem() && node.isXsdElem() && node.toXsdElem().getRef().getTargetQName() == null) {
+        final SchemaNode refSchemaNode = node.getReference().orElse(null);
+        if (refSchemaNode != null) {
+            if (refSchemaNode.isXsdElem() && node.isXsdElem() && node.toXsdElem().getRef().getTargetQName() == null) {
                 // Reference element to element
-                LOG.trace("{}Update reference to element", logHeader(POSTPROCESSING, node.getXdNode()));
+                LOG.trace("{}Update reference to element", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
                 XmlSchemaElement xsdElem = node.toXsdElem();
                 xsdElem.getRef().setNamedObject(null);
                 xsdElem.getRef().setTargetQName(xsdElem.getSchemaTypeName());
                 xsdElem.setSchemaTypeName(null);
-            } else if (node.getReference().isXsdComplexType() && node.isXsdElem() && node.toXsdElem().getTargetQName() != null) {
+            } else if (refSchemaNode.isXsdComplexType() && node.isXsdElem() && node.toXsdElem().getTargetQName() != null) {
                 // Reference element to complex type
-                LOG.trace("{}\"Update reference to complex type", logHeader(POSTPROCESSING, node.getXdNode()));
+                LOG.trace("{}\"Update reference to complex type", logHeader(POSTPROCESSING, node.getXdNode().orElse(null)));
                 XmlSchemaElement xsdElem = node.toXsdElem();
                 xsdElem.setSchemaTypeName(xsdElem.getTargetQName());
                 xsdElem.getRef().setTargetQName(null);

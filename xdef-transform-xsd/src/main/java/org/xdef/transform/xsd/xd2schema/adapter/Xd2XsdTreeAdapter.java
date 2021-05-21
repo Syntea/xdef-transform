@@ -577,18 +577,23 @@ public class Xd2XsdTreeAdapter {
         if (XsdNamespaceUtils.isValidNsUri(nsUri)) {
             xsdElem.getRef().setTargetQName(new QName(nsUri, localName));
             final String currSchemaName = XsdNamespaceUtils.createExtraSchemaNameFromNsPrefix(nsPrefix);
-            final XsdSchemaImportLocation importLocation = adapterCtx.findPostProcessingSchemaLocation(nsUri, currSchemaName);
-            if (importLocation != null) {
-                final String refSystemId = importLocation.getFileName();
-                adapterCtx.addNodeToPostProcessing(nsUri, xElem);
-                final String refNodePath = SchemaNode.getPostProcessingReferenceNodePath(xElem.getXDPosition());
-                final String refNodePos = SchemaNode.getPostProcessingNodePos(refSystemId, refNodePath);
-                SchemaNodeFactory.createElemRefAndDefDiffNamespace(xElem, xsdElem, currSchemaName, nodePath, refSystemId, refNodePos, refNodePath, adapterCtx);
-            } else {
-                adapterCtx.getReportWriter().warning(XSD.XSD021, nsUri);
+            final OptionalExt<XsdSchemaImportLocation> schemaImportLocationOpt = new OptionalExt<>(
+                    adapterCtx.findPostProcessingSchemaLocation(nsUri, currSchemaName));
+
+            final String finalNsUri = nsUri;
+            schemaImportLocationOpt.ifPresent(importLocation -> {
+                        final String refSystemId = importLocation.getFileName();
+                        adapterCtx.addNodeToPostProcessing(finalNsUri, xElem);
+                        final String refNodePath = SchemaNode.getPostProcessingReferenceNodePath(xElem.getXDPosition());
+                        final String refNodePos = SchemaNode.getPostProcessingNodePos(refSystemId, refNodePath);
+                        SchemaNodeFactory.createElemRefAndDefDiffNamespace(xElem, xsdElem, currSchemaName, nodePath,
+                                refSystemId, refNodePos, refNodePath, adapterCtx);
+                    }
+            ).orElse(() -> {
+                adapterCtx.getReportWriter().warning(XSD.XSD021, finalNsUri);
                 LOG.warn("{}Element is in different namespace which is not marked for post-processing! nsUri='{}'",
-                        logHeader(TRANSFORMATION, xElem), nsUri);
-            }
+                        logHeader(TRANSFORMATION, xElem), finalNsUri);
+            });
         } else {
             nsUri = XsdNamespaceUtils.getNodeNamespaceUri(xElem, adapterCtx, TRANSFORMATION);
 
@@ -630,13 +635,14 @@ public class Xd2XsdTreeAdapter {
             String nsPrefix = XsdNamespaceUtils.getNamespacePrefixRequired(xElem.getName());
             String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
             final String currSchemaName = XsdNamespaceUtils.createExtraSchemaNameFromNsPrefix(nsPrefix);
-            final XsdSchemaImportLocation importLocation = adapterCtx.findPostProcessingSchemaLocation(nsUri, currSchemaName);
-            if (importLocation != null) {
-                final String systemId = importLocation.getFileName();
-                adapterCtx.addOrUpdateNodeInDiffNs(node, systemId);
-            } else {
-                adapterCtx.addOrUpdateNode(node);
-            }
+            final OptionalExt<XsdSchemaImportLocation> importLocationOpt = OptionalExt.of(
+                    adapterCtx.findPostProcessingSchemaLocation(nsUri, currSchemaName));
+
+            importLocationOpt.ifPresent(importLocation -> {
+                        final String systemId = importLocation.getFileName();
+                        adapterCtx.addOrUpdateNodeInDiffNs(node, systemId);
+                    }
+            ).orElse(() -> adapterCtx.addOrUpdateNode(node));
         } else {
             adapterCtx.addOrUpdateNode(node);
         }
@@ -885,7 +891,7 @@ public class Xd2XsdTreeAdapter {
 
         final SchemaNode refNode = adapterCtx.findSchemaNode(systemId, refNodePath);
 
-        if (refNode == null || refNode.getXsdNode() == null) {
+        if (refNode == null || !refNode.getXsdNode().isPresent()) {
             adapterCtx.getReportWriter().error(XSD.XSD010, xChildrenNodes[0].getXDPosition());
             LOG.error("{}X-definition mixed type is reference, but no XSD node reference has been found internally! " +
                     "xDefNodePath='{}'", logHeader(TRANSFORMATION, defEl), xChildrenNodes[0].getXDPosition());

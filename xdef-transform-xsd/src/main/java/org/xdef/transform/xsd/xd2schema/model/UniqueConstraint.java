@@ -58,17 +58,17 @@ public class UniqueConstraint {
      * key:     variable name
      * value:   variable type
      */
-    private Map<String, QName> variables = new HashMap<String, QName>();
+    private Map<String, QName> variables = new HashMap<>();
 
     /**
      * Storage of attribute's path IDREF, CHKID using uniqueSet
      */
-    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> refs = new HashMap<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>>();
+    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> refs = new HashMap<>();
 
     /**
      * Storage of attribute's path ID using uniqueSet
      */
-    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> keys = new HashMap<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>>();
+    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> keys = new HashMap<>();
 
     public UniqueConstraint(String name, String systemId) {
         this.name = name;
@@ -140,11 +140,11 @@ public class UniqueConstraint {
                 logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), name, qName);
         variables.put(name, qName);
         if (!keys.containsKey(name)) {
-            keys.put(name, new HashMap<String, List<Pair<String, XmlSchemaAttribute>>>());
+            keys.put(name, new HashMap<>());
         }
 
         if (!refs.containsKey(name)) {
-            refs.put(name, new HashMap<String, List<Pair<String, XmlSchemaAttribute>>>());
+            refs.put(name, new HashMap<>());
         }
     }
 
@@ -172,7 +172,7 @@ public class UniqueConstraint {
             final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableKeys = keys.get(varName);
             List<Pair<String, XmlSchemaAttribute>> keyList = variableKeys.get(xPath);
             if (keyList == null) {
-                keyList = new LinkedList<Pair<String, XmlSchemaAttribute>>();
+                keyList = new LinkedList<>();
                 variableKeys.put(xPath, keyList);
             }
 
@@ -183,7 +183,7 @@ public class UniqueConstraint {
             final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableRefs = refs.get(varName);
             List<Pair<String, XmlSchemaAttribute>> refList = variableRefs.get(xPath);
             if (refList == null) {
-                refList = new LinkedList<Pair<String, XmlSchemaAttribute>>();
+                refList = new LinkedList<>();
                 variableRefs.put(xPath, refList);
             }
 

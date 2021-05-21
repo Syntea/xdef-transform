@@ -9,8 +9,8 @@ import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.xdef.impl.XDefinition;
 import org.xdef.impl.XNode;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNameLocationMap;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNsLocationMap;
+import org.xdef.transform.xsd.xd2schema.model.SchemaFileNameLocationMap;
+import org.xdef.transform.xsd.xd2schema.model.SchemaNamespaceLocationMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
@@ -28,7 +28,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_EXTRA_ADAPTER;
 
 /**
- * Transforms x-definition nodes into org.xdef.transform.xsd nodes
+ * Transforms x-definition nodes into xsd nodes
  *
  * Creates new schemas based on post-processing via {@link #transformNodes}
  */
@@ -69,31 +69,35 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(sourceXDefinition.getXDPosition());
         final Set<String> updatedNamespaces = new HashSet<>();
 
-        SchemaNsLocationMap schemasByNsToResolve = (SchemaNsLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
+        SchemaNamespaceLocationMap schemasByNsToResolve = (SchemaNamespaceLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
         int lastSizeMap = schemasByNsToResolve.size();
 
         while (!schemasByNsToResolve.isEmpty()) {
-            Iterator<Map.Entry<String, SchemaNameLocationMap>> itrSchemaUri = schemasByNsToResolve.entrySet().iterator();
+            Iterator<Map.Entry<String, SchemaFileNameLocationMap>> itrSchemaUri = schemasByNsToResolve.entrySet().iterator();
             while (itrSchemaUri.hasNext()) {
-                final Map.Entry<String, SchemaNameLocationMap> schemasByNameToResolve = itrSchemaUri.next();
+                final Map.Entry<String, SchemaFileNameLocationMap> schemasByNameToResolve = itrSchemaUri.next();
                 final String schemaTargetNsUri = schemasByNameToResolve.getKey();
+                final SchemaFileNameLocationMap schemaFileNameLocationMap = schemasByNameToResolve.getValue();
 
                 if (updatedNamespaces.contains(schemaTargetNsUri)) {
                     itrSchemaUri.remove();
                     continue;
                 }
 
-                if (schemasByNameToResolve.getValue().isEmpty()) {
+                if (schemaFileNameLocationMap.isEmpty()) {
                     continue;
                 }
 
-                if (schemasByNameToResolve.getValue().size() > 1) {
+                if (schemaFileNameLocationMap.size() > 1) {
                     LOG.warn("{}Multiple schemas with same namespace URI are not currently supported for postprocessing!",
                             logHeader(POSTPROCESSING, sourceXDefinition));
                     continue;
                 }
 
-                final XsdSchemaImportLocation importLocation = schemasByNameToResolve.getValue().values().toArray(new XsdSchemaImportLocation[1])[0];
+                final XsdSchemaImportLocation importLocation = schemaFileNameLocationMap.getSchemaLocations().stream()
+                        .findFirst()
+                        .orElseThrow(() ->
+                                new RuntimeException("Schema file name location map should contain at least one location"));
 
                 final Map<String, XNode> nodesInSchemaToResolve = allNodesToResolve.get(schemaTargetNsUri);
 
@@ -123,7 +127,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
 
             int currSchemasToResolve = adapterCtx.getExtraSchemaLocationsCtx().size();
             if (lastSizeMap < currSchemasToResolve) {
-                schemasByNsToResolve = (SchemaNsLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
+                schemasByNsToResolve = (SchemaNamespaceLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
             } else if (lastSizeMap <= schemasByNsToResolve.size()) { // Prevent infinite loop - there is nothing to update
                 break;
             }
