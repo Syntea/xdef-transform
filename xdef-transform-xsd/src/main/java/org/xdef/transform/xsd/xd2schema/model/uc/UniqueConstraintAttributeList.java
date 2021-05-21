@@ -13,7 +13,15 @@ import java.util.List;
  */
 public interface UniqueConstraintAttributeList {
 
+    /**
+     * Returns all values stored in list
+     * @return
+     */
     List<Pair<String, XmlSchemaAttribute>> values();
+
+    // ====================
+    // Basic List interface
+    // ====================
 
     int size();
 }

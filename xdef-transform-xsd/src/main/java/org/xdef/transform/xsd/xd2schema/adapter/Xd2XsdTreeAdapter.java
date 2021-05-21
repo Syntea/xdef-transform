@@ -44,9 +44,9 @@ import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaChoice;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaGroupParticle;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaSequence;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.AbstractXmlSchemaGroupParticleWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaSequenceWrapper;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
@@ -763,7 +763,7 @@ public class Xd2XsdTreeAdapter {
                 if (newParticle == null) {
                     LOG.info("{}Creating particle to complex content of element. particle='{}'",
                             logHeader(TRANSFORMATION, xElem), Xd2XsdUtils.particleXKindToString(childrenKind));
-                    final CXmlSchemaGroupParticle newGroupParticle = (CXmlSchemaGroupParticle) convertTreeInt(xnChild, false);
+                    final AbstractXmlSchemaGroupParticleWrapper newGroupParticle = (AbstractXmlSchemaGroupParticleWrapper) convertTreeInt(xnChild, false);
                     stackPopCounter += updateGroupParticles(particleStack, currParticle, newGroupParticle);
                     currParticle = particleStack.peek();
                 } else if (newParticle instanceof XmlSchemaGroupRef) {
@@ -812,8 +812,8 @@ public class Xd2XsdTreeAdapter {
                 } else {
                     if (!particleStack.empty()) {
                         currParticle = particleStack.pop();
-                        if (currParticle instanceof CXmlSchemaChoice && ((CXmlSchemaChoice) currParticle).hasTransformDirection()) {
-                            ((CXmlSchemaChoice) currParticle).updateOccurence(adapterCtx);
+                        if (currParticle instanceof XmlSchemaChoiceWrapper && ((XmlSchemaChoiceWrapper) currParticle).hasTransformDirection()) {
+                            ((XmlSchemaChoiceWrapper) currParticle).updateOccurence(adapterCtx);
                         }
 
                         if (!particleStack.empty()) {
@@ -850,8 +850,8 @@ public class Xd2XsdTreeAdapter {
 
         if (currParticle != null) {
             complexType.setParticle(
-                    currParticle instanceof CXmlSchemaGroupParticle
-                            ? ((CXmlSchemaGroupParticle) currParticle).xsd()
+                    currParticle instanceof AbstractXmlSchemaGroupParticleWrapper
+                            ? ((AbstractXmlSchemaGroupParticleWrapper) currParticle).xsd()
                             : currParticle);
         }
 
@@ -889,7 +889,7 @@ public class Xd2XsdTreeAdapter {
             refNodePath = refNodePath.substring(0, refNodePath.lastIndexOf("/"));
         }
 
-        final SchemaNode refNode = adapterCtx.findSchemaNode(systemId, refNodePath);
+        final SchemaNode refNode = adapterCtx.findSchemaNode(systemId, refNodePath).orElse(null);
 
         if (refNode == null || !refNode.getXsdNode().isPresent()) {
             adapterCtx.getReportWriter().error(XSD.XSD010, xChildrenNodes[0].getXDPosition());
@@ -912,7 +912,7 @@ public class Xd2XsdTreeAdapter {
                 addNodeToParticleGroup(currGroup, groupRef);
 
                 if (group.getParticle() instanceof XmlSchemaAll) {
-                    final CXmlSchemaChoice newGroupChoice = new CXmlSchemaChoice(postProcessor.groupParticleAllToChoice((XmlSchemaAll)group.getParticle(), false));
+                    final XmlSchemaChoiceWrapper newGroupChoice = new XmlSchemaChoiceWrapper(postProcessor.groupParticleAllToChoice((XmlSchemaAll)group.getParticle(), false));
                     if (newGroupChoice != null) {
                         group.setParticle(newGroupChoice.xsd());
                         // We have to use occurence on groupRef element
@@ -937,19 +937,19 @@ public class Xd2XsdTreeAdapter {
      * @param newGroupParticle  currently created new group particle
      * @return number of particles which has been popped-out from group particle stack
      */
-    private int updateGroupParticles(final Stack<XmlSchemaParticle> particleStack, XmlSchemaParticle prev, final CXmlSchemaGroupParticle newGroupParticle) {
+    private int updateGroupParticles(final Stack<XmlSchemaParticle> particleStack, XmlSchemaParticle prev, final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
         int stackPopCounter = 0;
         particleStack.push(newGroupParticle);
 
         do {
             XmlSchemaParticle curr = particleStack.peek();
 
-            if (prev == null || (prev instanceof CXmlSchemaGroupParticle) == false || (curr instanceof CXmlSchemaGroupParticle) == false) {
+            if (prev == null || (prev instanceof AbstractXmlSchemaGroupParticleWrapper) == false || (curr instanceof AbstractXmlSchemaGroupParticleWrapper) == false) {
                 break;
             }
 
-            final CXmlSchemaGroupParticle cCurr = (CXmlSchemaGroupParticle) curr;
-            final CXmlSchemaGroupParticle cPrev = (CXmlSchemaGroupParticle) prev;
+            final AbstractXmlSchemaGroupParticleWrapper cCurr = (AbstractXmlSchemaGroupParticleWrapper) curr;
+            final AbstractXmlSchemaGroupParticleWrapper cPrev = (AbstractXmlSchemaGroupParticleWrapper) prev;
             boolean merge = false;
 
             if (cCurr.xsd() instanceof XmlSchemaAll) {
@@ -957,13 +957,13 @@ public class Xd2XsdTreeAdapter {
                     cCurr.addItems(cPrev.getItems());
                     merge = true;
                 } else {
-                    final CXmlSchemaChoice newGroupChoice = postProcessor.groupParticleAllToChoice(CXmlSchemaChoice.TransformDirection.BOTTOM_UP);
+                    final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(XmlSchemaChoiceWrapper.TransformDirection.BOTTOM_UP);
                     if (newGroupChoice != null) {
                         replaceLastGroupParticle(particleStack, newGroupChoice);
                     }
                 }
             } else if (cPrev.xsd() instanceof XmlSchemaAll) {
-                final CXmlSchemaChoice newGroupChoice = postProcessor.groupParticleAllToChoice(CXmlSchemaChoice.TransformDirection.TOP_DOWN);
+                final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(XmlSchemaChoiceWrapper.TransformDirection.TOP_DOWN);
                 if (newGroupChoice != null) {
                     particleStack.pop();
                     replaceLastGroupParticle(particleStack, newGroupChoice);
@@ -994,7 +994,7 @@ public class Xd2XsdTreeAdapter {
      * @return  previous particle
      */
     private static XmlSchemaParticle replaceLastGroupParticle(final Stack<XmlSchemaParticle> particleStack,
-                                                              final CXmlSchemaGroupParticle newGroupParticle) {
+                                                              final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
         XmlSchemaParticle prev = null;
         if (!particleStack.empty()) {
             particleStack.pop();
@@ -1022,7 +1022,7 @@ public class Xd2XsdTreeAdapter {
         if (currParticle == null) {
             LOG.debug("{}Particle group is undefined. Creating sequence particle by default.",
                     logHeader(TRANSFORMATION, xElem));
-            currParticle = new CXmlSchemaSequence(new XmlSchemaSequence());
+            currParticle = new XmlSchemaSequenceWrapper(new XmlSchemaSequence());
             particleStack.push(currParticle);
         }
 
@@ -1037,7 +1037,7 @@ public class Xd2XsdTreeAdapter {
      */
     private static void pushGroupParticleToStack(final Stack<XmlSchemaParticle> particleStack,
                                                  final XmlSchemaParticle currParticle,
-                                                 final CXmlSchemaGroupParticle newGroupParticle) {
+                                                 final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
         addNodeToParticleGroup(currParticle, newGroupParticle);
         particleStack.push(newGroupParticle);
     }
@@ -1048,12 +1048,12 @@ public class Xd2XsdTreeAdapter {
      * @param xsdNode       XSD node
      */
     private static void addNodeToParticleGroup(final XmlSchemaParticle currParticle, XmlSchemaObject xsdNode) {
-        if (xsdNode instanceof CXmlSchemaGroupParticle) {
-            xsdNode = ((CXmlSchemaGroupParticle)xsdNode).xsd();
+        if (xsdNode instanceof AbstractXmlSchemaGroupParticleWrapper) {
+            xsdNode = ((AbstractXmlSchemaGroupParticleWrapper)xsdNode).xsd();
         }
 
-        if (currParticle instanceof CXmlSchemaGroupParticle) {
-            ((CXmlSchemaGroupParticle)currParticle).addItem(xsdNode);
+        if (currParticle instanceof AbstractXmlSchemaGroupParticleWrapper) {
+            ((AbstractXmlSchemaGroupParticleWrapper)currParticle).addItem(xsdNode);
         }
     }
 

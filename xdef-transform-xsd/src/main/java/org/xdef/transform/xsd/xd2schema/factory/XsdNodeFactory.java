@@ -43,10 +43,10 @@ import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaAll;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaChoice;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaGroupParticle;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaSequence;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaAllWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.AbstractXmlSchemaGroupParticleWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaSequenceWrapper;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
@@ -309,25 +309,25 @@ public class XsdNodeFactory {
      *          <xs:choice/>
      *          <xs:all/>
      */
-    public CXmlSchemaGroupParticle createGroupParticle(final XMNode xNode) {
+    public AbstractXmlSchemaGroupParticleWrapper createGroupParticle(final XMNode xNode) {
         final short groupType = xNode.getKind();
         final XMOccurrence occurrence = xNode.getOccurence();
 
         LOG.trace("{}createGroupParticle. particle='{}'",
                 logHeader(XSD_ELEM_FACTORY), Xd2XsdUtils.particleXKindToString(groupType));
 
-        CXmlSchemaGroupParticle particle;
+        AbstractXmlSchemaGroupParticleWrapper particle;
         switch (groupType) {
             case XNode.XMSEQUENCE: {
-                particle = new CXmlSchemaSequence(new XmlSchemaSequence());
+                particle = new XmlSchemaSequenceWrapper(new XmlSchemaSequence());
                 break;
             }
             case XNode.XMMIXED: {
-                particle = new CXmlSchemaAll(new XmlSchemaAll());
+                particle = new XmlSchemaAllWrapper(new XmlSchemaAll());
                 break;
             }
             case XNode.XMCHOICE: {
-                particle = new CXmlSchemaChoice(new XmlSchemaChoice());
+                particle = new XmlSchemaChoiceWrapper(new XmlSchemaChoice());
                 break;
             }
             default: {

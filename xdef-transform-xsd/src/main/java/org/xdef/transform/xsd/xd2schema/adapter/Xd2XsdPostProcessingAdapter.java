@@ -156,18 +156,18 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                 }
 
                 final XmlSchema schema = adapterCtx.findSchema(schemaName, true, POSTPROCESSING);
-                final Map<String, SchemaNode> nodes = adapterCtx.getNodes().get(schemaName);
-                if (nodes != null && !nodes.isEmpty()) {
-                    for (SchemaNode n : nodes.values()) {
-                        if (n.isXsdAttr()) {
-                            XsdNameUtils.resolveAttributeQName(schema, n.toXsdAttr(), n.getXdName());
-                            XsdNameUtils.resolveAttributeSchemaTypeQName(schema, n.toXsdAttr());
-                        } else if (n.isXsdElem()) {
-                            XsdNameUtils.resolveElementQName(schema, n.toXdElem(), n.toXsdElem(), adapterCtx);
-                            XsdNameUtils.resolveElementSchemaTypeQName(schema, n.toXsdElem());
-                        }
-                    }
-                }
+                Optional.ofNullable(adapterCtx.getNodes().get(schemaName))
+                        .ifPresent(schemaNodes -> {
+                            for (SchemaNode schemaNode : schemaNodes.values()) {
+                                if (schemaNode.isXsdAttr()) {
+                                    XsdNameUtils.resolveAttributeQName(schema, schemaNode.toXsdAttr(), schemaNode.getXdName());
+                                    XsdNameUtils.resolveAttributeSchemaTypeQName(schema, schemaNode.toXsdAttr());
+                                } else if (schemaNode.isXsdElem()) {
+                                    XsdNameUtils.resolveElementQName(schema, schemaNode.toXdElem(), schemaNode.toXsdElem(), adapterCtx);
+                                    XsdNameUtils.resolveElementSchemaTypeQName(schema, schemaNode.toXsdElem());
+                                }
+                            }
+                        });
             }
         }
     }
@@ -269,7 +269,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                         }
 
                         final String xPathParentNode = getParentNodePath(uniqueInfoEntry.getKey(), keyNodeXPath);
-                        final SchemaNode rootSchemaNode = adapterCtx.findSchemaNode(xDefName, xPathParentNode);
+                        final SchemaNode rootSchemaNode = adapterCtx.findSchemaNode(xDefName, xPathParentNode)
+                                .orElse(null);
 
                         if (rootSchemaNode == null) {
                             reportWriter.warning(XSD.XSD015, uniqueConstraint.getPath(), xPathParentNode);

@@ -57,6 +57,10 @@ public interface SchemaNamespaceLocationMap {
      */
     boolean containsSchemaFileLocationMap(final String nsUri);
 
+    // ====================
+    // Basic Map interface
+    // ====================
+
     boolean isEmpty();
 
     int size();

@@ -21,6 +21,10 @@ public interface UniqueConstraintVariableMap<T extends UniqueConstraintNodePathM
      */
     Optional<UniqueConstraintNodePathMap> findNodePathMap(String varName);
 
+    // ====================
+    // Basic Map interface
+    // ====================
+
     boolean isEmpty();
 
     Set<Map.Entry<String, T>> entrySet();

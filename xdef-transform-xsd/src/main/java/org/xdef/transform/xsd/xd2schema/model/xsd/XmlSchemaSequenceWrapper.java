@@ -6,9 +6,9 @@ import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
 
 import java.util.List;
 
-public class CXmlSchemaSequence extends CXmlSchemaGroupParticle<XmlSchemaSequence, XmlSchemaSequenceMember> {
+public class XmlSchemaSequenceWrapper extends AbstractXmlSchemaGroupParticleWrapper<XmlSchemaSequence, XmlSchemaSequenceMember> {
 
-    public CXmlSchemaSequence(XmlSchemaSequence xsdGroupElem) {
+    public XmlSchemaSequenceWrapper(XmlSchemaSequence xsdGroupElem) {
         super(xsdGroupElem);
     }
 

@@ -10,6 +10,7 @@ import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SRuntimeException;
+import org.xdef.transform.xsd.model.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
@@ -67,7 +68,7 @@ public class XsdAdapterCtx {
      * Key:     schema name
      * Value:   node path, schema node
      */
-    private Map<String, Map<String, SchemaNode>> nodes = null;
+    private Map<String, SchemaNodeMap> nodes = null;
 
     /**
      * Nodes which will be created in post-procession
@@ -136,7 +137,7 @@ public class XsdAdapterCtx {
         return xmlSchemaCollection;
     }
 
-    public Map<String, Map<String, SchemaNode>> getNodes() {
+    public Map<String, SchemaNodeMap> getNodes() {
         return nodes;
     }
 
@@ -378,9 +379,9 @@ public class XsdAdapterCtx {
      *          otherwise already existing node with same node path merged with {@paramref node}
      */
     public SchemaNode addOrUpdateNode(final String systemId, final String nodePath, final SchemaNode node) {
-        Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
+        SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
 
-        final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
+        final SchemaNode refOrig = schemaNodeMap.findSchemaNode(nodePath).orElse(null);
         if (refOrig != null && refOrig.getXsdNode().isPresent()) {
             LOG.debug("{}Node with this name is already defined. system='{}', nodePath='{}', nodePos='{}'",
                     logHeader(XSD_REFERENCE), systemId, nodePath, node.getXdPosition());
@@ -406,7 +407,7 @@ public class XsdAdapterCtx {
             LOG.info("{}{}", logHeader(XSD_REFERENCE), sb);
             return refOrig;
         } else {
-            xsdSystemRefs.put(nodePath, node);
+            schemaNodeMap.addNode(nodePath, node);
 
             sb.append("Creating node");
             if (node.hasReference()) {
@@ -441,17 +442,14 @@ public class XsdAdapterCtx {
         LOG.info("{}Updating xsd content of node. system='{}', nodePath='{}', newXsdName='{}'",
                 logHeader(XSD_REFERENCE), systemId, nodePath, newXsdNode.getClass().getSimpleName());
 
-        final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
-        final SchemaNode refOrig = xsdSystemRefs.get(nodePath);
-
-        if (refOrig == null) {
-            reportWriter.warning(XSD.XSD040, systemId, nodePath);
-            LOG.warn("{}Node does not exist in system! system='{}', nodePath='{}'",
-                    logHeader(XSD_REFERENCE), systemId, nodePath);
-            return;
-        }
-
-        refOrig.setXsdNode(newXsdNode);
+        final SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
+        OptionalExt.of(schemaNodeMap.findSchemaNode(nodePath))
+                .ifPresent(schemaNode -> schemaNode.setXsdNode(newXsdNode))
+                .orElse(() -> {
+                    reportWriter.warning(XSD.XSD040, systemId, nodePath);
+                    LOG.warn("{}Node does not exist in system! system='{}', nodePath='{}'",
+                            logHeader(XSD_REFERENCE), systemId, nodePath);
+                });
     }
 
     /**
@@ -459,13 +457,8 @@ public class XsdAdapterCtx {
      * @param systemId  XSD document identifier
      * @return  map of schema nodes
      */
-    public Map<String, SchemaNode> findSchemaNodes(final String systemId) {
-        Map<String, SchemaNode> xsdSystemRefs = nodes.get(systemId);
-        if (xsdSystemRefs == null) {
-            xsdSystemRefs = new HashMap<String, SchemaNode>();
-            nodes.put(systemId, xsdSystemRefs);
-        }
-
+    public SchemaNodeMap findOrCreateSchemaNodeMap(final String systemId) {
+        final SchemaNodeMap xsdSystemRefs = nodes.computeIfAbsent(systemId, key -> new DefaultSchemaNodeMap());
         return xsdSystemRefs;
     }
 
@@ -475,13 +468,10 @@ public class XsdAdapterCtx {
      * @param nodePath  x-definition path
      * @return  schema node if exists, otherwise null
      */
-    public SchemaNode findSchemaNode(final String systemId, final String nodePath) {
-        final Map<String, SchemaNode> xsdSystemRefs = nodes.get(systemId);
-        if (xsdSystemRefs == null) {
-            return null;
-        }
-
-        return xsdSystemRefs.get(nodePath);
+    public Optional<SchemaNode> findSchemaNode(final String systemId, final String nodePath) {
+        return Optional.ofNullable(nodes.get(systemId))
+                .map(schemaNodeMap -> schemaNodeMap.findSchemaNode(nodePath))
+                .orElse(Optional.empty());
     }
 
     /**
@@ -503,12 +493,11 @@ public class XsdAdapterCtx {
     private void removeNode(final String systemId, final String nodePath) {
         LOG.info("{}Removing xsd node. system='{}', nodePath='{}'", logHeader(XSD_REFERENCE), systemId, nodePath);
 
-        final Map<String, SchemaNode> xsdSystemRefs = findSchemaNodes(systemId);
-        final SchemaNode refOrig = xsdSystemRefs.remove(nodePath);
-        if (refOrig != null) {
+        final SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
+        schemaNodeMap.removeNode(nodePath).ifPresent(removedNode -> {
             LOG.debug("{}Node has been removed! system='{}', nodePath='{}', nodeName='{}'",
-                    logHeader(XSD_REFERENCE), systemId, nodePath, refOrig.getXdName());
-        }
+                    logHeader(XSD_REFERENCE), systemId, nodePath, removedNode.getXdName());
+        });
     }
 
     /**

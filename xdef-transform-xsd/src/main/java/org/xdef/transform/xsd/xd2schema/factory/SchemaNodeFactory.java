@@ -9,10 +9,11 @@ import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
+import org.xdef.transform.xsd.xd2schema.model.SchemaNodeMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
-import java.util.Map;
+import java.util.Optional;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
@@ -151,20 +152,23 @@ public class SchemaNodeFactory {
      * @return schema node
      */
     private static SchemaNode createDefNode(final String systemId, final String nodePos, final String nodePath, final XsdAdapterCtx adapterCtx) {
-        final Map<String, SchemaNode> xsdSystemRefs = adapterCtx.findSchemaNodes(systemId);
+        final SchemaNodeMap schemaNodeMap = adapterCtx.findOrCreateSchemaNodeMap(systemId);
         final String localName = XsdNameUtils.getReferenceName(nodePos);
-        SchemaNode ref = xsdSystemRefs.get(nodePath);
-        if (ref == null) {
-            ref = new SchemaNode(nodePos);
-            xsdSystemRefs.put(nodePath, ref);
+        final Optional<SchemaNode> schemaNodeOpt = schemaNodeMap.findSchemaNode(nodePath);
+
+        schemaNodeOpt.ifPresent(schemaNode ->
+            LOG.debug("{}Reference definition of node already exists. systemId='{}', refLocalName='{}'",
+                    logHeader(XSD_REFERENCE), systemId, localName)
+        );
+
+        return schemaNodeOpt.orElseGet(() -> {
             LOG.info("{}Creating reference definition node. systemId='{}', refLocalName='{}'",
                     logHeader(XSD_REFERENCE), systemId, localName);
-        } else {
-            LOG.debug("{}Reference definition of node already exists. systemId='{}', refLocalName='{}'",
-                    logHeader(XSD_REFERENCE), systemId, localName);
-        }
 
-        return ref;
+            final SchemaNode schemaNode = new SchemaNode(nodePos);
+            schemaNodeMap.addNode(nodePath, schemaNode);
+            return schemaNode;
+        });
     }
 
 }

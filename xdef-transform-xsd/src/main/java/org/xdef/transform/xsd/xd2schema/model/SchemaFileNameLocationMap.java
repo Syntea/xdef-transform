@@ -39,6 +39,10 @@ public interface SchemaFileNameLocationMap {
      */
     Collection<XsdSchemaImportLocation> getSchemaLocations();
 
+    // ====================
+    // Basic Map interface
+    // ====================
+
     int size();
 
     boolean isEmpty();

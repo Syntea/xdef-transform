@@ -12,6 +12,10 @@ import java.util.Set;
  */
 public interface UniqueConstraintNodePathMap<T extends UniqueConstraintAttributeList> {
 
+    // ====================
+    // Basic Map interface
+    // ====================
+
     boolean isEmpty();
 
     int size();

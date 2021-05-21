@@ -30,8 +30,9 @@ import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
+import org.xdef.transform.xsd.xd2schema.model.SchemaNodeMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
-import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaChoice;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -70,15 +71,16 @@ public class XsdPostProcessor {
 
         final List<SchemaNode> nodesToRemove = new ArrayList<>();
 
-        for (Map.Entry<String, Map<String, SchemaNode>> systemRefEntry : adapterCtx.getNodes().entrySet()) {
+        for (Map.Entry<String, SchemaNodeMap> schemaNodes : adapterCtx.getNodes().entrySet()) {
+            final String schemaName = schemaNodes.getKey();
             LOG.info("{}Updating references - phase 1. systemId='{}'",
-                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), systemRefEntry.getKey());
+                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), schemaName);
 
-            final XmlSchema xmlSchema = adapterCtx.findSchema(systemRefEntry.getKey(), true, POSTPROCESSING);
+            final XmlSchema xmlSchema = adapterCtx.findSchema(schemaName, true, POSTPROCESSING);
             final XsdNodeFactory xsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
-            final Set<String> schemaRootNodeNames = adapterCtx.findSchemaRootNodeNames(systemRefEntry.getKey());
+            final Set<String> schemaRootNodeNames = adapterCtx.findSchemaRootNodeNames(schemaName);
 
-            for (Map.Entry<String, SchemaNode> refEntry : systemRefEntry.getValue().entrySet()) {
+            for (Map.Entry<String, SchemaNode> refEntry : schemaNodes.getValue().entrySet()) {
                 final SchemaNode node = refEntry.getValue();
                 if (isTopElement(node)) {
                     // Process elements which are on top level but they are not root of x-definition
@@ -89,7 +91,6 @@ public class XsdPostProcessor {
                     if (!adapterCtx.isPostProcessingNamespace(xmlSchema.getTargetNamespace()) && elementNotInXDefRoot) {
                         if (!node.hasAnyPointer()) {
                             nodesToRemove.add(node);
-                            continue;
                         } else {
                             elementTopToComplex(node, xsdFactory);
                         }
@@ -105,10 +106,12 @@ public class XsdPostProcessor {
             Xd2XsdUtils.removeNode(node.toXsdElem().getParent(), node.toXsdElem());
         }
 
-        for (Map.Entry<String, Map<String, SchemaNode>> systemRefEntry : adapterCtx.getNodes().entrySet()) {
+        for (Map.Entry<String, SchemaNodeMap> schemaNodes : adapterCtx.getNodes().entrySet()) {
+            final String schemaName = schemaNodes.getKey();
             LOG.info("{}Updating references - phase 2. systemId='{}'",
-                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), systemRefEntry.getKey());
-            for (Map.Entry<String, SchemaNode> refEntry : systemRefEntry.getValue().entrySet()) {
+                    logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), schemaName);
+
+            for (Map.Entry<String, SchemaNode> refEntry : schemaNodes.getValue().entrySet()) {
                 final SchemaNode node = refEntry.getValue();
 
                 updateRefType(node);
@@ -213,9 +216,6 @@ public class XsdPostProcessor {
         // If element does not contain schema type, create new empty complex type
         if (schemaType == null) {
             schemaType = xsdFactory.createEmptyComplexType(true);
-            if (schemaType.isTopLevel()) {
-
-            }
             schemaType.setName(newRefLocalName);
         }
 
@@ -519,11 +519,11 @@ public class XsdPostProcessor {
      * @param transformDirection    direction of transformation
      * @return XSD group choice node
      */
-    public CXmlSchemaChoice groupParticleAllToChoice(final CXmlSchemaChoice.TransformDirection transformDirection) {
+    public XmlSchemaChoiceWrapper groupParticleAllToChoice(final XmlSchemaChoiceWrapper.TransformDirection transformDirection) {
         if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING_ALL_TO_CHOICE)) {
             return null;
         }
-        final CXmlSchemaChoice newGroupChoice = new CXmlSchemaChoice(new XmlSchemaChoice());
+        final XmlSchemaChoiceWrapper newGroupChoice = new XmlSchemaChoiceWrapper(new XmlSchemaChoice());
         newGroupChoice.setTransformDirection(transformDirection);
         newGroupChoice.xsd().setAnnotation(XsdNodeFactory.createAnnotation(
                 "Original group particle: all", adapterCtx));

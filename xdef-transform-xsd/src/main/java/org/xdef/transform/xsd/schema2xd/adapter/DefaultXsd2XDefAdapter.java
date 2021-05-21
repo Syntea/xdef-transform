@@ -330,7 +330,8 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     /**
      * Gets target namespace info of given XSD document
      * @param schema    XSD document
-     * @return target namespace info(prefix, URI) if XSD document is using target namespace, otherwise null
+     * @return  target namespace info(prefix, URI) if XSD document is using target namespace
+     *          otherwise {@link Optional#empty()}
      */
     private Optional<Namespace> getTargetNamespace(final XmlSchema schema) {
         if (schema.getTargetNamespace() == null || schema.getTargetNamespace().isEmpty()) {

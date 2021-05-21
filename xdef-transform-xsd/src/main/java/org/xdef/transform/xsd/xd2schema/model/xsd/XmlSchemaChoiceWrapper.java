@@ -11,7 +11,7 @@ import org.xdef.transform.xsd.xd2schema.util.XsdPostProcessor;
 
 import java.util.List;
 
-public class CXmlSchemaChoice extends CXmlSchemaGroupParticle<XmlSchemaChoice, XmlSchemaChoiceMember> {
+public class XmlSchemaChoiceWrapper extends AbstractXmlSchemaGroupParticleWrapper<XmlSchemaChoice, XmlSchemaChoiceMember> {
 
     public enum TransformDirection {
         NONE,
@@ -24,7 +24,7 @@ public class CXmlSchemaChoice extends CXmlSchemaGroupParticle<XmlSchemaChoice, X
      */
     private TransformDirection transformDirection = TransformDirection.NONE;
 
-    public CXmlSchemaChoice(XmlSchemaChoice xsdGroupElem) {
+    public XmlSchemaChoiceWrapper(XmlSchemaChoice xsdGroupElem) {
         super(xsdGroupElem);
     }
 
