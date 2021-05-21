@@ -13,7 +13,7 @@ import org.xdef.XDValue;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.model.XMDefinition;
-import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 
 import javax.xml.namespace.QName;

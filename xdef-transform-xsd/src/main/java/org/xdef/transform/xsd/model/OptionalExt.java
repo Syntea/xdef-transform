@@ -20,6 +20,10 @@ public class OptionalExt<T> {
         return new OptionalExt(optional);
     }
 
+    public static <T> OptionalExt<T> ofNullable(T value) {
+        return new OptionalExt(Optional.ofNullable(value));
+    }
+
     public void ifPresentOrElse(final Consumer<? super T> consumer, final IfNotPresentFunction function) {
         if (optional.isPresent()) {
             consumer.accept(optional.get());

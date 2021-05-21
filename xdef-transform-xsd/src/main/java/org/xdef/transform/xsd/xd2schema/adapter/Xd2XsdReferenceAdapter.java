@@ -17,7 +17,7 @@ import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
-import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
@@ -360,7 +360,7 @@ public class Xd2XsdReferenceAdapter {
                 final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData);
                 // Do not create reference if attribute is using unique set
                 if (uniqueConstraint != null) {
-                    uniqueConstraint.addVar(xData, adapterCtx);
+                    uniqueConstraint.addVariable(xData, adapterCtx);
                     return;
                 }
             }

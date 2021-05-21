@@ -15,6 +15,7 @@ import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 

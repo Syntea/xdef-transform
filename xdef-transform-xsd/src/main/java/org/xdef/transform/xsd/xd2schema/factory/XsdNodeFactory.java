@@ -41,7 +41,7 @@ import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
-import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaAll;
 import org.xdef.transform.xsd.xd2schema.model.xsd.CXmlSchemaChoice;

@@ -1,4 +1,4 @@
-package org.xdef.transform.xsd.xd2schema.model;
+package org.xdef.transform.xsd.xd2schema.model.uc;
 
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -9,14 +9,13 @@ import org.xdef.impl.XData;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.model.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
+import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
@@ -49,7 +48,7 @@ public class UniqueConstraint {
     private final String name;
 
     /**
-     * XSD document name, where uniqueSet should be placed
+     * XML schema document name, where uniqueSet should be placed
      */
     private final String systemId;
 
@@ -61,40 +60,50 @@ public class UniqueConstraint {
     private Map<String, QName> variables = new HashMap<>();
 
     /**
-     * Storage of attribute's path IDREF, CHKID using uniqueSet
+     * Storage of attribute's path ID using uniqueSet.
      */
-    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> refs = new HashMap<>();
+    private DefaultUniqueConstraintVariableMap variableKeyMap = new DefaultUniqueConstraintVariableMap();
 
     /**
-     * Storage of attribute's path ID using uniqueSet
+     * Storage of attribute's path IDREF, CHKID using uniqueSet.
      */
-    private Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> keys = new HashMap<>();
+    private DefaultUniqueConstraintVariableMap variableRefMap = new DefaultUniqueConstraintVariableMap();
 
     public UniqueConstraint(String name, String systemId) {
         this.name = name;
         this.systemId = systemId;
     }
 
+    /**
+     * Returns unique set name
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Returns XML schema document name
+     * @return
+     */
     public String getSystemId() {
         return systemId;
     }
 
     /**
-     * Variable name
-     * Node path
-     * List pair variable schema name, org.xdef.transform.xsd attr
+     * Returns variable key map
      * @return
      */
-    public Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> getRefs() {
-        return refs;
+    public UniqueConstraintVariableMap getVariableKeyMap() {
+        return variableKeyMap;
     }
 
-    public Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> getKeys() {
-        return keys;
+    /**
+     * Returns variable reference map
+     * @return
+     */
+    public UniqueConstraintVariableMap getVariableRefMap() {
+        return variableRefMap;
     }
 
     /**
@@ -114,12 +123,13 @@ public class UniqueConstraint {
      * @param xData                 x-definition node of unique constraint's variable
      * @param adapterCtx            XSD adapter context
      */
-    public void addVar(final XData xData, final XsdAdapterCtx adapterCtx) {
+    public void addVariable(final XData xData, final XsdAdapterCtx adapterCtx) {
         final String parserName = xData.getParserName();
-        final OptionalExt<QName> qNameOpt = new OptionalExt(Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx));
+        final OptionalExt<QName> qNameOpt = new OptionalExt(Xd2XsdParserMapping.findDefaultParserQName(
+                parserName, adapterCtx));
         final String varName = XsdNameUtils.getUniqueSetVarName(xData.getValueTypeName());
 
-        qNameOpt.ifPresent(qName -> addVar(varName, qName))
+        qNameOpt.ifPresent(qName -> addVariable(varName, qName))
                 .orElse(() -> {
                     LOG.info("{}Unsupported variable of unique set. uniquePath='{}', variableName='{}'",
                             logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), varName);
@@ -131,21 +141,16 @@ public class UniqueConstraint {
      * @param name      variable name
      * @param qName     variable type qualified name
      */
-    public void addVar(final String name, final QName qName) {
-        if (variables.containsKey(name)) {
-            return;
-        }
+    public void addVariable(final String name, final QName qName) {
+        variables.computeIfAbsent(name, key -> {
+            LOG.info("{}Add variable to unique set. uniquePath='{}', variableName='{}', variableQName='{}'",
+                    logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), name, qName);
 
-        LOG.info("{}Add variable to unique set. uniquePath='{}', variableName='{}', variableQName='{}'",
-                logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), name, qName);
-        variables.put(name, qName);
-        if (!keys.containsKey(name)) {
-            keys.put(name, new HashMap<>());
-        }
+            variableKeyMap.putIfAbsent(name, new DefaultUniqueConstraintNodePathMap());
+            variableRefMap.putIfAbsent(name, new DefaultUniqueConstraintNodePathMap());
 
-        if (!refs.containsKey(name)) {
-            refs.put(name, new HashMap<>());
-        }
+            return qName;
+        });
     }
 
     /**
@@ -157,7 +162,11 @@ public class UniqueConstraint {
      * @param varPath   variable path
      * @param type      variable type
      */
-    public void addConstraint(final String varName, final XmlSchemaAttribute xsdAttr, final String varPath, final Type type, final ReportWriter reportWriter) {
+    public void addConstraint(final String varName,
+                              final XmlSchemaAttribute xsdAttr,
+                              final String varPath,
+                              final Type type,
+                              final ReportWriter reportWriter) {
         final String xPath = Xd2XsdUtils.xPathWithoutAttr(varPath);
         if (!variables.containsKey(varName)) {
             reportWriter.warning(XSD.XSD034, getPath(), varName);
@@ -169,29 +178,38 @@ public class UniqueConstraint {
         if (Type.ID.equals(type)) {
             LOG.info("{}Add key to unique set. uniquePath='{}', keyName='{}', xPath='{}'",
                     logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), xsdAttr.getName(), xPath);
-            final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableKeys = keys.get(varName);
-            List<Pair<String, XmlSchemaAttribute>> keyList = variableKeys.get(xPath);
-            if (keyList == null) {
-                keyList = new LinkedList<>();
-                variableKeys.put(xPath, keyList);
-            }
 
-            keyList.add(Pair.of(xsdAttr.getName(), xsdAttr));
+            OptionalExt.ofNullable(variableKeyMap.get(varName)).ifPresent(variableKeys -> {
+                final DefaultUniqueConstraintAttributeList keyList = variableKeys.computeIfAbsent(
+                        xPath,
+                        key -> new DefaultUniqueConstraintAttributeList()
+                );
+
+                keyList.add(Pair.of(xsdAttr.getName(), xsdAttr));
+            }).orElse(() -> {
+                LOG.warn("{}Key map does not contain required variable. variableName='{}'",
+                        logHeader(TRANSFORMATION, XSD_KEY_AND_REF), varName);
+            });
         } else if (Type.IDREF.equals(type) || Type.CHKID.equals(type)) {
             LOG.info("{}Add ref to unique set. uniquePath='{}', keyName='{}', xPath='{}'",
                     logHeader(TRANSFORMATION, XSD_KEY_AND_REF), getPath(), xsdAttr.getName(), xPath);
-            final Map<String, List<Pair<String, XmlSchemaAttribute>>> variableRefs = refs.get(varName);
-            List<Pair<String, XmlSchemaAttribute>> refList = variableRefs.get(xPath);
-            if (refList == null) {
-                refList = new LinkedList<>();
-                variableRefs.put(xPath, refList);
-            }
 
-            refList.add(Pair.of(xsdAttr.getName(), xsdAttr));
+            OptionalExt.ofNullable(variableRefMap.get(varName)).ifPresent(variableRefs -> {
+                final DefaultUniqueConstraintAttributeList refList = variableRefs.computeIfAbsent(
+                        xPath,
+                        key -> new DefaultUniqueConstraintAttributeList()
+                );
+
+                refList.add(Pair.of(xsdAttr.getName(), xsdAttr));
+            }).orElse(() -> {
+                LOG.warn("{}Reference map does not contain required variable. variableName='{}'",
+                        logHeader(TRANSFORMATION, XSD_KEY_AND_REF), varName);
+            });
         }
     }
 
     public static boolean isStringConstraint(final Type type) {
         return Type.UNK.equals(type) || Type.IDREFS.equals(type) || Type.CHKIDS.equals(type);
     }
+
 }

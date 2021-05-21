@@ -18,7 +18,10 @@ import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
-import org.xdef.transform.xsd.xd2schema.model.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraintAttributeList;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraintNodePathMap;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraintVariableMap;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdPostProcessor;
@@ -28,6 +31,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
@@ -223,43 +227,48 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                 LOG.info("{}Creating unique constraint. uniqueSetPath='{}'",
                         logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath());
 
-                final Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> keys = uniqueConstraint.getKeys();
-                final Map<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> refs = uniqueConstraint.getRefs();
+                final UniqueConstraintVariableMap variableKeyMap = uniqueConstraint.getVariableKeyMap();
+                final UniqueConstraintVariableMap variableRefMap = uniqueConstraint.getVariableRefMap();
 
-                if (keys == null || keys.isEmpty()) {
+                if (variableKeyMap.isEmpty()) {
                     LOG.debug("{}Unique constraint has no keys. uniqueSetPath='{}'",
                             logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath());
                     continue;
                 }
 
-                for (Map.Entry<String, Map<String, List<Pair<String, XmlSchemaAttribute>>>> varKeys : keys.entrySet()) {
-                    final String varName = varKeys.getKey();
+                final Set<Map.Entry<String, UniqueConstraintNodePathMap>> varKeyEntrySet = variableKeyMap.entrySet();
+                for (Map.Entry<String, UniqueConstraintNodePathMap> varKeyEntry : varKeyEntrySet) {
+                    final String varName = varKeyEntry.getKey();
+                    final UniqueConstraintNodePathMap keyNodePathMap = varKeyEntry.getValue();
 
-                    if (varKeys.getValue().isEmpty()) {
+                    if (keyNodePathMap.isEmpty()) {
                         LOG.info("{}Unique set has no key for variable. uniqueSetPath='{}', variableName='{}'",
                                 logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath(), varName);
                         continue;
                     }
 
-                    if (varKeys.getValue().size() > 1) {
+                    if (keyNodePathMap.size() > 1) {
                         LOG.info("{}Unique set variable has key in different XPaths - not supported yet. " +
                                 "uniqueSetPath='{}', variableName='{}'",
                                 logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath(), varName);
                         continue;
                     }
 
-                    final Map<String, List<Pair<String, XmlSchemaAttribute>>> varRefs = refs.get(varName);
+                    final Optional<UniqueConstraintNodePathMap> refNodePathMap = variableRefMap.findNodePathMap(varName);
 
-                    for (Map.Entry<String, List<Pair<String, XmlSchemaAttribute>>> pathKeys : varKeys.getValue().entrySet()) {
-                        if (pathKeys.getValue().size() > 1) {
+                    final Set<Map.Entry<String, UniqueConstraintAttributeList>> keyAttrEntrySet = keyNodePathMap.entrySet();
+                    for (Map.Entry<String, UniqueConstraintAttributeList> keyAttrEntry : keyAttrEntrySet) {
+                        final String keyNodeXPath = keyAttrEntry.getKey();
+                        final UniqueConstraintAttributeList keyAttrList = keyAttrEntry.getValue();
+
+                        if (keyAttrList.size() > 1) {
                             LOG.info("{}Unique set variable is used in multiple attributes - not supported yet. " +
                                     "uniqueSetPath='{}', variableName='{}'",
                                     logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath(), varName);
                             continue;
                         }
 
-                        final String xPath = pathKeys.getKey();
-                        final String xPathParentNode = getParentNodePath(uniqueInfoEntry.getKey(), xPath);
+                        final String xPathParentNode = getParentNodePath(uniqueInfoEntry.getKey(), keyNodeXPath);
                         final SchemaNode rootSchemaNode = adapterCtx.findSchemaNode(xDefName, xPathParentNode);
 
                         if (rootSchemaNode == null) {
@@ -275,37 +284,54 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                                     logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath(), varName);
 
                             final XmlSchemaElement rootElem = rootSchemaNode.toXsdElem();
-                            final String keyFieldPath = buildFieldXPath(pathKeys.getValue());
-                            final boolean createUnique = varRefs == null || varRefs.isEmpty();
+                            final String keyFieldPath = buildFieldXPath(keyAttrList);
+                            final boolean createUnique = !refNodePathMap.isPresent() || refNodePathMap.get().isEmpty();
                             final String keyName = "key_" + uniqueConstraint.getName() + "_" + i;
 
                             LOG.debug("{}Unique set - key/unique. xPath='{}', xPathParent='{}'",
-                                    logHeader(POSTPROCESSING, XSD_PP_ADAPTER), xPath, xPathParentNode);
+                                    logHeader(POSTPROCESSING, XSD_PP_ADAPTER), keyNodeXPath, xPathParentNode);
 
-                            final XmlSchemaIdentityConstraint identityConstraint = createUnique ? new XmlSchemaUnique() : new XmlSchemaKey();
+                            final XmlSchemaIdentityConstraint identityConstraint = createUnique
+                                    ? new XmlSchemaUnique()
+                                    : new XmlSchemaKey();
                             identityConstraint.setName(keyName);
-                            addConstraintInfo(identityConstraint, Xd2XsdUtils.relativeXPath(xPath, xPathParentNode), keyFieldPath);
+                            addConstraintInfo(
+                                    identityConstraint,
+                                    Xd2XsdUtils.relativeXPath(keyNodeXPath, xPathParentNode),
+                                    keyFieldPath);
 
                             if (uniqueInfoEntry.getKey().isEmpty() && systemId.isEmpty()) {
-                                identityConstraint.setAnnotation(XsdNodeFactory.createAnnotation("Unique set was placed in global declaration inside x-definition", adapterCtx));
+                                identityConstraint.setAnnotation(XsdNodeFactory.createAnnotation(
+                                        "Unique set was placed in global declaration inside x-definition",
+                                        adapterCtx));
                             }
 
                             rootElem.getConstraints().add(identityConstraint);
 
-                            for (Map.Entry<String, List<Pair<String, XmlSchemaAttribute>>> varRefEntry : varRefs.entrySet()) {
-                                final String xPathRef = varRefEntry.getKey();
+                            if (!refNodePathMap.isPresent()) {
+                                i++;
+                                continue;
+                            }
+
+                            final Set<Map.Entry<String, UniqueConstraintAttributeList>> refAttrEntrySet = refNodePathMap.get().entrySet();
+                            for (Map.Entry<String, UniqueConstraintAttributeList> refAttrEntry : refAttrEntrySet) {
+                                final String refNodeXPath = refAttrEntry.getKey();
+                                final UniqueConstraintAttributeList refAttrList = refAttrEntry.getValue();
 
                                 LOG.debug("{}Creating keyref for unique set. uniqueSetPath='{}', variableName='{}'",
                                         logHeader(POSTPROCESSING, XSD_PP_ADAPTER), uniqueConstraint.getPath(), varName);
 
-                                for (Pair<String, XmlSchemaAttribute> varRef : varRefEntry.getValue()) {
+                                for (Pair<String, XmlSchemaAttribute> varRef : refAttrList.values()) {
                                     final XmlSchemaKeyref ref = new XmlSchemaKeyref();
                                     ref.setName("ref_" + uniqueConstraint.getName() + "_" + i + "_" + j);
                                     ref.setRefer(new QName(keyName));
-                                    addConstraintInfo(ref, Xd2XsdUtils.relativeXPath(xPathRef, xPathParentNode), "@" + varRef.getKey());
+                                    addConstraintInfo(
+                                            ref,
+                                            Xd2XsdUtils.relativeXPath(refNodeXPath, xPathParentNode),
+                                            "@" + varRef.getKey());
 
                                     LOG.debug("{}Unique set - keyref. xPath='{}', xPathParent='{}'",
-                                            logHeader(POSTPROCESSING, XSD_PP_ADAPTER), xPathRef, xPathParentNode);
+                                            logHeader(POSTPROCESSING, XSD_PP_ADAPTER), refNodeXPath, xPathParentNode);
 
                                     rootElem.getConstraints().add(ref);
                                     j++;
@@ -349,13 +375,13 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
     /**
      * Creates xPath xs:field value for identity constraint
-     * @param paths     XPath of restriction constrains nodes
+     * @param attributeList     XPath of restriction constrains nodes
      * @return xPath for xs:field
      */
-    private String buildFieldXPath(final List<Pair<String, XmlSchemaAttribute>> paths) {
-        final Set<String> fieldXPathSet = new HashSet<String>();
+    private String buildFieldXPath(final UniqueConstraintAttributeList attributeList) {
+        final Set<String> fieldXPathSet = new HashSet<>();
 
-        for (Pair<String, XmlSchemaAttribute> keyPath : paths) {
+        for (Pair<String, XmlSchemaAttribute> keyPath : attributeList.values()) {
             fieldXPathSet.add("@" + keyPath.getKey());
         }
 
