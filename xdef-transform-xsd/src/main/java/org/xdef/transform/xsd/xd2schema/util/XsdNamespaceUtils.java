@@ -322,7 +322,7 @@ public class XsdNamespaceUtils {
     public static String getNodeNamespaceUri(final XNode xData, final XsdAdapterCtx adapterCtx, final AlgPhase phase) {
         final String xDefPos = xData.getXDPosition();
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xDefPos);
-        final XmlSchema refSchema = adapterCtx.findSchema(systemId, true, phase);
+        final XmlSchema refSchema = adapterCtx.findSchemaReq(systemId, phase);
         final String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(xDefPos);
         final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(nsPrefix);
         return nsUri;

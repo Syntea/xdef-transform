@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNodeMap;
+import org.xdef.transform.xsd.xd2schema.model.XmlSchemaNodeMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
@@ -152,7 +152,7 @@ public class SchemaNodeFactory {
      * @return schema node
      */
     private static SchemaNode createDefNode(final String systemId, final String nodePos, final String nodePath, final XsdAdapterCtx adapterCtx) {
-        final SchemaNodeMap schemaNodeMap = adapterCtx.findOrCreateSchemaNodeMap(systemId);
+        final XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = adapterCtx.findOrCreateSchemaNodeMap(systemId);
         final String localName = XsdNameUtils.getReferenceName(nodePos);
         final Optional<SchemaNode> schemaNodeOpt = schemaNodeMap.findSchemaNode(nodePath);
 

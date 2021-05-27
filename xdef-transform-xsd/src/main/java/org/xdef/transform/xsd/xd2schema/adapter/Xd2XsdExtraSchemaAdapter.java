@@ -8,16 +8,19 @@ import org.apache.ws.commons.schema.XmlSchemaObject;
 import org.apache.ws.commons.schema.utils.NamespaceMap;
 import org.xdef.impl.XDefinition;
 import org.xdef.impl.XNode;
+import org.xdef.transform.xsd.model.OptionalExt;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
+import org.xdef.transform.xsd.xd2schema.model.PostProcessXDefNodeMap;
 import org.xdef.transform.xsd.xd2schema.model.SchemaFileNameLocationMap;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNamespaceLocationMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -60,10 +63,10 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
 
     /**
      * Transform given x-definition nodes {@paramref allNodesToResolve} into XSD nodes and then insert them into related XSD documents
-     * @param allNodesToResolve     nodes to be transformed
+     * @param nodesToBeResolved     nodes to be transformed
      * @return All namespaces which have been updated
      */
-    protected Set<String> transformNodes(final Map<String, Map<String, XNode>> allNodesToResolve) {
+    protected Set<String> transformNodes(final PostProcessXDefNodeMap nodesToBeResolved) {
         LOG.info("{}Transforming gathered nodes into extra schemas ...", logHeader(POSTPROCESSING, sourceXDefinition));
 
         final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(sourceXDefinition.getXDPosition());
@@ -99,11 +102,9 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                         .orElseThrow(() ->
                                 new RuntimeException("Schema file name location map should contain at least one location"));
 
-                final Map<String, XNode> nodesInSchemaToResolve = allNodesToResolve.get(schemaTargetNsUri);
-
-                if (nodesInSchemaToResolve != null) {
+                nodesToBeResolved.findByNamespaceUri(schemaTargetNsUri).ifPresent(nodesInSchemaToResolve -> {
                     // Filter nodes which should be resolved by current x-definition
-                    final ArrayList<XNode> nodesToResolve = new ArrayList<>(nodesInSchemaToResolve.values());
+                    final List<XNode> nodesToResolve = new LinkedList<>(nodesInSchemaToResolve.values());
                     final Iterator<XNode> itr = nodesToResolve.iterator();
                     XNode n;
                     while (itr.hasNext()) {
@@ -117,12 +118,16 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                         final SchemaAdapter adapter = new SchemaAdapter(sourceXDefinition);
                         adapter.setAdapterCtx(adapterCtx);
                         adapter.setReportWriter(reportWriter);
-                        adapter.createOrUpdateSchema(new NamespaceMap((HashMap) sourceNamespaceCtx.clone()), nodesToResolve, schemaTargetNsUri, importLocation);
+                        adapter.createOrUpdateSchema(
+                                new NamespaceMap((HashMap) sourceNamespaceCtx.clone()),
+                                nodesToResolve,
+                                schemaTargetNsUri,
+                                importLocation);
                         updatedNamespaces.add(schemaTargetNsUri);
                     }
 
                     itrSchemaUri.remove();
-                }
+                });
             }
 
             int currSchemasToResolve = adapterCtx.getExtraSchemaLocationsCtx().size();
@@ -165,7 +170,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * @param importLocation            XSD document location
          */
         protected void createOrUpdateSchema(final NamespaceMap namespaceCtx,
-                                            final ArrayList<XNode> nodesInSchemaToResolve,
+                                            final List<XNode> nodesInSchemaToResolve,
                                             final String targetNsUri,
                                             final XsdSchemaImportLocation importLocation) {
             LOG.info(HEADER_LINE);
@@ -199,7 +204,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                                             final XsdSchemaImportLocation importLocation) {
             final String schemaName = importLocation.getFileName();
             if (adapterCtx.existsSchemaLocation(targetNsUri, schemaName)) {
-                schema = adapterCtx.findSchema(schemaName, true, POSTPROCESSING);
+                schema = adapterCtx.findSchemaReq(schemaName, POSTPROCESSING);
             } else {
                 schema = createOrGetXsdSchema(targetNsUri, schemaName);
                 initSchemaNamespace(schemaName, namespaceCtx, targetNsUri, importLocation);
@@ -219,17 +224,17 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * @return instance of xml schema
          */
         private XmlSchema createOrGetXsdSchema(final String targetNsUri, final String schemaName) {
-            XmlSchema schema = adapterCtx.findSchema(schemaName, false, POSTPROCESSING);
+            return OptionalExt.of(adapterCtx.findSchemaOpt(schemaName, POSTPROCESSING))
+                    .ifPresent(xmlSchema -> LOG.info("{}Schema already exists. schemaName='{}'",
+                            logHeader(PREPROCESSING, schemaName), schemaName))
+                    .orElseGet(() -> {
+                        adapterCtx.addSchemaName(schemaName);
+                        final XmlSchema xmlSchema = new XmlSchema(targetNsUri, schemaName, adapterCtx.getXmlSchemaCollection());
 
-            if (schema == null) {
-                adapterCtx.addSchemaName(schemaName);
-                schema = new XmlSchema(targetNsUri, schemaName, adapterCtx.getXmlSchemaCollection());
-                LOG.info("{}Initialize new XSD document. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
-            } else {
-                LOG.info("{}Schema already exists. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
-            }
+                        LOG.info("{}Initialize new XSD document. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
 
-            return schema;
+                        return xmlSchema;
+                    });
         }
 
         /**
@@ -277,7 +282,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * @param treeAdapter       transformation algorithm
          * @param nodes             source nodes to transform
          */
-        private void transformNodes(final Xd2XsdTreeAdapter treeAdapter, final ArrayList<XNode> nodes) {
+        private void transformNodes(final Xd2XsdTreeAdapter treeAdapter, final List<XNode> nodes) {
             LOG.info(HEADER_LINE);
             LOG.info("{}Transformation of x-definition tree to schema", logHeader(XSD_XDEF_EXTRA_ADAPTER));
             LOG.info(HEADER_LINE);

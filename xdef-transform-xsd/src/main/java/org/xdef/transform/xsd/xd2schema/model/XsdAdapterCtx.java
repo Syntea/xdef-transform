@@ -21,6 +21,7 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -65,19 +66,13 @@ public class XsdAdapterCtx {
 
     /**
      * Element/attributes nodes per schema
-     * Key:     schema name
-     * Value:   node path, schema node
      */
-    private Map<String, SchemaNodeMap> nodes = null;
+    private XmlSchemaNodeMap xmlSchemaNodeMap = null;
 
     /**
      * Nodes which will be created in post-procession
-     * Key:     namespace URI
-     * Value:
-     *          Value: node name
-     *          Key: x-definition node
      */
-    private Map<String, Map<String, XNode>> nodesToBePostProcessed;
+    private PostProcessXDefNodeMap processXDefNodeMap;
 
     /**
      * Names of nodes which can be root of x-definitions
@@ -87,11 +82,9 @@ public class XsdAdapterCtx {
     private Map<String, Set<String>> rootNodeNames = null;
 
     /**
-     * Nodes which will be created in post-procession
-     * Key:     schema name
-     * Value:   xpath to uniqueSet, unique info
+     * Unique constraint nodes which will be created in post-procession
      */
-    private Map<String, Map<String, List<UniqueConstraint>>> uniqueRestrictions;
+    private XmlSchemaUniqueConstraintMap xmlSchemaUniqueConstraintMap;
 
     private XsdNameFactory nameFactory;
 
@@ -118,10 +111,10 @@ public class XsdAdapterCtx {
         schemaLocationsCtx = new DefaultSchemaNamespaceLocationMap(reportWriter, "schemaLocations");
         extraSchemaLocationsCtx = new DefaultSchemaNamespaceLocationMap(reportWriter, "extraSchemaLocations");
         xmlSchemaCollection = new XmlSchemaCollection();
-        nodes = new HashMap<>();
-        nodesToBePostProcessed = new HashMap<>();
+        xmlSchemaNodeMap = new DefaultXmlSchemaNodeMap();
+        processXDefNodeMap = new DefaultPostProcessXDefNodeMap();
         rootNodeNames = new HashMap<>();
-        uniqueRestrictions = new HashMap<>();
+        xmlSchemaUniqueConstraintMap = new DefaultXmlSchemaUniqueConstraintMap();
         nameFactory = new XsdNameFactory(this);
     }
 
@@ -137,12 +130,12 @@ public class XsdAdapterCtx {
         return xmlSchemaCollection;
     }
 
-    public Map<String, SchemaNodeMap> getNodes() {
-        return nodes;
+    public XmlSchemaNodeMap getXmlSchemaNodeMap() {
+        return xmlSchemaNodeMap;
     }
 
-    public Map<String, Map<String, XNode>> getNodesToBePostProcessed() {
-        return nodesToBePostProcessed;
+    public PostProcessXDefNodeMap getProcessXDefNodeMap() {
+        return processXDefNodeMap;
     }
 
     public XsdNameFactory getNameFactory() {
@@ -205,7 +198,8 @@ public class XsdAdapterCtx {
      * @param nsUri     XSD document namespace URI
      * @return XSD document location if exists, otherwise null
      */
-    public Optional<XsdSchemaImportLocation> findPostProcessingSchemaLocation(final String nsUri, final String schemaName) {
+    public Optional<XsdSchemaImportLocation> findPostProcessingSchemaLocation(final String nsUri,
+                                                                              final String schemaName) {
         return extraSchemaLocationsCtx.findSchemaImport(nsUri, schemaName);
     }
 
@@ -253,19 +247,11 @@ public class XsdAdapterCtx {
     public void addNodeToPostProcessing(final String nsUri, final XNode xNode) {
         LOG.info("{}Add node to post-processing.", logHeader(TRANSFORMATION, xNode));
 
-        final String nodeName = xNode.getName();
-        Map<String, XNode> ppNsNodes = nodesToBePostProcessed.get(nsUri);
-
-        if (ppNsNodes == null) {
-            ppNsNodes = new HashMap<String, XNode>();
-            nodesToBePostProcessed.put(nsUri, ppNsNodes);
-        }
-
-        if (ppNsNodes.containsKey(nodeName)) {
-            LOG.info("{}Node is already marked for post-processing.", logHeader(TRANSFORMATION, xNode));
-        } else {
-            ppNsNodes.put(nodeName, xNode);
-        }
+        final PostProcessXDefNodeMap.XDefNodeMap ppNsNodes = processXDefNodeMap.computeIfAbsent(
+                nsUri,
+                key -> new DefaultPostProcessXDefNodeMap.DefaultXDefNodeMap()
+        );
+        ppNsNodes.addNode(xNode);
     }
 
     /**
@@ -273,20 +259,15 @@ public class XsdAdapterCtx {
      *
      * Throws exception if {@paramref shouldExists} value is true and XSD document does not exist
      * @param systemId      XSD document system identifier
-     * @param shouldExists  flag, it non-existing schema should throw exception
      * @param phase         phase of transforming algorithm (just for logging purposes)
      * @return  XSD document if exists
-     *          null if XSD document does not exist and {@paramref shouldExists} value is false
+     * @throws SRuntimeException if XSD document does not exist
      */
-    public XmlSchema findSchema(final String systemId, boolean shouldExists, final AlgPhase phase) {
+    public XmlSchema findSchemaReq(final String systemId, final AlgPhase phase) throws SRuntimeException {
         XmlSchema[] schemas = xmlSchemaCollection.getXmlSchema(systemId);
         if (schemas == null || schemas.length == 0) {
-            if (shouldExists == true) {
-                reportWriter.error(XSD.XSD037, systemId);
-                throw new SRuntimeException(XSD.XSD007, systemId);
-            }
-
-            return null;
+            reportWriter.error(XSD.XSD037, systemId);
+            throw new SRuntimeException(XSD.XSD007, systemId);
         }
 
         if (schemas.length > 1) {
@@ -296,6 +277,30 @@ public class XsdAdapterCtx {
         }
 
         return schemas[0];
+    }
+
+    /**
+     * Finds XSD document by given system identifier.
+     *
+     * Throws exception if {@paramref shouldExists} value is true and XSD document does not exist
+     * @param systemId      XSD document system identifier
+     * @param phase         phase of transforming algorithm (just for logging purposes)
+     * @return  XSD document if exists
+     *          {@link Optional#empty()} if XSD document does not exist
+     */
+    public Optional<XmlSchema> findSchemaOpt(final String systemId, final AlgPhase phase) {
+        XmlSchema[] schemas = xmlSchemaCollection.getXmlSchema(systemId);
+        if (schemas == null || schemas.length == 0) {
+            return Optional.empty();
+        }
+
+        if (schemas.length > 1) {
+            reportWriter.warning(XSD.XSD038, systemId);
+            LOG.warn("{}Multiple schemas with required name have been found! schemaName='{}'",
+                    logHeader(phase), systemId);
+        }
+
+        return Optional.of(schemas[0]);
     }
 
     /**
@@ -335,7 +340,10 @@ public class XsdAdapterCtx {
      * @return  XSD document name if XSD document exists
      *          null if XSD document does not exist and {@paramref shouldExists} value is false
      */
-    public boolean hasSchemaNameWithNamespaceAndName(final String nsUri, final String schemaName, boolean shouldExists, final AlgPhase phase) {
+    public boolean hasSchemaNameWithNamespaceAndName(final String nsUri,
+                                                     final String schemaName,
+                                                     boolean shouldExists,
+                                                     final AlgPhase phase) {
         final Set<String> schemaNames = findSchemaNamesByNamespace(nsUri, shouldExists, phase);
         if (schemaNames == null || schemaNames.isEmpty()) {
             return false;
@@ -379,7 +387,7 @@ public class XsdAdapterCtx {
      *          otherwise already existing node with same node path merged with {@paramref node}
      */
     public SchemaNode addOrUpdateNode(final String systemId, final String nodePath, final SchemaNode node) {
-        SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
+        XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
 
         final SchemaNode refOrig = schemaNodeMap.findSchemaNode(nodePath).orElse(null);
         if (refOrig != null && refOrig.getXsdNode().isPresent()) {
@@ -442,7 +450,7 @@ public class XsdAdapterCtx {
         LOG.info("{}Updating xsd content of node. system='{}', nodePath='{}', newXsdName='{}'",
                 logHeader(XSD_REFERENCE), systemId, nodePath, newXsdNode.getClass().getSimpleName());
 
-        final SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
+        final XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
         OptionalExt.of(schemaNodeMap.findSchemaNode(nodePath))
                 .ifPresent(schemaNode -> schemaNode.setXsdNode(newXsdNode))
                 .orElse(() -> {
@@ -457,8 +465,10 @@ public class XsdAdapterCtx {
      * @param systemId  XSD document identifier
      * @return  map of schema nodes
      */
-    public SchemaNodeMap findOrCreateSchemaNodeMap(final String systemId) {
-        final SchemaNodeMap xsdSystemRefs = nodes.computeIfAbsent(systemId, key -> new DefaultSchemaNodeMap());
+    public XmlSchemaNodeMap.SchemaNodeMap findOrCreateSchemaNodeMap(final String systemId) {
+        final XmlSchemaNodeMap.SchemaNodeMap xsdSystemRefs = xmlSchemaNodeMap.computeIfAbsent(
+                systemId,
+                key -> new DefaultXmlSchemaNodeMap.DefaultSchemaNodeMap());
         return xsdSystemRefs;
     }
 
@@ -469,7 +479,7 @@ public class XsdAdapterCtx {
      * @return  schema node if exists, otherwise null
      */
     public Optional<SchemaNode> findSchemaNode(final String systemId, final String nodePath) {
-        return Optional.ofNullable(nodes.get(systemId))
+        return xmlSchemaNodeMap.findByXmlSchema(systemId)
                 .map(schemaNodeMap -> schemaNodeMap.findSchemaNode(nodePath))
                 .orElse(Optional.empty());
     }
@@ -493,7 +503,7 @@ public class XsdAdapterCtx {
     private void removeNode(final String systemId, final String nodePath) {
         LOG.info("{}Removing xsd node. system='{}', nodePath='{}'", logHeader(XSD_REFERENCE), systemId, nodePath);
 
-        final SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
+        final XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
         schemaNodeMap.removeNode(nodePath).ifPresent(removedNode -> {
             LOG.debug("{}Node has been removed! system='{}', nodePath='{}', nodeName='{}'",
                     logHeader(XSD_REFERENCE), systemId, nodePath, removedNode.getXdName());
@@ -503,10 +513,11 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document root node's names by XSD document identifier
      * @param systemId      XSD document identifier
-     * @return XSD document root node's names if exist, otherwise null
+     * @return  XSD document root node's names if exist,
+     *          otherwise empty Set
      */
     public Set<String> findSchemaRootNodeNames(final String systemId) {
-        return rootNodeNames.get(systemId);
+        return rootNodeNames.getOrDefault(systemId, Collections.emptySet());
     }
 
     /**
@@ -515,12 +526,7 @@ public class XsdAdapterCtx {
      * @param nodeName      x-definition name
      */
     public void addRootNodeName(final String systemId, final String nodeName) {
-        Set<String> schemaRootNodeNames = findSchemaRootNodeNames(systemId);
-        if (schemaRootNodeNames == null) {
-            schemaRootNodeNames = new HashSet<String>();
-            rootNodeNames.put(systemId, schemaRootNodeNames);
-        }
-
+        final Set<String> schemaRootNodeNames = rootNodeNames.computeIfAbsent(systemId, key -> new HashSet<>());
         schemaRootNodeNames.add(nodeName);
     }
 
@@ -545,31 +551,31 @@ public class XsdAdapterCtx {
             systemId = "";
         }
 
-        final Map<String, List<UniqueConstraint>> uniqueInfoMap = getOrCreateSchemaUniqueInfo(systemId);
+        final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueSetMap = getOrCreateXDefUniqueSetMap(systemId);
         if (!path.isEmpty()) {
             path = "/" + path;
         }
 
-        UniqueConstraint uniqueConstraint = findUniqueConstraint(uniqueInfoMap, name, path);
+        final String finalPath = path;
+        final String finalSystemId = systemId;
 
-        if (uniqueConstraint == null) {
-            LOG.info("{}Creating unique set. name='{}', path='{}', system='{}'",
-                    logHeader(PREPROCESSING), name, path, systemId);
+        return OptionalExt.of(findUniqueConstraint(uniqueSetMap, name, path))
+                .ifPresent(uniqueConstraint ->
+                        LOG.debug("{}Creating unique set - already exists. name='{}', path='{}', system='{}'",
+                                logHeader(PREPROCESSING), name, finalPath, finalSystemId))
+                .orElseGet(() -> {
+                    LOG.info("{}Creating unique set. name='{}', path='{}', system='{}'",
+                            logHeader(PREPROCESSING), name, finalPath, finalSystemId);
 
-            List<UniqueConstraint> uniqueInfoList = uniqueInfoMap.get(path);
-            if (uniqueInfoList == null) {
-                uniqueInfoList = new LinkedList<UniqueConstraint>();
-                uniqueInfoMap.put(path, uniqueInfoList);
-            }
+                    final List<UniqueConstraint> uniqueInfoList = uniqueSetMap.computeIfAbsent(
+                            finalPath,
+                            key -> new LinkedList<>()
+                    );
+                    final UniqueConstraint uniqueConstraint = new UniqueConstraint(name, finalSystemId);
+                    uniqueInfoList.add(uniqueConstraint);
 
-            uniqueConstraint = new UniqueConstraint(name, systemId);
-            uniqueInfoList.add(uniqueConstraint);
-        } else {
-            LOG.debug("{}Creating unique set - already exists. name='{}', path='{}', system='{}'",
-                    logHeader(PREPROCESSING), name, path, systemId);
-        }
-
-        return uniqueConstraint;
+                    return uniqueConstraint;
+                });
     }
 
     /**
@@ -577,40 +583,43 @@ public class XsdAdapterCtx {
      * @param uniqueConstraintMap   unique constraint map
      * @param name                  unique constraint name
      * @param path                  unique constraint path
-     * @return unique constraint if exists inside given map, otherwise null
+     * @return  unique constraint if exists inside given map,
+     *          otherwise {@link Optional#empty()}
      */
-    private static UniqueConstraint findUniqueConstraint(final Map<String, List<UniqueConstraint>> uniqueConstraintMap, final String name, final String path) {
+    private static Optional<UniqueConstraint> findUniqueConstraint(
+            final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueConstraintMap,
+            final String name,
+            final String path) {
+
         if (!uniqueConstraintMap.isEmpty()) {
-            final List<UniqueConstraint> uniqueInfoList = uniqueConstraintMap.get(path);
-            if (uniqueInfoList != null && !uniqueInfoList.isEmpty()) {
-                for (UniqueConstraint u : uniqueInfoList) {
-                    if (u.getName().equals(name)) {
-                        return u;
-                    }
+            final List<UniqueConstraint> uniqueInfoList = uniqueConstraintMap.findByXPath(path);
+            for (UniqueConstraint u : uniqueInfoList) {
+                if (u.getName().equals(name)) {
+                    return Optional.of(u);
                 }
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
      * Finds unique constraint by x-definition node
      * @param xData x-definition node
-     * @return  unique constraint if exists, otherwise null
+     * @return  unique constraint if exists,
+     *          otherwise {@link Optional#empty()}
      */
-    public UniqueConstraint findUniqueConst(final XData xData) {
+    public Optional<UniqueConstraint> findUniqueConst(final XData xData) {
         LOG.debug("{}Finding unique set. name='{}'", logHeader(TRANSFORMATION, xData), xData.getValueTypeName());
 
         // TODO: Finding of unique set not using variable name, ie. uniqueSet u int();
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xData.getXDPosition());
         final String uniqueInfoName = XsdNameUtils.getUniqueSetName(xData.getValueTypeName());
         final String uniquestSetPath = "/" + XsdNameUtils.getXNodePath(xData.getXDPosition());
-        UniqueConstraint uniqueInfo = findUniqueConst(uniqueInfoName, systemId, uniquestSetPath);
-        if (uniqueInfo == null) {
-            uniqueInfo = findUniqueConst(uniqueInfoName, "", uniquestSetPath);
-        }
-        return uniqueInfo;
+        final UniqueConstraint uniqueInfo = findUniqueConst(uniqueInfoName, systemId, uniquestSetPath)
+                .orElse(findUniqueConst(uniqueInfoName, "", uniquestSetPath).orElse(null));
+
+        return Optional.ofNullable(uniqueInfo);
     }
 
     /**
@@ -619,17 +628,18 @@ public class XsdAdapterCtx {
      * @param uniqueInfoName        unique constraint name
      * @param systemId              XSD document identifier
      * @param uniquestSetPath       unique constraint path
-     * @return unique constraint if exists inside given map, otherwise null
+     * @return  unique constraint if exists inside given map,
+     *          otherwise {@link Optional#empty()}
      */
-    private UniqueConstraint findUniqueConst(final String uniqueInfoName, final String systemId, String uniquestSetPath) {
+    private Optional<UniqueConstraint> findUniqueConst(final String uniqueInfoName, final String systemId, String uniquestSetPath) {
         LOG.debug("{}Finding unique set. uniqueName='{}', systemId='{}'",
                 logHeader(TRANSFORMATION), uniqueInfoName, systemId);
 
         UniqueConstraint uniqueInfo = null;
         int slashPos;
-        final Map<String, List<UniqueConstraint>> uniqueInfoMap = getOrCreateSchemaUniqueInfo(systemId);
+        final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueSetMap = getOrCreateXDefUniqueSetMap(systemId);
 
-        if (!uniqueInfoMap.isEmpty()) {
+        if (!uniqueSetMap.isEmpty()) {
             while (uniqueInfo == null && !"".equals(uniquestSetPath)) {
                 slashPos = uniquestSetPath.lastIndexOf('/');
                 if (slashPos == -1) {
@@ -637,11 +647,12 @@ public class XsdAdapterCtx {
                 } else {
                     uniquestSetPath = uniquestSetPath.substring(0, slashPos);
                 }
-                uniqueInfo = findUniqueConstraint(uniqueInfoMap, uniqueInfoName, uniquestSetPath);
+
+                uniqueInfo = findUniqueConstraint(uniqueSetMap, uniqueInfoName, uniquestSetPath).orElse(null);
             }
         }
 
-        return uniqueInfo;
+        return Optional.ofNullable(uniqueInfo);
     }
 
     /**
@@ -649,8 +660,8 @@ public class XsdAdapterCtx {
      * @param systemId  XSD document identifier
      * @return  unique constraints
      */
-    public Map<String, List<UniqueConstraint>> getSchemaUniqueConstraints(final String systemId) {
-        return uniqueRestrictions.get(systemId);
+    public Optional<XmlSchemaUniqueConstraintMap.XDefUniqueSetMap> findXDefUniqueSetMap(final String systemId) {
+        return xmlSchemaUniqueConstraintMap.findByXmlSchema(systemId);
     }
 
     /**
@@ -658,12 +669,11 @@ public class XsdAdapterCtx {
      * @param systemId  XSD document identifier
      * @return  unique constraints map
      */
-    private Map<String, List<UniqueConstraint>> getOrCreateSchemaUniqueInfo(final String systemId) {
-        Map<String, List<UniqueConstraint>> uniqueInfo = uniqueRestrictions.get(systemId);
-        if (uniqueInfo == null) {
-            uniqueInfo = new HashMap<String, List<UniqueConstraint>>();
-            uniqueRestrictions.put(systemId, uniqueInfo);
-        }
+    private XmlSchemaUniqueConstraintMap.XDefUniqueSetMap getOrCreateXDefUniqueSetMap(final String systemId) {
+        final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueInfo = xmlSchemaUniqueConstraintMap.computeIfAbsent(
+                systemId,
+                key -> new DefaultXmlSchemaUniqueConstraintMap.DefaultXDefUniqueSetMap()
+        );
 
         return uniqueInfo;
     }

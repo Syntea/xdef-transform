@@ -71,7 +71,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
             schema = createXsdSchema();
             poolPostProcessing = false;
         } else {
-            schema = adapterCtx.findSchema(XsdNameUtils.getSchemaName(xDef), false, INITIALIZATION);
+            schema = adapterCtx.findSchemaReq(XsdNameUtils.getSchemaName(xDef), INITIALIZATION);
         }
 
         final XsdNodeFactory xsdFactory = new XsdNodeFactory(schema, adapterCtx);
@@ -104,13 +104,11 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
 
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(xDefinition.getName());
 
-        if (rootNodeNames != null) {
-            for (XMElement elem : xDefinition.getModels()) {
-                if (rootNodeNames.contains(elem.getName())) {
-                    treeAdapter.convertTree(elem);
-                    LOG.info("{}Adding root element to schema. elementName='{}'",
-                            logHeader(TRANSFORMATION, elem), elem.getName());
-                }
+        for (XMElement elem : xDefinition.getModels()) {
+            if (rootNodeNames.contains(elem.getName())) {
+                treeAdapter.convertTree(elem);
+                LOG.info("{}Adding root element to schema. elementName='{}'",
+                        logHeader(TRANSFORMATION, elem), elem.getName());
             }
         }
     }

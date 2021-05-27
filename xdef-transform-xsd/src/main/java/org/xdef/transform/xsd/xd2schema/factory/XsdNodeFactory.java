@@ -228,7 +228,7 @@ public class XsdNodeFactory {
 
         final AtomicReference<QName> qName = new AtomicReference(null);
 
-        final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xDataText);
+        final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xDataText).orElse(null);
         if (uniqueConstraint != null) {
             LOG.info("{}Simple-content is using unique set. uniqueSet='{}'",
                     logHeader(TRANSFORMATION, xDataText), uniqueConstraint.getName());

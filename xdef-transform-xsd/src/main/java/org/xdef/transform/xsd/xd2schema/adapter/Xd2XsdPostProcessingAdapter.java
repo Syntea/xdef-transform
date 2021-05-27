@@ -18,6 +18,7 @@ import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
+import org.xdef.transform.xsd.xd2schema.model.XmlSchemaUniqueConstraintMap;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraintAttributeList;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraintNodePathMap;
@@ -89,7 +90,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
         postProcessor = new XsdPostProcessor(adapterCtx);
         final Set<String> updatedNamespaces = new HashSet<String>();
-        if (!adapterCtx.getNodesToBePostProcessed().isEmpty() && !adapterCtx.getExtraSchemaLocationsCtx().isEmpty()) {
+        if (!adapterCtx.getProcessXDefNodeMap().isEmpty() && !adapterCtx.getExtraSchemaLocationsCtx().isEmpty()) {
             processNodes(xDef, updatedNamespaces);
         }
         processReferences();
@@ -103,7 +104,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
      * @param updatedNamespaces     already processed namespaces
      */
     private void processNodes(final XDPool xdPool, final Set<String> updatedNamespaces) {
-        if (!adapterCtx.getNodesToBePostProcessed().isEmpty() && !adapterCtx.getExtraSchemaLocationsCtx().isEmpty()) {
+        if (!adapterCtx.getProcessXDefNodeMap().isEmpty() && !adapterCtx.getExtraSchemaLocationsCtx().isEmpty()) {
             for (XMDefinition xDef : xdPool.getXMDefinitions()) {
                 processNodes((XDefinition)xDef, updatedNamespaces);
             }
@@ -121,12 +122,12 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
         }
 
         LOG.info("{}Creating nodes ...", logHeader(POSTPROCESSING, xDef));
-        final XmlSchema schema = adapterCtx.findSchema(XsdNameUtils.getSchemaName(xDef), true, POSTPROCESSING);
+        final XmlSchema schema = adapterCtx.findSchemaReq(XsdNameUtils.getSchemaName(xDef), POSTPROCESSING);
         final Xd2XsdExtraSchemaAdapter postProcessingAdapter = new Xd2XsdExtraSchemaAdapter(xDef);
         postProcessingAdapter.setAdapterCtx(adapterCtx);
         postProcessingAdapter.setReportWriter(reportWriter);
         postProcessingAdapter.setSourceNamespaceCtx((NamespaceMap) schema.getNamespaceContext(), schema.getSchemaNamespacePrefix());
-        updatedNamespaces.addAll(postProcessingAdapter.transformNodes(adapterCtx.getNodesToBePostProcessed()));
+        updatedNamespaces.addAll(postProcessingAdapter.transformNodes(adapterCtx.getProcessXDefNodeMap()));
     }
 
     /**
@@ -155,8 +156,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                     continue;
                 }
 
-                final XmlSchema schema = adapterCtx.findSchema(schemaName, true, POSTPROCESSING);
-                Optional.ofNullable(adapterCtx.getNodes().get(schemaName))
+                final XmlSchema schema = adapterCtx.findSchemaReq(schemaName, POSTPROCESSING);
+                adapterCtx.getXmlSchemaNodeMap().findByXmlSchema(schemaName)
                         .ifPresent(schemaNodes -> {
                             for (SchemaNode schemaNode : schemaNodes.values()) {
                                 if (schemaNode.isXsdAttr()) {
@@ -206,7 +207,9 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
      * @param systemId      source system id of unique set (empty for unique sets places in root of x-definition)
      */
     private void createRestrictionConstraints(final String xDefName, final String systemId) {
-        final Map<String, List<UniqueConstraint>> uniqueInfoMap = adapterCtx.getSchemaUniqueConstraints(systemId);
+        final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueInfoMap = adapterCtx.findXDefUniqueSetMap(systemId)
+                .orElse(null);
+
         if (uniqueInfoMap == null || uniqueInfoMap.isEmpty()) {
             return;
         }

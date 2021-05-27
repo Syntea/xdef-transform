@@ -222,6 +222,7 @@ public class XsdSimpleContentFactory {
      */
     private XmlSchemaSimpleTypeContent simpleTypeUnion(final IXsdFacetFactory facetBuilder, final String nodeName) {
         LOG.info("{}Creating simple type union.", logHeader(TRANSFORMATION, xData));
+
         final XmlSchemaSimpleTypeUnion union = simpleTypeUnion(nodeName);
         final XmlSchemaSimpleTypeRestriction restriction = simpleTypeRestriction(null, facetBuilder, parameters);
         return wrapUpSimpleTypeContent(restriction, union);
@@ -235,7 +236,7 @@ public class XsdSimpleContentFactory {
     private XmlSchemaSimpleTypeUnion simpleTypeUnion(final String nodeName) {
         final XmlSchemaSimpleTypeUnion union = new XmlSchemaSimpleTypeUnion();
 
-        Set<String> refNames = new HashSet<String>();
+        Set<String> refNames = new HashSet<>();
         for (XDNamedValue namedValue : parameters) {
             if (namedValue.getValue() instanceof XDParser) {
                 simpleTypeUnionTopReference((XDParser)namedValue.getValue(), refNames, nodeName);

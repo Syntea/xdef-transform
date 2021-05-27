@@ -30,7 +30,7 @@ import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNodeMap;
+import org.xdef.transform.xsd.xd2schema.model.XmlSchemaNodeMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
 
@@ -71,12 +71,12 @@ public class XsdPostProcessor {
 
         final List<SchemaNode> nodesToRemove = new ArrayList<>();
 
-        for (Map.Entry<String, SchemaNodeMap> schemaNodes : adapterCtx.getNodes().entrySet()) {
+        for (Map.Entry<String, XmlSchemaNodeMap.SchemaNodeMap> schemaNodes : adapterCtx.getXmlSchemaNodeMap().entrySet()) {
             final String schemaName = schemaNodes.getKey();
             LOG.info("{}Updating references - phase 1. systemId='{}'",
                     logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), schemaName);
 
-            final XmlSchema xmlSchema = adapterCtx.findSchema(schemaName, true, POSTPROCESSING);
+            final XmlSchema xmlSchema = adapterCtx.findSchemaReq(schemaName, POSTPROCESSING);
             final XsdNodeFactory xsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
             final Set<String> schemaRootNodeNames = adapterCtx.findSchemaRootNodeNames(schemaName);
 
@@ -85,8 +85,8 @@ public class XsdPostProcessor {
                 if (isTopElement(node)) {
                     // Process elements which are on top level but they are not root of x-definition
                     boolean elementNotInXDefRoot = adapterCtx.hasEnableFeature(XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS)
-                            ? (schemaRootNodeNames != null && !schemaRootNodeNames.isEmpty() && !schemaRootNodeNames.contains(node.getXdName()))
-                            : (schemaRootNodeNames == null || schemaRootNodeNames.isEmpty() || !schemaRootNodeNames.contains(node.getXdName()));
+                            ? (!schemaRootNodeNames.isEmpty() && !schemaRootNodeNames.contains(node.getXdName()))
+                            : (schemaRootNodeNames.isEmpty() || !schemaRootNodeNames.contains(node.getXdName()));
 
                     if (!adapterCtx.isPostProcessingNamespace(xmlSchema.getTargetNamespace()) && elementNotInXDefRoot) {
                         if (!node.hasAnyPointer()) {
@@ -106,7 +106,7 @@ public class XsdPostProcessor {
             Xd2XsdUtils.removeNode(node.toXsdElem().getParent(), node.toXsdElem());
         }
 
-        for (Map.Entry<String, SchemaNodeMap> schemaNodes : adapterCtx.getNodes().entrySet()) {
+        for (Map.Entry<String, XmlSchemaNodeMap.SchemaNodeMap> schemaNodes : adapterCtx.getXmlSchemaNodeMap().entrySet()) {
             final String schemaName = schemaNodes.getKey();
             LOG.info("{}Updating references - phase 2. systemId='{}'",
                     logHeader(POSTPROCESSING, XSD_PP_PROCESSOR), schemaName);
@@ -179,7 +179,7 @@ public class XsdPostProcessor {
 
         if (isTopElement(refSchemaNode)) {
             final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refSchemaNode.getXdNodeReq().getXDPosition());
-            final XmlSchema xmlSchema = adapterCtx.findSchema(systemId, true, POSTPROCESSING);
+            final XmlSchema xmlSchema = adapterCtx.findSchemaReq(systemId, POSTPROCESSING);
             final XsdNodeFactory refXsdFactory = new XsdNodeFactory(xmlSchema, adapterCtx);
             if (refSchemaNode.toXsdElem().isRef()) {
                 elementRootRef(refSchemaNode, refXsdFactory);

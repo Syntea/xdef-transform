@@ -274,7 +274,8 @@ public class Xd2XsdTreeAdapter {
             QName qName = null;
             attr.setName(xData.getName());
 
-            final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData);
+            final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData).orElse(null);
+
             if (uniqueConstraint != null) {
                 LOG.info("{}Attribute is using unique set. uniqueSet='{}'",
                         logHeader(TRANSFORMATION, xData), uniqueConstraint.getName());
@@ -678,7 +679,7 @@ public class Xd2XsdTreeAdapter {
             final String nsUri = xElem.getNSUri();
             final String nsPrefix = schema.getNamespaceContext().getPrefix(nsUri);
             if (nsPrefix == null) {
-                final XmlSchema refSchema = adapterCtx.findSchema(refSystemId, true, TRANSFORMATION);
+                final XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, TRANSFORMATION);
                 final String refNsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
                 if (!XsdNamespaceUtils.isValidNsUri(refNsUri)) {
                     adapterCtx.getReportWriter().error(XSD.XSD004, nsPrefix);
@@ -691,7 +692,7 @@ public class Xd2XsdTreeAdapter {
 
             return new QName(nsUri, refLocalName);
         } else if (XsdNamespaceUtils.isRefInDifferentNamespacePrefix(refXPos, schema)) {
-            final XmlSchema refSchema = adapterCtx.findSchema(refSystemId, true, TRANSFORMATION);
+            final XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, TRANSFORMATION);
             final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
             return new QName(nsUri, refLocalName);
         } else if (XsdNamespaceUtils.isRefInDifferentSystem(refXPos, xPos)) {

@@ -2,6 +2,7 @@ package org.xdef.transform.xsd.model;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * Extension of {@link Optional} class. Provides ifPresentOrElse() (similar to Java 9+)
@@ -24,15 +25,7 @@ public class OptionalExt<T> {
         return new OptionalExt(Optional.ofNullable(value));
     }
 
-    public void ifPresentOrElse(final Consumer<? super T> consumer, final IfNotPresentFunction function) {
-        if (optional.isPresent()) {
-            consumer.accept(optional.get());
-        } else {
-            function.apply();
-        }
-    }
-
-    public OptionalExt ifPresent(final Consumer<? super T> consumer) {
+    public OptionalExt<T> ifPresent(final Consumer<? super T> consumer) {
         if (optional.isPresent()) {
             consumer.accept(optional.get());
         }
@@ -44,6 +37,10 @@ public class OptionalExt<T> {
         if (!optional.isPresent()) {
             function.apply();
         }
+    }
+
+    public T orElseGet(Supplier<? extends T> other) {
+        return optional.isPresent() ? optional.get() : other.get();
     }
 
     @FunctionalInterface

@@ -26,7 +26,6 @@ import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -127,12 +126,12 @@ public class Xd2XsdReferenceAdapter {
      *      import          - used namespaces in reference of attributes and elements
      * @param nodes list of x-definition nodes
      */
-    public void extractRefsAndImports(final ArrayList<XNode> nodes) {
-        simpleTypeReferences = new HashSet<String>();
-        namespaceImports = new HashSet<String>();
-        namespaceIncludes = new HashSet<String>();
+    public void extractRefsAndImports(final List<XNode> nodes) {
+        simpleTypeReferences = new HashSet<>();
+        namespaceImports = new HashSet<>();
+        namespaceIncludes = new HashSet<>();
 
-        final Set<XMNode> processed = new HashSet<XMNode>();
+        final Set<XMNode> processed = new HashSet<>();
 
         for (XNode node : nodes) {
             // Extract all simple types and imports
@@ -176,7 +175,7 @@ public class Xd2XsdReferenceAdapter {
         LOG.info("{}Extracting complex references ...", logHeader(PREPROCESSING, xDef));
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(schemaName);
         for (XMElement elem : xDef.getModels()) {
-            if (rootNodeNames == null || !rootNodeNames.contains(elem.getName())) {
+            if (rootNodeNames.isEmpty() || !rootNodeNames.contains(elem.getName())) {
                 transformTopLevelElem(elem);
             }
         }
@@ -248,7 +247,7 @@ public class Xd2XsdReferenceAdapter {
                         addSchemaImportFromElem(nodeNsUri, refPos);
                     } else if (XsdNamespaceUtils.isRefInDifferentNamespacePrefix(refPos, schema)) {
                         final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
-                        XmlSchema refSchema = adapterCtx.findSchema(refSystemId, true, PREPROCESSING);
+                        XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
                         final String refNsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refPos);
                         final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
                         if (!XsdNamespaceUtils.isValidNsUri(nsUri)) {
@@ -360,7 +359,7 @@ public class Xd2XsdReferenceAdapter {
             final boolean isAttrRef = xData.getKind() == XMATTRIBUTE;
 
             if (isAttrRef == true) {
-                final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData);
+                final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData).orElse(null);
                 // Do not create reference if attribute is using unique set
                 if (uniqueConstraint != null) {
                     uniqueConstraint.addVariable(xData, adapterCtx);
@@ -411,7 +410,7 @@ public class Xd2XsdReferenceAdapter {
      */
     private void addSchemaInclude(final String refPos) {
         final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
-        XmlSchema refSchema = adapterCtx.findSchema(refSystemId, true, PREPROCESSING);
+        XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
         final String refNsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refPos);
         final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
 
