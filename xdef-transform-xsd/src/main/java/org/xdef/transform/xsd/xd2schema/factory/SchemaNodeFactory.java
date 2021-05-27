@@ -8,15 +8,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
+import org.xdef.transform.xsd.xd2schema.model.impl.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.XmlSchemaNodeMap;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 
 import java.util.Optional;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_REFERENCE;
 
 
 /**

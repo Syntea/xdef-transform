@@ -8,7 +8,7 @@ import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import java.util.List;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 public class TokensRegexFacetFactory extends AbstractArrayFacetFactory {
 

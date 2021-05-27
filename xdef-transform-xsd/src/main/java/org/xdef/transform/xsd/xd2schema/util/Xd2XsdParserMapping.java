@@ -11,7 +11,7 @@ import org.xdef.XDValue;
 import org.xdef.impl.XData;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.IXsdFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.pattern.ListRegexFacetFactory;
@@ -31,7 +31,7 @@ import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.RegexFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.StartsFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.TokensFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.UnionFacetFactory;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;
@@ -40,13 +40,13 @@ import java.util.Optional;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_CDATA;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_ISODATE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_ISODATETIME;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_ISOYEAR;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_ISOYEARMONTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_REGEX;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_CDATA;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_ISODATE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_ISODATETIME;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_ISOYEAR;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_ISOYEARMONTH;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_PARSER_REGEX;
 
 /**
  * Definition of transformation X-Definition data types to XML Schema data types

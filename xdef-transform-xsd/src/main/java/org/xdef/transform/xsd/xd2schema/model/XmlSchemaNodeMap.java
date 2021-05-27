@@ -1,5 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.model;
 
+import org.xdef.transform.xsd.xd2schema.model.impl.SchemaNode;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;

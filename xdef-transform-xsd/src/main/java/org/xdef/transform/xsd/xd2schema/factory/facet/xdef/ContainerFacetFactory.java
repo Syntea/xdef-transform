@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_SEPARATOR;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_FACET_SEPARATOR;
 
 public class ContainerFacetFactory extends DefaultFacetFactory {
     static public final String XD_PARSER_NAME_LANGUAGES = "ISOlanguages";

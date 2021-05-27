@@ -5,8 +5,8 @@ import org.xdef.XDNamedValue;
 import org.xdef.XDValue;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_ENUMERATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_ENUMERATION;
 
 public class EnumerationRegexFactory extends AbstractRegexFactory {
 

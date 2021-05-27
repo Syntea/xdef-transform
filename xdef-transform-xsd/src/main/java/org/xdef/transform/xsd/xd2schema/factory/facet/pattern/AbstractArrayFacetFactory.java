@@ -21,7 +21,7 @@ import java.util.Set;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 
 public abstract class AbstractArrayFacetFactory extends DefaultFacetFactory {

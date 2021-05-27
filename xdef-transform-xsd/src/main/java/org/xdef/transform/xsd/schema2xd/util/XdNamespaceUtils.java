@@ -8,13 +8,13 @@ import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaSimpleType;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.constants.Constants;
-import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
+import org.xdef.transform.xsd.schema2xd.model.impl.XdAdapterCtx;
 
 import javax.xml.namespace.QName;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX;
+import static org.xdef.transform.xsd.def.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX;
 
 public class XdNamespaceUtils {
 

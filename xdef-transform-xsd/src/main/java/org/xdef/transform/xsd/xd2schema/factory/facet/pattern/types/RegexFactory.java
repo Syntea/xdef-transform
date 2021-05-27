@@ -1,7 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.factory.facet.pattern.types;
 
 import org.xdef.XDNamedValue;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 public interface RegexFactory {
 

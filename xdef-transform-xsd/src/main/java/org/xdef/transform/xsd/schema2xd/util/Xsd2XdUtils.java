@@ -3,14 +3,14 @@ package org.xdef.transform.xsd.schema2xd.util;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaType;
-import org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature;
+import org.xdef.transform.xsd.schema2xd.def.Xsd2XdFeature;
 
 import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_REQUIRED;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdFeature.XD_TEXT_REQUIRED;
 
 
 /**

@@ -1,6 +1,6 @@
 package org.xdef.transform.xsd.xd2schema.model;
 
-import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.uc.impl.UniqueConstraint;
 
 import java.util.Collections;
 import java.util.List;

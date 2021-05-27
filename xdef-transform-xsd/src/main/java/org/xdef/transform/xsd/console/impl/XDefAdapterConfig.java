@@ -1,6 +1,6 @@
 package org.xdef.transform.xsd.console.impl;
 
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 
 import java.util.EnumSet;
 import java.util.List;

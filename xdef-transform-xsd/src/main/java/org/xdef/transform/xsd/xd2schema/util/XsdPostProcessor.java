@@ -25,14 +25,14 @@ import org.slf4j.LoggerFactory;
 import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
-import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
+import org.xdef.transform.xsd.xd2schema.model.impl.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.XmlSchemaNodeMap;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
-import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.xsd.impl.XmlSchemaChoiceWrapper;
 
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
@@ -42,10 +42,10 @@ import java.util.Set;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSING;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_PP_PROCESSOR;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.POSTPROCESSING;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature.XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_PP_PROCESSOR;
 
 
 /**

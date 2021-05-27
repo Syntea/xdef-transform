@@ -8,25 +8,25 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
+import org.xdef.transform.xsd.schema2xd.model.impl.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
 import org.xdef.xml.KXmlUtils;
 
 import javax.xml.namespace.QName;
 
-import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_NAME;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_ROOT_ELEMT;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_ANY;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_CHOICE;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_DECLARATION;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_MIXED;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_POOL;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_SEQUENCE;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ELEM_XDEF;
+import static org.xdef.transform.xsd.def.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ATTR_NAME;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ATTR_ROOT_ELEMT;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_ANY;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_CHOICE;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_DECLARATION;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_MIXED;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_POOL;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_SEQUENCE;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ELEM_XDEF;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 public class XdNodeFactory {
 

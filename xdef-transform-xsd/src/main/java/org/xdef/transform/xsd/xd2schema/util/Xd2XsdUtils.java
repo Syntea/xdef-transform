@@ -11,8 +11,8 @@ import org.apache.ws.commons.schema.XmlSchemaType;
 import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
 import org.xdef.impl.XElement;
 import org.xdef.model.XMElement;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -5,11 +5,11 @@ import org.apache.ws.commons.schema.utils.XmlSchemaNamed;
 import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
 import org.w3c.dom.Node;
 import org.xdef.model.XMNode;
-import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
+import org.xdef.transform.xsd.xd2schema.def.AlgPhase;
 
 import static org.xdef.model.XMNode.XMDEFINITION;
 import static org.xdef.model.XMNode.XMTEXT;
-import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
+import static org.xdef.transform.xsd.def.XDefConst.XDEF_REF_DELIMITER;
 
 /**
  * @author smid

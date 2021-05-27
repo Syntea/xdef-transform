@@ -17,8 +17,8 @@ import org.xdef.transform.xsd.console.XDefAdapter;
 import org.xdef.transform.xsd.error.FormattedRuntimeException;
 import org.xdef.transform.xsd.error.UnexpectedValidationResultException;
 import org.xdef.transform.xsd.util.XmlValidator;
-import org.xdef.transform.xsd.xd2schema.XdPool2XsdAdapter;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.adapter.impl.XdPool2XsdAdapter;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 
 import javax.xml.transform.stream.StreamSource;

@@ -10,8 +10,8 @@ import org.xdef.XDFactory;
 import org.xdef.XDPool;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.sys.SUtils;
-import org.xdef.transform.xsd.xd2schema.XdPool2XsdAdapter;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.adapter.impl.XdPool2XsdAdapter;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.util.XValidate;
 
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.def.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
 
 public class TestXd2Xsd extends TesterXdSchema {
 

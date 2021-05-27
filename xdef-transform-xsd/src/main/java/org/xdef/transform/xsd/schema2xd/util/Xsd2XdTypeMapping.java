@@ -1,11 +1,11 @@
 package org.xdef.transform.xsd.schema2xd.util;
 
 import org.apache.ws.commons.schema.constants.Constants;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.DecimalTypeFactory;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.DefaultTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.DecimalTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.DefaultTypeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.IntegerTypeFactory;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.TextTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.IntegerTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.TextTypeFactory;
 
 import javax.xml.namespace.QName;
 import java.util.HashMap;

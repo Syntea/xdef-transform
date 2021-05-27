@@ -41,14 +41,14 @@ import org.xdef.model.XMOccurrence;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.error.XsdNodeFactoryException;
-import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
-import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaAllWrapper;
-import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
-import org.xdef.transform.xsd.xd2schema.model.xsd.AbstractXmlSchemaGroupParticleWrapper;
-import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaSequenceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.uc.impl.UniqueConstraint;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.xsd.impl.XmlSchemaAllWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.impl.XmlSchemaChoiceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.impl.AbstractXmlSchemaGroupParticleWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.impl.XmlSchemaSequenceWrapper;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
@@ -63,11 +63,11 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MIN_LENGTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ELEM_FACTORY;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MIN_LENGTH;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_ELEM_FACTORY;
 
 /**
  * Basic factory for creating XML Schema nodes

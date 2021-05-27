@@ -17,27 +17,27 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.XDNamedValue;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_FORMAT;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_INTERNAL_FACET_OUTFORMAT;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_ENUMERATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_FRACTION_DIGITS;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_LENGTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_EXCLUSIVE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_INCLUSIVE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MAX_LENGTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MIN_EXCLUSIVE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MIN_INCLUSIVE;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_MIN_LENGTH;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_PATTERN;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_TOTAL_DIGITS;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_FACET_WHITESPACE;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_FACET_FORMAT;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_INTERNAL_FACET_OUTFORMAT;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_ENUMERATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_FRACTION_DIGITS;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_LENGTH;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MAX_EXCLUSIVE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MAX_INCLUSIVE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MAX_LENGTH;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MIN_EXCLUSIVE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MIN_INCLUSIVE;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_MIN_LENGTH;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_PATTERN;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_TOTAL_DIGITS;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XSD_FACET_WHITESPACE;
 
 /**
  * Base class for transformation of facets

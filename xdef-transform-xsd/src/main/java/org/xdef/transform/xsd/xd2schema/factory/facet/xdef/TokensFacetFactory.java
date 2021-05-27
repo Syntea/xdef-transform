@@ -8,8 +8,8 @@ import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 import java.util.List;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
 
 public class TokensFacetFactory extends DefaultFacetFactory {
 

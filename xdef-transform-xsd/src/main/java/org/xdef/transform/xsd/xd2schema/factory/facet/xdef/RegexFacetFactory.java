@@ -6,7 +6,7 @@ import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 
 import java.util.List;
 
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdDefinitions.XD_FACET_ARGUMENT;
 
 public class RegexFacetFactory extends DefaultFacetFactory {
 

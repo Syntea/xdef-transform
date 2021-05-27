@@ -5,16 +5,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.DefaultTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.DefaultTypeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
-import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
+import org.xdef.transform.xsd.schema2xd.model.impl.XdAdapterCtx;
 
 import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 
 /**

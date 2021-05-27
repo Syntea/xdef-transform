@@ -11,20 +11,20 @@ import org.xdef.impl.XDefinition;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.xd2schema.definition.AlgPhase;
+import org.xdef.transform.xsd.xd2schema.def.AlgPhase;
 import org.xdef.transform.xsd.xd2schema.error.XsdNamespaceException;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 import java.util.Map;
 import java.util.Optional;
 
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_URI_EMPTY;
-import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_PREFIX;
-import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_URI_EMPTY;
+import static org.xdef.transform.xsd.def.NamespaceConst.XDEF_DEFAULT_NAMESPACE_PREFIX;
+import static org.xdef.transform.xsd.def.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_UTILS;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_UTILS;
 
 /**
  * Utils related to working with namespaces

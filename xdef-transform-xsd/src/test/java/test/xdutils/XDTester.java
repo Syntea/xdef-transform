@@ -46,7 +46,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
+import static org.xdef.transform.xsd.def.XDefConst.XDEF_REF_DELIMITER;
 
 /** Support of tests.
  *

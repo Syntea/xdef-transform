@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.xdef.sys.ReportWriter;
 import org.xdef.transform.xsd.msg.XSD;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.DefaultTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.DefaultTypeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.ListTypeFactory;
-import org.xdef.transform.xsd.schema2xd.factory.declaration.UnionTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.ListTypeFactory;
+import org.xdef.transform.xsd.schema2xd.factory.declaration.impl.UnionTypeFactory;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdTypeMapping;
 import org.xdef.transform.xsd.schema2xd.util.Xsd2XdUtils;
 
@@ -25,7 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 /**
  * Creates X-Definition declaration and declaration content for X-Definition declarations

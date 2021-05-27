@@ -1,13 +1,13 @@
 package org.xdef.transform.xsd.schema2xd.util;
 
-import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
+import org.xdef.transform.xsd.schema2xd.model.impl.XdAdapterCtx;
 
 import javax.xml.namespace.QName;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_DELIMITER;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 
 /**
  * Utils related to working with node name, reference name and qualified name

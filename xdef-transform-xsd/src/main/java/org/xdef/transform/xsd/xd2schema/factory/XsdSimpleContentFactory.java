@@ -21,7 +21,7 @@ import org.xdef.transform.xsd.xd2schema.factory.facet.DefaultFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.IXsdFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.ListFacetFactory;
 import org.xdef.transform.xsd.xd2schema.factory.facet.xdef.UnionFacetFactory;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 
 import javax.xml.namespace.QName;
@@ -34,9 +34,9 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.xdef.XDValueID.XD_CONTAINER;
-import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 /**
  * Creates multiple types of XML Schema simple content node

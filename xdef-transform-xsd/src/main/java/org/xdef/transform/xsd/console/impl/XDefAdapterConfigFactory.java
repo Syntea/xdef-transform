@@ -7,7 +7,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.transform.xsd.console.XDefToXsdOptionsConst;
-import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 
 import java.util.Arrays;
 import java.util.EnumSet;

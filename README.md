@@ -1,5 +1,5 @@
-# X-definition transformation library
+# X-Definition transformation library
 
-Transformation between X-definition format and another data description formats
+Transformation between X-Definition and XML Schema data description formats
 
-[XML schema transformation](xdef-transform-xsd/README.md)
+[XML Schema transformation](xdef-transform-xsd/README.md)

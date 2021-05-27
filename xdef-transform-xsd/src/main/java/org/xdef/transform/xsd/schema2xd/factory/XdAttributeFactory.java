@@ -12,20 +12,20 @@ import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory;
-import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
+import org.xdef.transform.xsd.schema2xd.model.impl.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 
 import javax.xml.namespace.QName;
 
-import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
-import static org.xdef.transform.xsd.XDefConst.XDEF_REF;
-import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_SCRIPT;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdDefinitions.XD_ATTR_TEXT;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_EXPLICIT_OCCURRENCE;
-import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_MIXED_REQUIRED;
+import static org.xdef.transform.xsd.def.NamespaceConst.XDEF_DEFAULT_NAMESPACE_URI;
+import static org.xdef.transform.xsd.def.XDefConst.XDEF_REF;
+import static org.xdef.transform.xsd.def.XDefConst.XDEF_REF_DELIMITER;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ATTR_SCRIPT;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdDefinitions.XD_ATTR_TEXT;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdFeature.XD_EXPLICIT_OCCURRENCE;
+import static org.xdef.transform.xsd.schema2xd.def.Xsd2XdFeature.XD_MIXED_REQUIRED;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
 
 /**
  * Creates X-Definition node's attributes

@@ -8,7 +8,7 @@ import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMNode;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import java.util.HashMap;
@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR;
-import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_NAME_FACTORY;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_NAME_FACTORY;
 
 /**
  * Creates names of specific types of nodes.

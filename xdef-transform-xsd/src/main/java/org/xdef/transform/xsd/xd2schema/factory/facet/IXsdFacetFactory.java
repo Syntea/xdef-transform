@@ -2,7 +2,7 @@ package org.xdef.transform.xsd.xd2schema.factory.facet;
 
 import org.apache.ws.commons.schema.*;
 import org.xdef.XDNamedValue;
-import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
+import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 
 import java.util.List;
 
