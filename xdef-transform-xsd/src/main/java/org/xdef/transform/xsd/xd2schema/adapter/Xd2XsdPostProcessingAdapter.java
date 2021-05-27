@@ -354,8 +354,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     /**
      * Get parent node of restriction constraint node (xs:selector value)
      * @param uniquePath    unique set path
-     * @param xPath         xPath of constraint node
-     * @return xPath of parent node of restriction constraints
+     * @param xPath         XPath of constraint node
+     * @return XPath of parent node of restriction constraints
      */
     private String getParentNodePath(final String uniquePath, final String xPath) {
         String res;
@@ -376,9 +376,9 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates xPath xs:field value for identity constraint
+     * Creates XPath xs:field value for identity constraint
      * @param attributeList     XPath of restriction constrains nodes
-     * @return xPath for xs:field
+     * @return XPath for xs:field
      */
     private String buildFieldXPath(final UniqueConstraintAttributeList attributeList) {
         final Set<String> fieldXPathSet = new HashSet<>();
@@ -401,8 +401,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     /**
      * Creates, initializes and inserts xs:selector and xs:field nodes into constraint node
      * @param identityConstraint    Constraint node where created nodes will be placed
-     * @param selectorXPath         xs:selector xpath value
-     * @param fieldXPath            xs:field xpath value
+     * @param selectorXPath         xs:selector XPath value
+     * @param fieldXPath            xs:field XPath value
      */
     private void addConstraintInfo(final XmlSchemaIdentityConstraint identityConstraint, final String selectorXPath, final String fieldXPath) {
         final XmlSchemaXPath xPathSelectorRef = new XmlSchemaXPath();

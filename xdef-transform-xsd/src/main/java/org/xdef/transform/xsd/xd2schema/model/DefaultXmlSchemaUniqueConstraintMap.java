@@ -21,8 +21,8 @@ public class DefaultXmlSchemaUniqueConstraintMap extends HashMap<String, XmlSche
     public static class DefaultXDefUniqueSetMap extends HashMap<String, List<UniqueConstraint>> implements XDefUniqueSetMap {
 
         @Override
-        public List<UniqueConstraint> findByXPath(String xpath) {
-            return super.getOrDefault(xpath, Collections.emptyList());
+        public List<UniqueConstraint> findByXPath(String xPath) {
+            return super.getOrDefault(xPath, Collections.emptyList());
         }
 
     }

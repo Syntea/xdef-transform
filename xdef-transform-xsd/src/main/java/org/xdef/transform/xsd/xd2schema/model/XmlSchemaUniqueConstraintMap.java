@@ -35,18 +35,18 @@ public interface XmlSchemaUniqueConstraintMap {
     XDefUniqueSetMap computeIfAbsent(String key, Function<? super String, ? extends XDefUniqueSetMap> mappingFunction);
 
     /**
-     * Key:     xpath to uniqueSet
+     * Key:     XPath to uniqueSet
      * Value:   unique info
      */
     interface XDefUniqueSetMap {
 
         /**
-         * Finds list of unique constraints by given xpath
-         * @param xpath         required unique constraint xpath
+         * Finds list of unique constraints by given XPath
+         * @param xPath         required unique constraint xPath
          * @return  X-Definition uniqueSet map if found
          *          otherwise {@link Collections#emptyList()}
          */
-        List<UniqueConstraint> findByXPath(String xpath);
+        List<UniqueConstraint> findByXPath(String xPath);
 
         // ====================
         // Basic Map interface

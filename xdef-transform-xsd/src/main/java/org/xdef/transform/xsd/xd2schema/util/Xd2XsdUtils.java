@@ -111,10 +111,10 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Creates relative xpath from given absolute XPath
-     * @param xPath         absolute full xpath
-     * @param xPathNode     absolute current xpath (part of {@code xPath})
-     * @return relative xpath
+     * Creates relative XPath from given absolute XPath
+     * @param xPath         absolute full XPath
+     * @param xPathNode     absolute current XPath (part of {@code xPath})
+     * @return relative XPath
      */
     public static String relativeXPath(final String xPath, final String xPathNode) {
         final int pos = xPath.indexOf(xPathNode);
