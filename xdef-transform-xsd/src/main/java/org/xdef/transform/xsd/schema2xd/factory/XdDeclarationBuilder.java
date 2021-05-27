@@ -30,7 +30,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 /**
  * Creates x-definition declaration and declaration content for x-definition declarations
  */
-public class XdDeclarationBuilder {
+public class XdDeclarationBuilder implements Cloneable {
 
     private static final Logger LOG = LoggerFactory.getLogger(XdDeclarationBuilder.class);
 
@@ -78,9 +78,9 @@ public class XdDeclarationBuilder {
 
     /**
      * Initialize x-definition declaration builder with default values
-     * @param schema
-     * @param xdDeclarationFactory
-     * @return
+     * @param schema                    input XML schema
+     * @param xdDeclarationFactory      X-Definition declaration factory
+     * @return X-Definition declaration builder for give XML schema
      */
     XdDeclarationBuilder init(XmlSchema schema, XdDeclarationFactory xdDeclarationFactory, ReportWriter reportWriter) {
         this.schema = schema;
@@ -140,7 +140,9 @@ public class XdDeclarationBuilder {
     }
 
     @Override
-    public XdDeclarationBuilder clone() {
+    protected XdDeclarationBuilder clone() throws CloneNotSupportedException {
+        super.clone();
+
         final XdDeclarationBuilder o = xdDeclarationFactory.createBuilder();
         o.simpleType = this.simpleType;
         o.parentNode = this.parentNode;
@@ -203,10 +205,14 @@ public class XdDeclarationBuilder {
 
         if (xdDeclarationTypeFactory == null) {
             final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType).orElse(null);
-            if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
+            if (itemSchemaType instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType schemaSimpleType = (XmlSchemaSimpleType)itemSchemaType;
                 if (IDeclarationTypeFactory.Type.TOP_DECL.equals(type)) {
-                    xdDeclarationFactory.createDeclaration(clone().setSimpleType(schemaSimpleType));
+                    try {
+                        xdDeclarationFactory.createDeclaration(clone().setSimpleType(schemaSimpleType));
+                    } catch (CloneNotSupportedException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 } else if (IDeclarationTypeFactory.Type.TEXT_DECL.equals(type)) {
                     return createDeclaration(schemaSimpleType.getContent());
                 }
@@ -314,7 +320,7 @@ public class XdDeclarationBuilder {
             final StringBuilder facetStringBuilder = new StringBuilder();
             for (QName qName : qNames) {
                 final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, qName).orElse(null);
-                if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
+                if (itemSchemaType instanceof XmlSchemaSimpleType) {
                     final XmlSchemaSimpleType itemSimpleSchemaType = (XmlSchemaSimpleType) itemSchemaType;
                     if (itemSimpleSchemaType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                         if (facetStringBuilder.length() > 0) {
@@ -376,7 +382,7 @@ public class XdDeclarationBuilder {
         final QName baseType = simpleTypeList.getItemTypeName();
         if (baseType != null) {
             final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType).orElse(null);
-            if (itemSchemaType != null && itemSchemaType instanceof XmlSchemaSimpleType) {
+            if (itemSchemaType instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType itemSimpleSchemaType = (XmlSchemaSimpleType) itemSchemaType;
                 if (itemSimpleSchemaType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                     facetString = baseType.getLocalPart();
@@ -384,8 +390,14 @@ public class XdDeclarationBuilder {
             }
         } else if (simpleTypeList.getItemType() != null) {
             if (simpleTypeList.getItemType().getContent() instanceof XmlSchemaSimpleTypeRestriction) {
-                final XdDeclarationBuilder b = clone().setSimpleType(simpleTypeList.getItemType()).setType(IDeclarationTypeFactory.Type.DATATYPE_DECL);
-                facetString = b.build();
+                try {
+                    final XdDeclarationBuilder b = clone()
+                            .setSimpleType(simpleTypeList.getItemType())
+                            .setType(IDeclarationTypeFactory.Type.DATATYPE_DECL);
+                    facetString = b.build();
+                } catch (CloneNotSupportedException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         }
 

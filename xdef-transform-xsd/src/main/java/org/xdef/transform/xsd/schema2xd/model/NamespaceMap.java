@@ -18,9 +18,9 @@ public interface NamespaceMap {
 
     /**
      * Stores namespace if given prefix does not already exist
-     * @param nsPrefix
-     * @param nsUri
-     * @param xDefName
+     * @param nsPrefix      namespace prefix
+     * @param nsUri         namespace URI
+     * @param xDefName      X-Definition name
      * @return  true if namespace has been added
      *          false otherwise
      */
@@ -28,14 +28,14 @@ public interface NamespaceMap {
 
     /**
      * Finds namespace by given URI
-     * @param nsUri
-     * @return
+     * @param nsUri         namespace URI
+     * @return  namespace prefix if found
+     *          otherwise {@link Optional#empty()}
      */
     Optional<String> findByUri(String nsUri);
 
     /**
-     * Returns list of namespaces
-     * @return
+     * @return  list of namespaces
      */
     List<Namespace> getNamespaces();
 }

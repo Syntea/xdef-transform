@@ -20,6 +20,7 @@ import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.Xsd2XDefAdapter;
 import org.xdef.transform.xsd.schema2xd.factory.XdAttributeFactory;
 import org.xdef.transform.xsd.schema2xd.factory.XdNodeFactory;
+import org.xdef.transform.xsd.schema2xd.model.NamespaceMap;
 import org.xdef.transform.xsd.schema2xd.model.XdAdapterCtx;
 import org.xdef.transform.xsd.schema2xd.util.XdNameUtils;
 import org.xdef.transform.xsd.schema2xd.util.XdNamespaceUtils;
@@ -222,7 +223,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
      * @param schemas       XSD documents
      * @param rootSchema    XSD root document
      * @param xDefName      output x-definition name
-     * @return
+     * @return Collection of input XML schemas
      */
     private List<XmlSchema> initializeSchemas(final List<XmlSchema> schemas,
                                               final XmlSchema rootSchema,
@@ -251,7 +252,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
 
             try {
                 schema.write(byteOS);
-                final String serializedXmlSchema = new String(byteOS.toByteArray());
+                final String serializedXmlSchema = byteOS.toString();
 
                 final Pair<String, XmlSchema> contentInfo = xmlSchemaContent.get(serializedXmlSchema);
 
@@ -350,7 +351,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
      */
     private void addNamespaces(final Element xdRootElem, final String xDefName) {
         final List<Namespace> namespaces = adapterCtx.findNamespaces(xDefName)
-                .map(namespaceMap -> namespaceMap.getNamespaces())
+                .map(NamespaceMap::getNamespaces)
                 .orElse(Collections.emptyList());
 
         namespaces.forEach(namespace -> {

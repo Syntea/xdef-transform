@@ -174,7 +174,7 @@ public class Xsd2XdTreeAdapter {
                             logHeader(TRANSFORMATION, xsdElementNode), xsdElemQName);
 
                     if (!externalRef(xsdElemQName, xdElem, false)) {
-                        xdAttrFactory.addAttrRef(xdElem, xsdElemQName);
+                        XdAttributeFactory.addAttrRef(xdElem, xsdElemQName);
                     }
                 } else if (xsdElementNode.getSchemaType() instanceof XmlSchemaSimpleType) {
                     LOG.info("{}Element is referencing to simple type. reference='{}'",
@@ -199,8 +199,7 @@ public class Xsd2XdTreeAdapter {
                 createElementFromComplex(xdElem, (XmlSchemaComplexType)xsdElementNode.getSchemaType());
             } else if (xsdElementNode.getSchemaType() instanceof XmlSchemaSimpleType) {
                 final XmlSchemaSimpleType simpleType = (XmlSchemaSimpleType)xsdElementNode.getSchemaType();
-                if (xsdElemQName != null
-                        && (Constants.XSD_NMTOKENS.equals(xsdElemQName) || Constants.XSD_IDREFS.equals(xsdElemQName))) {
+                if ((Constants.XSD_NMTOKENS.equals(xsdElemQName) || Constants.XSD_IDREFS.equals(xsdElemQName))) {
                     xdElem.setTextContent(xdDeclarationFactory.createSimpleTextDeclaration(xsdElemQName));
                 } else {
                     final XdDeclarationBuilder builder = xdDeclarationFactory.createBuilder()

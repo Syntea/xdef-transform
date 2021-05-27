@@ -14,8 +14,8 @@ import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
  */
 public class XdNameUtils {
 
-    static private final Pattern XSD_NAME_PATTERN_1 = Pattern.compile("(.+)(?:\\.xsd)");
-    static private final Pattern XSD_NAME_PATTERN_2 = Pattern.compile(".*[\\/|\\\\](.+)(?:\\.xsd)");
+    static private final Pattern XSD_NAME_PATTERN_1 = Pattern.compile("(.+)\\.xsd");
+    static private final Pattern XSD_NAME_PATTERN_2 = Pattern.compile(".*[/|\\\\](.+)\\.xsd");
 
     /**
      * Parses local part of string qualified name

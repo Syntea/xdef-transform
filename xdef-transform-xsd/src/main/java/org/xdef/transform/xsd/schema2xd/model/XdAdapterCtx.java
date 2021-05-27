@@ -112,7 +112,8 @@ public class XdAdapterCtx {
     /**
      * Finds target namespace used by given x-definition
      * @param xDefName      X-definition name
-     * @return
+     * @return  namespace if found
+     *          otherwise {@link Optional#empty()}
      */
     public Optional<Namespace> findTargetNamespace(final String xDefName) {
         return Optional.ofNullable(targetNamespaces.get(xDefName));
@@ -132,7 +133,8 @@ public class XdAdapterCtx {
     /**
      * Finds namespaces used by given x-definition
      * @param xDefName      X-definition name
-     * @return
+     * @return  namespace map if found
+     *          otherwise {@link Optional#empty()}
      */
     public Optional<NamespaceMap> findNamespaces(final String xDefName) {
         return Optional.ofNullable(xDefNamespaces.get(xDefName));
@@ -146,8 +148,7 @@ public class XdAdapterCtx {
      */
     public Optional<String> findNamespacePrefix(final String xDefName, final String nsUri) {
         final Optional<NamespaceMap> namespaceMap = Optional.ofNullable(xDefNamespaces.get(xDefName));
-        return namespaceMap.map(namespaces -> namespaces.findByUri(nsUri))
-                .orElse(Optional.empty());
+        return namespaceMap.flatMap(namespaces -> namespaces.findByUri(nsUri));
     }
 
     /**

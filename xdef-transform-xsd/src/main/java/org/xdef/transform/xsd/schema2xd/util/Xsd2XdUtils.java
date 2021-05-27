@@ -25,9 +25,7 @@ public class Xsd2XdUtils {
      * @return XSD complex/simple schema type node if exists in given schema, otherwise {@link Optional#empty()}
      */
     public static Optional<XmlSchemaType> findSchemaTypeByQName(final XmlSchema schema, final QName qName) {
-        return Optional.ofNullable(schema.getSchemaTypes())
-                .map(schemaTypeMap -> Optional.ofNullable(schemaTypeMap.get(qName)))
-                .orElse(Optional.empty());
+        return Optional.ofNullable(schema.getSchemaTypes()).map(schemaTypeMap -> schemaTypeMap.get(qName));
     }
 
     /**
@@ -37,9 +35,7 @@ public class Xsd2XdUtils {
      * @return XSD group node if exists in given schema, otherwise {@link Optional#empty()}
      */
     public static Optional<XmlSchemaGroup> findGroupByQName(final XmlSchema schema, final QName qName) {
-        return Optional.ofNullable(schema.getGroups())
-                .map(groups -> Optional.ofNullable(groups.get(qName)))
-                .orElse(Optional.empty());
+        return Optional.ofNullable(schema.getGroups()).map(groups -> groups.get(qName));
     }
 
     /**

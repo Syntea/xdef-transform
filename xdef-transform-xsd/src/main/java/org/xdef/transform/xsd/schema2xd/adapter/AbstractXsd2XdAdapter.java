@@ -30,7 +30,7 @@ public class AbstractXsd2XdAdapter {
 
     /**
      * Set output writer
-     * @param reportWriter
+     * @param reportWriter  output report writer
      */
     public void setReportWriter(ReportWriter reportWriter) {
         this.reportWriter = reportWriter;
@@ -38,7 +38,7 @@ public class AbstractXsd2XdAdapter {
 
     /**
      * Set features which should be enabled by transformation algorithm
-     * @param features
+     * @param features      features to be enabled
      */
     public void setFeatures(Set<Xsd2XdFeature> features) {
         this.features = features;
@@ -46,7 +46,7 @@ public class AbstractXsd2XdAdapter {
 
     /**
      * Add feature which should be enabled by transformation algorithm
-     * @param feature
+     * @param feature       feature to be enabled
      */
     public void addFeature(Xsd2XdFeature feature) {
         features.add(feature);

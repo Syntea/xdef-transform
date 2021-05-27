@@ -207,7 +207,7 @@ public class XdAttributeFactory {
         }
 
         if (xsdAttr.getSchemaTypeName() != null) {
-            valueBuilder.append(xsdAttr.getSchemaTypeName().getLocalPart() + "()");
+            valueBuilder.append(xsdAttr.getSchemaTypeName().getLocalPart()).append("()");
         } else if (xsdAttr.getSchemaType() != null) {
             if (xsdAttr.getSchemaType().getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                 final XdDeclarationBuilder b = xdDeclarationFactory.createBuilder()
@@ -219,11 +219,11 @@ public class XdAttributeFactory {
         }
 
         if (xsdAttr.getDefaultValue() != null && !xsdAttr.getDefaultValue().isEmpty()) {
-            valueBuilder.append("; default \"" + xsdAttr.getDefaultValue() + "\"");
+            valueBuilder.append("; default \"").append(xsdAttr.getDefaultValue()).append("\"");
         }
 
         if (xsdAttr.getFixedValue() != null && !xsdAttr.getFixedValue().isEmpty()) {
-            valueBuilder.append("; fixed \"" + xsdAttr.getFixedValue() + "\"");
+            valueBuilder.append("; fixed \"").append(xsdAttr.getFixedValue()).append("\"");
         }
 
         return valueBuilder.toString();

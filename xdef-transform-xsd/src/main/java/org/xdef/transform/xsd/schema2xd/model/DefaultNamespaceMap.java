@@ -57,7 +57,7 @@ public class DefaultNamespaceMap extends HashMap<String, String> implements Name
 
     @Override
     public Optional<String> findByUri(final String nsUri) {
-        LOG.trace("Finding namespace by given URI. nsUri='{}'", nsUri);
+        LOG.trace("Finding namespace prefix by given URI. nsUri='{}'", nsUri);
         return Optional.ofNullable(get(nsUri));
     }
 
