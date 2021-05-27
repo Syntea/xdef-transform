@@ -199,11 +199,12 @@ public class XsdPostProcessor {
 
         final XmlSchemaElement xsdElem = node.toXsdElem();
         final XElement xElem = node.toXdElem();
-        String newRefLocalName = adapterCtx.getNameFactory().findTopLevelName(xElem);
-        if (newRefLocalName == null) {
-            newRefLocalName = XsdNameFactory.createComplexRefName(xElem.getName());
-            newRefLocalName = adapterCtx.getNameFactory().generateTopLevelName(xElem, newRefLocalName);
-        }
+        final String newRefLocalName = adapterCtx.getNameFactory().findTopLevelName(xElem)
+                .orElseGet(() -> {
+                    String generatedRefLocalName = XsdNameFactory.createComplexRefName(xElem.getName());
+                    generatedRefLocalName = adapterCtx.getNameFactory().generateTopLevelName(xElem, generatedRefLocalName);
+                    return generatedRefLocalName;
+                });
 
         // Creating complex content with extension to original reference
         XmlSchemaType schemaType = null;
@@ -377,8 +378,9 @@ public class XsdPostProcessor {
                 //Xd2XsdUtils.removeItem(schema, complexType.getContentModel());
                 complexType.setContentModel(null);
                 complexType.setMixed(true);
-                complexType.setAnnotation(XsdNodeFactory.createAnnotation(
-                        "Text content has been originally restricted by x-definition", adapterCtx));
+                XsdNodeFactory.createAnnotation(
+                        "Text content has been originally restricted by x-definition", adapterCtx
+                ).ifPresent(xmlSchemaAnnotation -> complexType.setAnnotation(xmlSchemaAnnotation));
             }
         }
     }
@@ -431,8 +433,10 @@ public class XsdPostProcessor {
                 "converting xsd:all node to xsd:choice!", logHeader(TRANSFORMATION));
 
         final XmlSchemaChoice newGroupChoice = new XmlSchemaChoice();
-        newGroupChoice.setAnnotation(XsdNodeFactory.createAnnotation(
-                "Original group particle: all", adapterCtx));
+
+        XsdNodeFactory.createAnnotation(
+                "Original group particle: all", adapterCtx
+        ).ifPresent(xmlSchemaAnnotation -> newGroupChoice.setAnnotation(xmlSchemaAnnotation));
 
         long elementMinOccursSum = 0;
         long elementMaxOccursSum = 0;
@@ -506,7 +510,9 @@ public class XsdPostProcessor {
             if (memberParticle.getMinOccurs() != 1 || memberParticle.getMaxOccurs() != 1) {
                 final String minOcc = memberParticle.getMinOccurs() == Long.MAX_VALUE ? "unbounded" : String.valueOf(memberParticle.getMinOccurs());
                 final String maxOcc = memberParticle.getMaxOccurs() == Long.MAX_VALUE ? "unbounded" : String.valueOf(memberParticle.getMaxOccurs());
-                memberParticle.setAnnotation(XsdNodeFactory.createAnnotation("Occurrence: [" + minOcc + ", " + maxOcc + "]", adapterCtx));
+                XsdNodeFactory.createAnnotation(
+                        "Occurrence: [" + minOcc + ", " + maxOcc + "]", adapterCtx
+                ).ifPresent(xmlSchemaAnnotation -> memberParticle.setAnnotation(xmlSchemaAnnotation));
             }
 
             memberParticle.setMaxOccurs(1);
@@ -525,11 +531,14 @@ public class XsdPostProcessor {
         }
         final XmlSchemaChoiceWrapper newGroupChoice = new XmlSchemaChoiceWrapper(new XmlSchemaChoice());
         newGroupChoice.setTransformDirection(transformDirection);
-        newGroupChoice.xsd().setAnnotation(XsdNodeFactory.createAnnotation(
-                "Original group particle: all", adapterCtx));
+        XsdNodeFactory.createAnnotation(
+                "Original group particle: all", adapterCtx
+        ).ifPresent(xmlSchemaAnnotation -> newGroupChoice.xsd().setAnnotation(xmlSchemaAnnotation));
+
         adapterCtx.getReportWriter().warning(XSD.XSD043);
         LOG.warn("{}!Lossy transformation! Node xsd:sequence/choice contains xsd:all node -> " +
                 "converting xsd:all node to xsd:choice!", logHeader(TRANSFORMATION));
+
         return newGroupChoice;
     }
 }

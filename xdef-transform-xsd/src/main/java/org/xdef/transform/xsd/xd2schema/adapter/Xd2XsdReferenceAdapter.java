@@ -15,11 +15,12 @@ import org.xdef.impl.XNode;
 import org.xdef.model.XMElement;
 import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.msg.XSD;
+import org.xdef.transform.xsd.schema2xd.error.XdAdapterCtxException;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
-import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
@@ -28,6 +29,7 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
@@ -187,7 +189,8 @@ public class Xd2XsdReferenceAdapter {
     private void transformTopLevelElem(final XMElement xElem) {
         LOG.debug("{}Creating definition of reference.", logHeader(PREPROCESSING, xElem));
 
-        final XmlSchemaElement xsdElem = (XmlSchemaElement) treeAdapter.convertTree(xElem);
+        final XmlSchemaElement xsdElem = (XmlSchemaElement) treeAdapter.convertTree(xElem)
+                .orElseThrow(() -> new XdAdapterCtxException("Required element not created"));
         final XmlSchemaType elementType = xsdElem.getSchemaType();
 
         if (elementType == null) {
@@ -365,11 +368,15 @@ public class Xd2XsdReferenceAdapter {
                 }
             }
 
-            String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false);
-            if (refTypeName == null) {
-                refTypeName = XsdNameFactory.createLocalSimpleTypeName(xData);
-                adapterCtx.getNameFactory().addTopSimpleTypeName(xData, refTypeName);
-            }
+            String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false)
+                    .orElseGet(() -> {
+                        final Optional<String> defaultRefTypeNameOpt = XsdNameFactory.createLocalSimpleTypeName(xData);
+                        if (defaultRefTypeNameOpt.isPresent()) {
+                            adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt.get());
+                        }
+
+                        return defaultRefTypeNameOpt.orElse(null);
+                    });
 
             if (refTypeName != null && simpleTypeReferences.add(refTypeName)) {
                 xsdFactory.createSimpleTypeTop(xData, refTypeName);

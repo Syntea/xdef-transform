@@ -72,7 +72,9 @@ public class XsdSchemaFactory {
      * @param xDef              source x-definition
      * @param targetNamespace   XSD document target namespace (prefix, URI)
      */
-    private void initSchemaNamespace(final XmlSchema xmlSchema, final XDefinition xDef, final Pair<String, String> targetNamespace) {
+    private void initSchemaNamespace(final XmlSchema xmlSchema,
+                                     final XDefinition xDef,
+                                     final Pair<String, String> targetNamespace) {
         LOG.debug("{}Initializing namespace context ...", logHeader(INITIALIZATION, xDef));
 
         final String targetNsPrefix = targetNamespace.getKey();
@@ -94,7 +96,8 @@ public class XsdSchemaFactory {
             final String nsPrefix = entry.getKey();
             final String nsUri = entry.getValue();
 
-            if (XsdNamespaceUtils.isDefaultNamespacePrefix(nsPrefix) || (targetNsPrefix != null && nsPrefix.equals(targetNsPrefix))) {
+            if (XsdNamespaceUtils.isDefaultNamespacePrefix(nsPrefix)
+                    || (targetNsPrefix != null && nsPrefix.equals(targetNsPrefix))) {
                 continue;
             }
 
@@ -116,7 +119,9 @@ public class XsdSchemaFactory {
      * @param xDef              source x-definition
      * @param targetNamespace   XSD document target namespace (prefix, URI)
      */
-    private void initSchemaFormDefault(final XmlSchema xmlSchema, final XDefinition xDef, final Pair<String, String> targetNamespace) {
+    private void initSchemaFormDefault(final XmlSchema xmlSchema,
+                                       final XDefinition xDef,
+                                       final Pair<String, String> targetNamespace) {
         final XmlSchemaForm elemSchemaForm = getElemDefaultForm(xDef, targetNamespace.getKey());
         xmlSchema.setElementFormDefault(elemSchemaForm);
 
@@ -137,25 +142,27 @@ public class XsdSchemaFactory {
         if (targetNsPrefix != null && targetNsPrefix.trim().isEmpty()) {
             LOG.debug("{}Target namespace prefix is empty. Element default form will be Qualified.",
                     logHeader(INITIALIZATION, xDef));
+
             return XmlSchemaForm.QUALIFIED;
         }
 
         if (xDef._rootSelection != null && xDef._rootSelection.size() > 0) {
             for (XNode xn : xDef._rootSelection.values()) {
                 if (xn.getKind() == XNode.XMELEMENT) {
-                    XElement defEl = (XElement)xn;
-                    String tmpNs = XsdNamespaceUtils.getNamespacePrefix(defEl.getName()).orElse(null);
+                    final XElement defEl = (XElement)xn;
+                    final String tmpNs = XsdNamespaceUtils.getNamespacePrefix(defEl.getName()).orElse(null);
                     if (tmpNs != null && tmpNs.equals(targetNsPrefix)) {
-                        LOG.debug("{}Some of root element has different namespace prefix." +
-                                " Element default form will be Qualified. expectedPrefix='{}'",
+                        LOG.debug("{}One of the root elements uses different namespace prefix. " +
+                                "Element default form will be Qualified. expectedPrefix='{}'",
                                 logHeader(INITIALIZATION, xDef), targetNsPrefix);
+
                         return XmlSchemaForm.QUALIFIED;
                     }
                 }
             }
         }
 
-        LOG.debug("{}All root elements have same namespace prefix. Element default form will be Unqualified.",
+        LOG.debug("{}All of the root root elements use same namespace prefix. Element default form will be Unqualified.",
                 logHeader(INITIALIZATION, xDef));
         return XmlSchemaForm.UNQUALIFIED;
     }
@@ -174,9 +181,10 @@ public class XsdSchemaFactory {
                     for (XMNode attr : defEl.getAttrs()) {
                         String tmpNs = XsdNamespaceUtils.getNamespacePrefix(attr.getName()).orElse(null);
                         if (tmpNs != null && tmpNs.equals(targetNsPrefix)) {
-                            LOG.debug("{}Some of root attribute has different namespace prefix." +
-                                    " Attribute default form will be Qualified. expectedPrefix='{}'",
+                            LOG.debug("{}One of the root attributes uses different namespace prefix. " +
+                                    "Attribute default form will be Qualified. expectedPrefix='{}'",
                                     logHeader(INITIALIZATION, xDef), targetNsPrefix);
+
                             return XmlSchemaForm.QUALIFIED;
                         }
                     }
@@ -184,7 +192,7 @@ public class XsdSchemaFactory {
             }
         }
 
-        LOG.debug("{}All root attributes have same namespace prefix. Attribute default form will be Unqualified",
+        LOG.debug("{}All of the root attributes use same namespace prefix. Attribute default form will be Unqualified",
                 logHeader(INITIALIZATION, xDef));
         return XmlSchemaForm.UNQUALIFIED;
     }

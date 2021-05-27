@@ -283,7 +283,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
             LOG.info(HEADER_LINE);
 
             for (XNode node : nodes) {
-                final XmlSchemaObject xsdNode = treeAdapter.convertTree(node);
+                final XmlSchemaObject xsdNode = treeAdapter.convertTree(node).orElse(null);
                 if (xsdNode instanceof XmlSchemaElement) {
                     LOG.info("{}Add top-level element.", logHeader(POSTPROCESSING, node));
                 } else if (xsdNode instanceof XmlSchemaAttribute) {

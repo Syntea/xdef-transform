@@ -25,9 +25,11 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 
 import javax.xml.namespace.QName;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -85,7 +87,7 @@ public class XsdSimpleContentFactory {
      */
     public XmlSchemaSimpleTypeContent createSimpleContent(final String nodeName, boolean isAttr) {
         final AtomicBoolean customParser = new AtomicBoolean(true);
-        boolean unknownParser = false;
+        final AtomicBoolean unknownParser = new AtomicBoolean(false);
 
         Pair<QName, IXsdFacetFactory> parserInfo = Xd2XsdParserMapping.findCustomFacetFactory(
                 parserName, parameters, adapterCtx
@@ -96,17 +98,16 @@ public class XsdSimpleContentFactory {
 
             if (defaultParserInfo != null) {
                 customParser.set(false);
+            } else {
+                adapterCtx.getReportWriter().warning(XSD.XSD026, parserName);
+                LOG.warn("{}Unsupported simple content parser! parserName='{}'", logHeader(TRANSFORMATION, xData), parserName);
+
+                defaultParserInfo = Pair.of(Constants.XSD_STRING, new DefaultFacetFactory());
+                unknownParser.set(true);
             }
 
             return defaultParserInfo;
         });
-
-        if (parserInfo == null) {
-            adapterCtx.getReportWriter().warning(XSD.XSD026, parserName);
-            LOG.warn("{}Unsupported simple content parser! parserName='{}'", logHeader(TRANSFORMATION, xData), parserName);
-            parserInfo = Pair.of(Constants.XSD_STRING, new DefaultFacetFactory());
-            unknownParser = true;
-        }
 
         LOG.info("{}Following factory will be used. factoryClass='{}', parserName='{}'",
                 logHeader(TRANSFORMATION, xData), parserInfo.getValue().getClass().getSimpleName(), parserName);
@@ -120,7 +121,7 @@ public class XsdSimpleContentFactory {
             res = simpleTypeUnion(parserInfo.getValue(), nodeName);
         } else {
             res = simpleTypeRestriction(parserInfo.getKey(), parserInfo.getValue(), parameters);
-            if (customParser.get() || unknownParser) {
+            if (customParser.get() || unknownParser.get()) {
                 annotations.add("Original x-definition parser: " + parserName);
             }
         }
@@ -130,7 +131,8 @@ public class XsdSimpleContentFactory {
         }
 
         if (!annotations.isEmpty()) {
-            res.setAnnotation(XsdNodeFactory.createAnnotation(annotations, adapterCtx));
+            XsdNodeFactory.createAnnotation(annotations, adapterCtx)
+                    .ifPresent(xmlSchemaAnnotation -> res.setAnnotation(xmlSchemaAnnotation));
         }
 
         return res;
@@ -143,6 +145,7 @@ public class XsdSimpleContentFactory {
     public XmlSchemaSimpleTypeRestriction createDefaultRestriction() {
         LOG.info("{}Creating restrictions of simple content (default facet factory will be used) ...",
                 logHeader(TRANSFORMATION, xData));
+
         return simpleTypeRestriction(Constants.XSD_STRING, new DefaultFacetFactory(), null);
     }
 
@@ -157,6 +160,7 @@ public class XsdSimpleContentFactory {
                                                                  final IXsdFacetFactory facetBuilder,
                                                                  final XDNamedValue[] parameters) {
         LOG.info("{}Creating simple type restriction. typeQName='{}'", logHeader(TRANSFORMATION, xData), qName);
+
         facetBuilder.setAdapterCtx(adapterCtx);
         final XmlSchemaSimpleTypeRestriction restriction = new XmlSchemaSimpleTypeRestriction();
         if (qName != null) {
@@ -175,6 +179,7 @@ public class XsdSimpleContentFactory {
      */
     private XmlSchemaSimpleTypeContent simpleTypeList(final QName qName, final IXsdFacetFactory facetBuilder) {
         LOG.info("{}Creating simple type list. typeQName='{}'", logHeader(TRANSFORMATION, xData), qName);
+
         final XmlSchemaSimpleTypeList list = simpleTypeList(qName);
         final XmlSchemaSimpleTypeRestriction restriction = simpleTypeRestriction(qName, facetBuilder, parameters);
         return wrapUpSimpleTypeContent(restriction, list);
@@ -188,20 +193,20 @@ public class XsdSimpleContentFactory {
     private XmlSchemaSimpleTypeList simpleTypeList(final QName qName) {
         final XmlSchemaSimpleTypeList list = new XmlSchemaSimpleTypeList();
         final XmlSchemaSimpleType simpleType = xsdFactory.createEmptySimpleType(false);
-        XmlSchemaSimpleTypeRestriction restriction = null;
 
-        for (XDNamedValue namedValue : parameters) {
-            if (namedValue.getValue() instanceof XDParser) {
-                restriction = simpleTypeRestriction(qName, new DefaultFacetFactory(), ((XDParser) namedValue.getValue()).getNamedParams().getXDNamedItems());
-                break;
-            }
-        }
+        final Optional<XmlSchemaSimpleTypeRestriction> restrictionOpt = Arrays.stream(parameters)
+                .filter(xdNamedValue -> xdNamedValue.getValue() instanceof XDParser)
+                .map(xdNamedValue -> simpleTypeRestriction(
+                        qName,
+                        new DefaultFacetFactory(),
+                        ((XDParser) xdNamedValue.getValue()).getNamedParams().getXDNamedItems()))
+                .findFirst();
 
-        if (restriction == null) {
+        if (!restrictionOpt.isPresent()) {
             adapterCtx.getReportWriter().warning(XSD.XSD027);
             LOG.warn("{}List restrictions have not been found!", logHeader(TRANSFORMATION, xData));
         } else {
-            simpleType.setContent(restriction);
+            simpleType.setContent(restrictionOpt.get());
         }
 
         list.setItemType(simpleType);
@@ -286,9 +291,10 @@ public class XsdSimpleContentFactory {
                 parserInfo.getValue(),
                 xParser.getNamedParams().getXDNamedItems());
         if (unknownParser.get()) {
-            restriction.setAnnotation(XsdNodeFactory.createAnnotation(
+            XsdNodeFactory.createAnnotation(
                     "Original x-definition parser: " + xParser.parserName(),
-                    adapterCtx));
+                    adapterCtx
+            ).ifPresent(xmlSchemaAnnotation -> restriction.setAnnotation(xmlSchemaAnnotation));
         }
 
         String refName = XsdNameFactory.createUnionRefTypeName(nodeName, parserInfo.getKey().getLocalPart());

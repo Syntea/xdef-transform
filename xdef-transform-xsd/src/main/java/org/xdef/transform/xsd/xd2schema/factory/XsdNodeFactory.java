@@ -1,5 +1,6 @@
 package org.xdef.transform.xsd.xd2schema.factory;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAnnotation;
@@ -41,6 +42,7 @@ import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature;
+import org.xdef.transform.xsd.xd2schema.error.XsdNodeFactoryException;
 import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaAllWrapper;
@@ -57,6 +59,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
@@ -96,11 +99,14 @@ public class XsdNodeFactory {
      */
     public XmlSchemaElement createEmptyElement(final XElement xElem, boolean topLevel) {
         LOG.trace("{}Empty element. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+
         XmlSchemaElement elem = new XmlSchemaElement(schema, topLevel);
 
         if (topLevel == false) {
             elem.setMinOccurs(xElem.getOccurence().minOccurs());
-            elem.setMaxOccurs((xElem.isUnbounded() || xElem.isMaxUnlimited()) ? Long.MAX_VALUE : xElem.getOccurence().maxOccurs());
+            elem.setMaxOccurs((xElem.isUnbounded() || xElem.isMaxUnlimited())
+                    ? Long.MAX_VALUE
+                    : xElem.getOccurence().maxOccurs());
         }
 
         if (xElem._nillable == 'T') {
@@ -118,6 +124,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaAttribute createEmptyAttribute(final XData xData, boolean topLevel) {
         LOG.trace("{}Attribute element. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+
         XmlSchemaAttribute attr = new XmlSchemaAttribute(schema, topLevel);
 
         if (topLevel == false) {
@@ -136,6 +143,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaComplexType createEmptyComplexType(boolean topLevel) {
         LOG.trace("{}Empty complex-type. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+
         return new XmlSchemaComplexType(schema, topLevel);
     }
 
@@ -146,6 +154,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleType createEmptySimpleType(boolean topLevel) {
         LOG.trace("{}Empty simple-type. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+
         return new XmlSchemaSimpleType(schema, topLevel);
     }
 
@@ -156,9 +165,12 @@ public class XsdNodeFactory {
      */
     public XmlSchemaAny createAny(final XElement xElem) {
         LOG.trace("{}Any", logHeader(XSD_ELEM_FACTORY));
+
         final XmlSchemaAny any = new XmlSchemaAny();
         any.setMinOccurs(xElem.getOccurence().minOccurs());
-        any.setMaxOccurs((xElem.isUnbounded() || xElem.isMaxUnlimited()) ? Long.MAX_VALUE : xElem.getOccurence().maxOccurs());
+        any.setMaxOccurs((xElem.isUnbounded() || xElem.isMaxUnlimited())
+                ? Long.MAX_VALUE
+                : xElem.getOccurence().maxOccurs());
         return any;
     }
 
@@ -169,6 +181,7 @@ public class XsdNodeFactory {
      */
     public void createSimpleTypeTop(final XData xData, final String refTypeName) {
         LOG.trace("{}Simple-type top. refTypeName='{}'", logHeader(XSD_ELEM_FACTORY, xData), refTypeName);
+
         final XmlSchemaSimpleType itemType = createEmptySimpleType(true);
         itemType.setName(refTypeName);
         itemType.setContent(createSimpleTypeContent(xData, refTypeName));
@@ -182,9 +195,11 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleType createAttributeSimpleType(final XData xData, final String nodeName) {
         LOG.trace("{}Simple-type attribute. nodeName='{}'", logHeader(XSD_ELEM_FACTORY, xData), nodeName);
+
         final XmlSchemaSimpleType itemType = createEmptySimpleType(false);
         itemType.setContent(createSimpleTypeContent(xData, nodeName));
-        itemType.setName(XsdNameFactory.createLocalSimpleTypeName(xData));
+        itemType.setName(XsdNameFactory.createLocalSimpleTypeName(xData)
+                .orElse(null));
         return itemType;
     }
 
@@ -196,6 +211,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleType createAnonymousSimpleType(final XData xData, final String nodeName) {
         LOG.trace("{}Simple-type anonymous (text node). nodeName='{}'=", logHeader(XSD_ELEM_FACTORY, xData), nodeName);
+
         final XmlSchemaSimpleType itemType = createEmptySimpleType(false);
         itemType.setContent(createSimpleTypeContent(xData, nodeName));
         return itemType;
@@ -204,10 +220,10 @@ public class XsdNodeFactory {
     /**
      * Creates XSD simple content node
      * @param xDataText         x-definition text node
-     * @return  if reference and parser are unknown, then null
+     * @return  if reference and parser are unknown, then {@link Optional#empty()}
      *          else <xs:simpleContent><xs:extension base="...">...</xs:extension></xs:simpleContent>
      */
-    public XmlSchemaSimpleContent createTextBasedSimpleContent(final XData xDataText, boolean topLevel) {
+    public Optional<XmlSchemaSimpleContent> createTextBasedSimpleContent(final XData xDataText, boolean topLevel) {
         LOG.trace("{}Simple-content with extension. topLevel='{}'", logHeader(XSD_ELEM_FACTORY, xDataText), topLevel);
 
         final AtomicReference<QName> qName = new AtomicReference(null);
@@ -216,6 +232,7 @@ public class XsdNodeFactory {
         if (uniqueConstraint != null) {
             LOG.info("{}Simple-content is using unique set. uniqueSet='{}'",
                     logHeader(TRANSFORMATION, xDataText), uniqueConstraint.getName());
+
             final UniqueConstraint.Type type = XsdNameUtils.getUniqueSetVarType(xDataText.getValueTypeName());
             if (UniqueConstraint.isStringConstraint(type)) {
                 qName.set(Constants.XSD_STRING);
@@ -226,7 +243,8 @@ public class XsdNodeFactory {
 
         if (qName.get() == null) {
             if (xDataText.getRefTypeName() != null && topLevel) {
-                final String refTypeName = XsdNameFactory.createLocalSimpleTypeName(xDataText);
+                final String refTypeName = XsdNameFactory.createLocalSimpleTypeName(xDataText)
+                        .orElseThrow(() -> new XsdNodeFactoryException("Required simple text content node name not created."));
                 final String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refTypeName);
                 final String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
                 qName.set(new QName(nsUri, refTypeName));
@@ -244,7 +262,8 @@ public class XsdNodeFactory {
                 if (parseMethod instanceof XDParser) {
                     // Restriction facets
                     final XDNamedValue[] items = ((XDParser) parseMethod).getNamedParams().getXDNamedItems();
-                    // Check if restriction contains only min-length equals 1 and string is optional => then use xs:extension instead of xs:restriction
+                    // Check if restriction contains only min-length equals 1 and string is optional =>
+                    // then use xs:extension instead of xs:restriction
                     if (items.length == 0
                             || (items.length == 1
                                 && Constants.XSD_STRING.equals(qName.get())
@@ -289,16 +308,17 @@ public class XsdNodeFactory {
 
             final XmlSchemaSimpleContent content = createSimpleContent(schemaContent);
             if (uniqueConstraint != null) {
-                schemaContent.setAnnotation(XsdNodeFactory.createAnnotation(
+                XsdNodeFactory.createAnnotation(
                         StringFormatter.format("Original part of uniqueSet: {} ({})",
                                 uniqueConstraint.getPath(),  xDataText.getValueTypeName()),
-                        adapterCtx)
-                );
+                        adapterCtx
+                ).ifPresent(xmlSchemaAnnotation -> schemaContent.setAnnotation(xmlSchemaAnnotation));
             }
-            return content;
+
+            return Optional.of(content);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -338,7 +358,9 @@ public class XsdNodeFactory {
         }
 
         particle.xsd().setMinOccurs(occurrence.minOccurs());
-        particle.xsd().setMaxOccurs((occurrence.isUnbounded() || occurrence.isMaxUnlimited()) ? Long.MAX_VALUE : occurrence.maxOccurs());
+        particle.xsd().setMaxOccurs((occurrence.isUnbounded() || occurrence.isMaxUnlimited())
+                ? Long.MAX_VALUE
+                : occurrence.maxOccurs());
 
         return particle;
     }
@@ -350,6 +372,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaGroup createEmptyGroup(final String name) {
         LOG.trace("{}createEmptyGroup. name='{}'", logHeader(XSD_ELEM_FACTORY), name);
+
         final XmlSchemaGroup group = new XmlSchemaGroup(schema);
         group.setName(name);
         return group;
@@ -362,6 +385,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaGroupRef createGroupRef(final QName qName) {
         LOG.trace("{}createGroupRef. qName='{}'", logHeader(XSD_ELEM_FACTORY), qName);
+
         final XmlSchemaGroupRef groupRef = new XmlSchemaGroupRef();
         groupRef.setRefName(qName);
         return groupRef;
@@ -377,7 +401,8 @@ public class XsdNodeFactory {
      *              </xs:complexContent>
      *          </xs:complexType>
      */
-    public XmlSchemaComplexType createComplexTypeWithComplexExtensionTop(final String complexTypeName, final QName extQName) {
+    public XmlSchemaComplexType createComplexTypeWithComplexExtensionTop(final String complexTypeName,
+                                                                         final QName extQName) {
         final XmlSchemaComplexType complexType = createEmptyComplexType(true);
         final XmlSchemaComplexContent complexContent = createComplexContentWithComplexExtension(extQName);
         complexType.setContentModel(complexContent);
@@ -408,7 +433,8 @@ public class XsdNodeFactory {
      *              </xs:simpleContent>
      *          </xs:complexType>
      */
-    public XmlSchemaComplexType createComplexTypeWithSimpleContentTop(final String complexTypeName, final XmlSchemaContent schemaContent) {
+    public XmlSchemaComplexType createComplexTypeWithSimpleContentTop(final String complexTypeName,
+                                                                      final XmlSchemaContent schemaContent) {
         final XmlSchemaComplexType complexType = createEmptyComplexType(true);
         final XmlSchemaSimpleContent simpleContent = createSimpleContent(schemaContent);
         complexType.setContentModel(simpleContent);
@@ -426,7 +452,8 @@ public class XsdNodeFactory {
      *              </xs:simpleContent>
      *          </xs:complexType>
      */
-    public XmlSchemaComplexType createComplexTypeWithSimpleExtensionTop(final String complexTypeName, final QName extQName) {
+    public XmlSchemaComplexType createComplexTypeWithSimpleExtensionTop(final String complexTypeName,
+                                                                        final QName extQName) {
         final XmlSchemaComplexType complexType = createEmptyComplexType(true);
         final XmlSchemaSimpleContentExtension simpleContentExtension = createEmptySimpleContentExtension(extQName);
         final XmlSchemaSimpleContent simpleContent = createSimpleContent(simpleContentExtension);
@@ -442,6 +469,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaComplexContent createComplexContent(final XmlSchemaContent content) {
         LOG.trace("{}Complex content. contentType='{}'", logHeader(XSD_ELEM_FACTORY), content.getClass().getSimpleName());
+
         final XmlSchemaComplexContent complexContent = new XmlSchemaComplexContent();
         complexContent.setContent(content);
         return complexContent;
@@ -454,6 +482,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleContent createSimpleContent(final XmlSchemaContent content) {
         LOG.trace("{}Simple content. contentType='{}'", logHeader(XSD_ELEM_FACTORY), content.getClass().getSimpleName());
+
         final XmlSchemaSimpleContent simpleContent = new XmlSchemaSimpleContent();
         simpleContent.setContent(content);
         return simpleContent;
@@ -466,6 +495,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaComplexContentExtension createEmptyComplexContentExtension(final QName baseType) {
         LOG.trace("{}Complex content extension. baseType='{}'", logHeader(XSD_ELEM_FACTORY), baseType);
+
         final XmlSchemaComplexContentExtension contentExtension = new XmlSchemaComplexContentExtension();
         contentExtension.setBaseTypeName(baseType);
         return contentExtension;
@@ -478,6 +508,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleContentExtension createEmptySimpleContentExtension(final QName baseType) {
         LOG.trace("{}Simple content extension. baseType='{}'", logHeader(XSD_ELEM_FACTORY), baseType);
+
         final XmlSchemaSimpleContentExtension contentExtension = new XmlSchemaSimpleContentExtension();
         contentExtension.setBaseTypeName(baseType);
         return contentExtension;
@@ -490,6 +521,7 @@ public class XsdNodeFactory {
      */
     public XmlSchemaSimpleContentRestriction createEmptySimpleContentRestriction(final QName baseType) {
         LOG.trace("{}Simple content restriction. baseType='{}'", logHeader(XSD_ELEM_FACTORY), baseType);
+
         final XmlSchemaSimpleContentRestriction contentExtension = new XmlSchemaSimpleContentRestriction();
         contentExtension.setBaseTypeName(baseType);
         return contentExtension;
@@ -546,16 +578,18 @@ public class XsdNodeFactory {
      * Creates XSD annotation node with single documentation node
      * @param annotationValue   annotation value
      * @param adapterCtx        XSD adapter context
-     * @return <xs:annotation><xs:documentation>@{paramref annotationValue}</xs:documentation></xs:annotation>
+     * @return  <xs:annotation><xs:documentation>@{paramref annotationValue}</xs:documentation></xs:annotation>
+     *          if feature {@link Xd2XsdFeature.XSD_ANNOTATION} is disabled, then {@link Optional#empty()}
      */
-    public static XmlSchemaAnnotation createAnnotation(final String annotationValue, final XsdAdapterCtx adapterCtx) {
+    public static Optional<XmlSchemaAnnotation> createAnnotation(final String annotationValue, final XsdAdapterCtx adapterCtx) {
         if (adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ANNOTATION)) {
             final XmlSchemaAnnotation annotation = new XmlSchemaAnnotation();
-            annotation.getItems().add(createAnnotationItem(annotationValue, adapterCtx));
-            return annotation;
+            createAnnotationItem(annotationValue, adapterCtx)
+                    .ifPresent(xmlSchemaAnnotation -> annotation.getItems().add(xmlSchemaAnnotation));
+            return Optional.of(annotation);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -568,27 +602,33 @@ public class XsdNodeFactory {
      *              ...
      *              <xs:documentation>@{paramref annotationValue[n-1]}</xs:documentation>
      *          </xs:annotation>
+     *          if feature {@link Xd2XsdFeature.XSD_ANNOTATION} is disabled, then {@link Optional#empty()}
      */
-    public static XmlSchemaAnnotation createAnnotation(final List<String> annotationValues, final XsdAdapterCtx adapterCtx) {
+    public static Optional<XmlSchemaAnnotation> createAnnotation(final List<String> annotationValues,
+                                                                 final XsdAdapterCtx adapterCtx) {
         if (adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ANNOTATION)) {
             final XmlSchemaAnnotation annotation = new XmlSchemaAnnotation();
             for (String value : annotationValues) {
-                annotation.getItems().add(createAnnotationItem(value, adapterCtx));
+                createAnnotationItem(value, adapterCtx)
+                        .ifPresent(xmlSchemaAnnotation -> annotation.getItems().add(xmlSchemaAnnotation));
             }
-            return annotation;
+
+            return Optional.of(annotation);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
      * Creates XSD documentation node
      * @param docValue      documentation value
-     * @return <xs:documentation>@{paramref docValue}</xs:documentation>
+     * @return  <xs:documentation>@{paramref docValue}</xs:documentation>
+     *          if {@paramref docValue} is null or blank, then Optional.empty()
      */
-    private static XmlSchemaDocumentation createAnnotationItem(final String docValue, final XsdAdapterCtx adapterCtx) {
-        if (docValue == null || docValue.isEmpty()) {
-            return null;
+    private static Optional<XmlSchemaDocumentation> createAnnotationItem(final String docValue,
+                                                                         final XsdAdapterCtx adapterCtx) {
+        if (docValue == null || StringUtils.isBlank(docValue)) {
+            return Optional.empty();
         }
 
         final XmlSchemaDocumentation annotationItem = new XmlSchemaDocumentation();
@@ -608,6 +648,6 @@ public class XsdNodeFactory {
                     ex);
         }
 
-        return annotationItem;
+        return Optional.of(annotationItem);
     }
 }

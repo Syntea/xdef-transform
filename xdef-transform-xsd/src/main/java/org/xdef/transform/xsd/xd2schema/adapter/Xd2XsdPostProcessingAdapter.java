@@ -302,9 +302,10 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                                     keyFieldPath);
 
                             if (uniqueInfoEntry.getKey().isEmpty() && systemId.isEmpty()) {
-                                identityConstraint.setAnnotation(XsdNodeFactory.createAnnotation(
+                                XsdNodeFactory.createAnnotation(
                                         "Unique set was placed in global declaration inside x-definition",
-                                        adapterCtx));
+                                        adapterCtx
+                                ).ifPresent(xmlSchemaAnnotation -> identityConstraint.setAnnotation(xmlSchemaAnnotation));
                             }
 
                             rootElem.getConstraints().add(identityConstraint);

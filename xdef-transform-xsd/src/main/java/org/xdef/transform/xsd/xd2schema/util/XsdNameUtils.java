@@ -138,11 +138,12 @@ public class XsdNameUtils {
         }
 
         if (elem.isTopLevel()) {
-            String name = adapterCtx.getNameFactory().findTopLevelName(xElem);
-            if (name == null) {
-                name = getNodeNameWithoutPrefix(elem.getName());
-                name = adapterCtx.getNameFactory().generateTopLevelName(xElem, name);
-            }
+            final String name = adapterCtx.getNameFactory().findTopLevelName(xElem)
+                    .orElseGet(() -> {
+                        String generatedName = getNodeNameWithoutPrefix(elem.getName());
+                        generatedName = adapterCtx.getNameFactory().generateTopLevelName(xElem, generatedName);
+                        return generatedName;
+                    });
 
             elem.setName(name);
             return;

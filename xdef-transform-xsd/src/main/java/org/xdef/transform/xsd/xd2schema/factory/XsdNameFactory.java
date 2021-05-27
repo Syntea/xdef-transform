@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR;
@@ -34,10 +35,10 @@ public class XsdNameFactory {
      * Real used names of XSD nodes. Used for finding real names of created XSD nodes.
      *
      * Key:     systemId
-     * Value:   Key:    xdPoisition
+     * Value:   Key:    xDefPosition
      *          Value:  org.xdef.transform.xsd real name
      */
-    private final Map<String, Map<String, String>> topLevelNameMap = new HashMap<String, Map<String, String>>();
+    private final Map<String, Map<String, String>> topLevelNameMap = new HashMap<>();
 
     /**
      * Base name of XSD nodes. Used for pairing and storing x-definition nodes with same name
@@ -47,7 +48,7 @@ public class XsdNameFactory {
      * Value:   Key:    org.xdef.transform.xsd base name
      *          Value:  list of associated x-nodes
      */
-    private final Map<String, Map<String, List<XMNode>>> topLevelBaseNameMap = new HashMap<String, Map<String, List<XMNode>>>();
+    private final Map<String, Map<String, List<XMNode>>> topLevelBaseNameMap = new HashMap<>();
 
     public XsdNameFactory(XsdAdapterCtx adapterCtx) {
         this.adapterCtx = adapterCtx;
@@ -56,12 +57,12 @@ public class XsdNameFactory {
     /**
      * Finds XSD top level element node name.
      * @param xElem     x-definition element
-     * @return  non-null name if x-definition element node with given path has been stored
-     *          null otherwise
+     * @return  name if x-definition element node with given path has been stored
+     *          otherwise {@link Optional#empty()} or if {@link Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR} is disabled
      */
-    public String findTopLevelName(final XElement xElem) {
+    public Optional<String> findTopLevelName(final XElement xElem) {
         if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR)) {
-            return null;
+            return Optional.empty();
         }
 
         return findTopLevelNameByPath(xElem);
@@ -71,12 +72,12 @@ public class XsdNameFactory {
      * Finds XSD top level simple-type node name
      * @param xData     x-definition node (attribute/text)
      * @param usePath   flag if name should be search by x-definition node path
-     * @return  non-null name if x-definition node has been stored
-     *          null otherwise
+     * @return  name if x-definition node has been stored
+     *          otherwise {@link Optional#empty()} or if {@link Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR} is disabled
      */
-    public String findTopLevelName(final XData xData, boolean usePath) {
+    public Optional<String> findTopLevelName(final XData xData, boolean usePath) {
         if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR)) {
-            return null;
+            return Optional.empty();
         }
 
         if (usePath) {
@@ -89,19 +90,19 @@ public class XsdNameFactory {
         final Map<String, List<XMNode>> mapBaseName = getOrCreateTopLevelBaseNameMap(systemId);
 
         if (mapBaseName.containsKey(xData.getRefTypeName())) {
-            return xData.getRefTypeName();
+            return Optional.of(xData.getRefTypeName());
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
      * Finds XSD top level node name based on x-definition path
      * @param xNode x-definition node
-     * @return  non-null name if x-definition node with given path has been stored
-     *          null otherwise
+     * @return  name if x-definition node with given path has been stored
+     *          otherwise {@link Optional#empty()}
      */
-    private String findTopLevelNameByPath(final XNode xNode) {
+    private Optional<String> findTopLevelNameByPath(final XNode xNode) {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
         LOG.debug("{}Finding top level " + nodeType + "-type name ...", logHeader(XSD_NAME_FACTORY, xNode));
 
@@ -110,10 +111,10 @@ public class XsdNameFactory {
 
         String realName = mapName.get(xNode.getXDPosition());
         if (realName != null) {
-            return realName;
+            return Optional.of(realName);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -166,8 +167,10 @@ public class XsdNameFactory {
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xNode.getXDPosition());
         final Map<String, String> mapName = getOrCreateTopLevelNameMap(systemId);
         mapName.put(xNode.getXDPosition(), realName);
+
         LOG.info("{}Add top-level " + nodeType + "-type name. realName='{}', systemId='{}'",
                 logHeader(XSD_NAME_FACTORY, xNode), realName, systemId);
+
         return realName;
     }
 
@@ -191,12 +194,7 @@ public class XsdNameFactory {
      * @return name storage map
      */
     private Map<String, String> getOrCreateTopLevelNameMap(final String systemId) {
-        Map<String, String> mapName = topLevelNameMap.get(systemId);
-        if (mapName == null) {
-            mapName = new HashMap<String, String>();
-            topLevelNameMap.put(systemId, mapName);
-        }
-
+        final Map<String, String> mapName = topLevelNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
         return mapName;
     }
 
@@ -206,12 +204,7 @@ public class XsdNameFactory {
      * @return base name storage map
      */
     private Map<String, List<XMNode>> getOrCreateTopLevelBaseNameMap(final String systemId) {
-        Map<String, List<XMNode>> mapBaseName = topLevelBaseNameMap.get(systemId);
-        if (mapBaseName == null) {
-            mapBaseName = new HashMap<String, List<XMNode>>();
-            topLevelBaseNameMap.put(systemId, mapBaseName);
-        }
-
+        final Map<String, List<XMNode>> mapBaseName = topLevelBaseNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
         return mapBaseName;
     }
 
@@ -222,12 +215,7 @@ public class XsdNameFactory {
      * @return list of x-definition nodes
      */
     private List<XMNode> getOrCreateListNodesInBaseNameMap(final Map<String, List<XMNode>> mapBaseName, final String baseName) {
-        List<XMNode> nodeList = mapBaseName.get(baseName);
-        if (nodeList == null) {
-            nodeList = new LinkedList<XMNode>();
-            mapBaseName.put(baseName, nodeList);
-        }
-
+        final List<XMNode> nodeList = mapBaseName.computeIfAbsent(baseName, key -> new LinkedList<>());
         return nodeList;
     }
 
@@ -273,8 +261,10 @@ public class XsdNameFactory {
      * @param xData         x-definition node to be converted to XSD simple type node
      * @return new name
      */
-    public static String createLocalSimpleTypeName(final XData xData) {
-        return xData.isLocalType() ? "refLoc_" + xData.getRefTypeName() : xData.getRefTypeName();
+    public static Optional<String> createLocalSimpleTypeName(final XData xData) {
+        return Optional.ofNullable(xData.isLocalType() ?
+                "refLoc_" + xData.getRefTypeName()
+                : xData.getRefTypeName());
     }
 
     /**

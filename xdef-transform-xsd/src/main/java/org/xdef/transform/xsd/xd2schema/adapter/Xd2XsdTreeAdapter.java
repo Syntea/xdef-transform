@@ -41,11 +41,11 @@ import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.SchemaNode;
-import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
-import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
+import org.xdef.transform.xsd.xd2schema.model.uc.UniqueConstraint;
 import org.xdef.transform.xsd.xd2schema.model.xsd.AbstractXmlSchemaGroupParticleWrapper;
+import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaChoiceWrapper;
 import org.xdef.transform.xsd.xd2schema.model.xsd.XmlSchemaSequenceWrapper;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdParserMapping;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
@@ -53,12 +53,16 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdPostProcessor;
 
+import javax.annotation.Nullable;
 import javax.xml.namespace.QName;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.xdef.impl.compile.CompileBase.UNIQUESET_M_VALUE;
 import static org.xdef.impl.compile.CompileBase.UNIQUESET_VALUE;
@@ -185,7 +189,7 @@ public class Xd2XsdTreeAdapter {
      * @param xNode     root of x-definition tree
      * @return root of XSD node tree, may return null
      */
-    public XmlSchemaObject convertTree(XMNode xNode) {
+    public Optional<XmlSchemaObject> convertTree(XMNode xNode) {
         xdProcessedNodes = new HashSet<>();
         return convertTreeInt(xNode, true);
     }
@@ -196,37 +200,37 @@ public class Xd2XsdTreeAdapter {
      * @param topLevel  flag if x-definition node is placed on top level
      * @return root of XSD node tree, may return null
      */
-    private XmlSchemaObject convertTreeInt(final XMNode xNode, boolean topLevel) {
+    private Optional<XmlSchemaObject> convertTreeInt(final XMNode xNode, boolean topLevel) {
         if (!xdProcessedNodes.add(xNode)) {
             LOG.debug("{}Already processed. This node should be reference definition.", logHeader(TRANSFORMATION, xNode));
-            return null;
+            return Optional.empty();
         }
 
         short xdElemKind = xNode.getKind();
         switch (xdElemKind) {
             case XNode.XMATTRIBUTE: {
-                return createAttribute((XData) xNode, topLevel);
+                return Optional.of(createAttribute((XData) xNode, topLevel));
             }
             case XNode.XMTEXT: {
                 LOG.info("{}Creating simple (text) content ...", logHeader(TRANSFORMATION, xNode));
-                return xsdFactory.createTextBasedSimpleContent((XData)xNode, topLevel);
+                return (Optional)xsdFactory.createTextBasedSimpleContent((XData)xNode, topLevel);
             }
             case XNode.XMELEMENT: {
-                return createElement((XElement) xNode, topLevel);
+                return Optional.of(createElement((XElement) xNode, topLevel));
             }
             case XNode.XMSELECTOR_END:
-                return null;
+                return Optional.empty();
             case XNode.XMSEQUENCE:
             case XNode.XMMIXED:
             case XNode.XMCHOICE:
                 LOG.debug("{}Processing Particle node. particle='{}'",
                         logHeader(TRANSFORMATION, xNode), Xd2XsdUtils.particleXKindToString(xdElemKind));
-                return xsdFactory.createGroupParticle(xNode);
+                return Optional.of(xsdFactory.createGroupParticle(xNode));
             case XNode.XMDEFINITION: {
                 adapterCtx.getReportWriter().warning(XSD.XSD017);
                 LOG.warn("{}XDefinition node can't be transformed, it has to be pre-processed only!",
                         logHeader(TRANSFORMATION, xNode));
-                return null;
+                return Optional.empty();
             }
             default: {
                 adapterCtx.getReportWriter().warning(XSD.XSD018, xdElemKind);
@@ -234,7 +238,7 @@ public class Xd2XsdTreeAdapter {
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -284,22 +288,26 @@ public class Xd2XsdTreeAdapter {
                 final String nodePath = XsdNameUtils.getXNodePath(xData.getXDPosition());
                 uniqueConstraint.addConstraint(varName, attr, nodePath, type, adapterCtx.getReportWriter());
 
-                attr.setAnnotation(XsdNodeFactory.createAnnotation(
+                XsdNodeFactory.createAnnotation(
                         StringFormatter.format("Original part of uniqueSet: {} ({})",
                                 uniqueConstraint.getPath(),
                                 xData.getValueTypeName()),
-                        adapterCtx)
-                );
+                        adapterCtx
+                ).ifPresent(xmlSchemaAnnotation -> attr.setAnnotation(xmlSchemaAnnotation));
             }
 
             if (qName != null) {
                 attr.setSchemaTypeName(qName);
             } else if (xData.getRefTypeName() != null && uniqueConstraint == null) {
-                String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false);
-                if (refTypeName == null) {
-                    refTypeName = XsdNameFactory.createLocalSimpleTypeName(xData);
-                    adapterCtx.getNameFactory().addTopSimpleTypeName(xData, refTypeName);
-                }
+                final String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false)
+                        .orElseGet(() -> {
+                            final Optional<String> defaultRefTypeNameOpt = XsdNameFactory.createLocalSimpleTypeName(xData);
+                            if (defaultRefTypeNameOpt.isPresent()) {
+                                adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt.get());
+                            }
+
+                            return defaultRefTypeNameOpt.orElse(null);
+                        });
 
                 String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refTypeName);
                 if (topLevel
@@ -399,8 +407,10 @@ public class Xd2XsdTreeAdapter {
                     xsdAny.setMinOccurs(0);
                     xsdAny.setProcessContent(XmlSchemaContentProcessing.LAX);
                     if (xElem._attrs.size() > 0 || xElem._childNodes.length > 0) {
-                        xsdAny.setAnnotation(XsdNodeFactory.createAnnotation(
-                                "Original any element contains children nodes/attributes", adapterCtx));
+                        XsdNodeFactory.createAnnotation(
+                                "Original any element contains children nodes/attributes", adapterCtx
+                        ).ifPresent(xmlSchemaAnnotation -> xsdAny.setAnnotation(xmlSchemaAnnotation));
+
                         adapterCtx.getReportWriter().warning(XSD.XSD019);
 
                         LOG.warn("{}!Lossy transformation! Any type with attributes/children nodes is not supported!",
@@ -737,8 +747,8 @@ public class Xd2XsdTreeAdapter {
         LOG.info("{}Creating complex type of element ...", logHeader(TRANSFORMATION, xElem));
 
         final XmlSchemaComplexType complexType = xsdFactory.createEmptyComplexType(false);
-        final Stack<XmlSchemaParticle> particleStack = new Stack<XmlSchemaParticle>();
-        XmlSchemaParticle currParticle = null;
+        final Stack<XmlSchemaParticle> particleStack = new Stack<>();
+        AtomicReference<XmlSchemaParticle> currParticle = new AtomicReference<>();
         boolean groupRefNodes = false;
         int stackPopCounter = 0;
 
@@ -757,21 +767,25 @@ public class Xd2XsdTreeAdapter {
                 XmlSchemaParticle newParticle = null;
                 // Create group reference
                 if (childrenKind == XNode.XMMIXED && !xnChild.getXDPosition().contains(xElem.getXDPosition())) {
-                    newParticle = createGroupReference(xChildrenNodes, currParticle, particleStack, xElem);
+                    newParticle = createGroupReference(xChildrenNodes, currParticle.get(), particleStack, xElem);
                 }
 
                 if (newParticle == null) {
                     LOG.info("{}Creating particle to complex content of element. particle='{}'",
                             logHeader(TRANSFORMATION, xElem), Xd2XsdUtils.particleXKindToString(childrenKind));
-                    final AbstractXmlSchemaGroupParticleWrapper newGroupParticle = (AbstractXmlSchemaGroupParticleWrapper) convertTreeInt(xnChild, false);
-                    stackPopCounter += updateGroupParticles(particleStack, currParticle, newGroupParticle);
-                    currParticle = particleStack.peek();
+
+                    final AbstractXmlSchemaGroupParticleWrapper newGroupParticle = (AbstractXmlSchemaGroupParticleWrapper)
+                            convertTreeInt(xnChild, false)
+                                    .orElseThrow(() -> new XsdTreeAdapterException("Required group particle node not created."));
+                    stackPopCounter += updateGroupParticles(particleStack, currParticle.get(), newGroupParticle);
+                    currParticle.set(particleStack.peek());
                 } else if (newParticle instanceof XmlSchemaGroupRef) {
-                    currParticle = newParticle;
+                    currParticle.set(newParticle);
                     groupRefNodes = true;
                 }
             } else if (childrenKind == XNode.XMTEXT) { // Simple value node
-                XmlSchemaSimpleContent simpleContent = (XmlSchemaSimpleContent) convertTreeInt(xnChild, topLevel);
+                XmlSchemaSimpleContent simpleContent = (XmlSchemaSimpleContent) convertTreeInt(xnChild, topLevel)
+                        .orElse(null);
                 if (complexType.getContentModel() != null) {
                     adapterCtx.getReportWriter().warning(XSD.XSD023);
                     LOG.warn("{}Complex type already has simple content!", logHeader(TRANSFORMATION, xElem));
@@ -785,9 +799,13 @@ public class Xd2XsdTreeAdapter {
                     if (simpleContent.getContent() instanceof XmlSchemaSimpleContentRestriction && xAttrs.length > 0) {
                         final String newSplittedName = XsdNameFactory.createTextElemName(xElem.getName());
                         final XmlSchemaSimpleContentExtension splitted = new XmlSchemaSimpleContentExtension();
-                        splitted.setBaseTypeName(((XmlSchemaSimpleContentRestriction) simpleContent.getContent()).getBaseTypeName());
+                        splitted.setBaseTypeName(
+                                ((XmlSchemaSimpleContentRestriction) simpleContent.getContent()).getBaseTypeName()
+                        );
                         xsdFactory.createComplexTypeWithSimpleContentTop(newSplittedName, splitted);
-                        ((XmlSchemaSimpleContentRestriction) simpleContent.getContent()).setBaseTypeName(new QName(schema.getTargetNamespace(), newSplittedName));
+                        ((XmlSchemaSimpleContentRestriction) simpleContent.getContent()).setBaseTypeName(
+                                new QName(schema.getTargetNamespace(), newSplittedName)
+                        );
 
                         contentForAttrs = splitted;
                         // TODO: create ref by SchemaNodeFactory?
@@ -799,7 +817,10 @@ public class Xd2XsdTreeAdapter {
 
                     if (contentForAttrs != null) {
                         for (int j = 0; j < xAttrs.length; j++) {
-                            contentForAttrs.getAttributes().add((XmlSchemaAttributeOrGroupRef) convertTreeInt(xAttrs[j], false));
+                            contentForAttrs.getAttributes().add((XmlSchemaAttributeOrGroupRef)
+                                    convertTreeInt(xAttrs[j], false)
+                                            .orElseThrow(() -> new XsdTreeAdapterException("Required attribute node not created."))
+                            );
                         }
                     }
                 } else {
@@ -811,13 +832,16 @@ public class Xd2XsdTreeAdapter {
                     stackPopCounter--;
                 } else {
                     if (!particleStack.empty()) {
-                        currParticle = particleStack.pop();
-                        if (currParticle instanceof XmlSchemaChoiceWrapper && ((XmlSchemaChoiceWrapper) currParticle).hasTransformDirection()) {
-                            ((XmlSchemaChoiceWrapper) currParticle).updateOccurence(adapterCtx);
+                        currParticle.set(particleStack.pop());
+                        if (currParticle.get() != null && currParticle.get() instanceof XmlSchemaChoiceWrapper) {
+                            final XmlSchemaChoiceWrapper currParticleChoice = (XmlSchemaChoiceWrapper)currParticle.get();
+                            if (currParticleChoice.hasTransformDirection()) {
+                                currParticleChoice.updateOccurence(adapterCtx);
+                            }
                         }
 
                         if (!particleStack.empty()) {
-                            currParticle = particleStack.peek();
+                            currParticle.set(particleStack.peek());
                         }
                     } else {
                         adapterCtx.getReportWriter().warning(XSD.XSD025);
@@ -834,25 +858,26 @@ public class Xd2XsdTreeAdapter {
                     if (!xElemChild._attrs.isEmpty()) {
                         for (XMData attr : xElemChild.getAttrs()) {
                             complexType.getAttributes().add(
-                                    (XmlSchemaAttributeOrGroupRef) convertTreeInt(attr, false));
+                                    (XmlSchemaAttributeOrGroupRef) convertTreeInt(attr, false)
+                                            .orElseThrow(() -> new XsdTreeAdapterException("Required attribute node not created."))
+                            );
                         }
                     }
                 }
 
-                XmlSchemaObject xsdChild = convertTreeInt(xnChild, false);
-                if (xsdChild != null) {
+                convertTreeInt(xnChild, false).ifPresent(xsdChild -> {
                     LOG.debug("{}Add child to particle of element.", logHeader(TRANSFORMATION, xElem));
-                    currParticle = createDefaultParticleGroup(currParticle, particleStack, xElem);
-                    addNodeToParticleGroup(currParticle, xsdChild);
-                }
+                    currParticle.set(createDefaultParticleGroup(currParticle.get(), particleStack, xElem));
+                    addNodeToParticleGroup(currParticle.get(), xsdChild);
+                });
             }
         }
 
-        if (currParticle != null) {
+        if (currParticle.get() != null) {
             complexType.setParticle(
-                    currParticle instanceof AbstractXmlSchemaGroupParticleWrapper
-                            ? ((AbstractXmlSchemaGroupParticleWrapper) currParticle).xsd()
-                            : currParticle);
+                    currParticle.get() instanceof AbstractXmlSchemaGroupParticleWrapper
+                            ? ((AbstractXmlSchemaGroupParticleWrapper) currParticle.get()).xsd()
+                            : currParticle.get());
         }
 
         postProcessor.elementComplexType(complexType, xElem);
@@ -860,9 +885,14 @@ public class Xd2XsdTreeAdapter {
         if (complexType.getContentModel() == null) {
             LOG.debug("{}Add attributes to complex content of element", logHeader(TRANSFORMATION, xElem));
 
-            for (int i = 0; i < xAttrs.length; i++) {
-                complexType.getAttributes().add((XmlSchemaAttributeOrGroupRef) convertTreeInt(xAttrs[i], false));
-            }
+            Arrays.stream(xAttrs).forEach(xdefAttr -> {
+                OptionalExt.of(convertTreeInt(xdefAttr, false))
+                        .ifPresent(xmlSchemaObject ->
+                                complexType.getAttributes().add((XmlSchemaAttributeOrGroupRef)xmlSchemaObject)
+                        ).orElse(() ->
+                        LOG.debug("{}X-definition attribute not transformed. attrXDefPos='{}'.",
+                                logHeader(TRANSFORMATION, xElem), xdefAttr.getXDPosition()));
+            });
         }
 
         return complexType;
@@ -879,7 +909,7 @@ public class Xd2XsdTreeAdapter {
      *          instance of XmlSchemaParticle if node is not only child of element {@code defEl}
      */
     private XmlSchemaParticle createGroupReference(final XNode[] xChildrenNodes,
-                                                   XmlSchemaParticle currGroup,
+                                                   @Nullable XmlSchemaParticle currGroup,
                                                    final Stack<XmlSchemaParticle> groups,
                                                    final XElement defEl) {
         LOG.info("{}Creating group reference.", logHeader(TRANSFORMATION, defEl));
@@ -937,14 +967,18 @@ public class Xd2XsdTreeAdapter {
      * @param newGroupParticle  currently created new group particle
      * @return number of particles which has been popped-out from group particle stack
      */
-    private int updateGroupParticles(final Stack<XmlSchemaParticle> particleStack, XmlSchemaParticle prev, final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
+    private int updateGroupParticles(final Stack<XmlSchemaParticle> particleStack,
+                                     @Nullable XmlSchemaParticle prev,
+                                     final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
         int stackPopCounter = 0;
         particleStack.push(newGroupParticle);
 
         do {
             XmlSchemaParticle curr = particleStack.peek();
 
-            if (prev == null || (prev instanceof AbstractXmlSchemaGroupParticleWrapper) == false || (curr instanceof AbstractXmlSchemaGroupParticleWrapper) == false) {
+            if (prev == null
+                    || (prev instanceof AbstractXmlSchemaGroupParticleWrapper) == false
+                    || (curr instanceof AbstractXmlSchemaGroupParticleWrapper) == false) {
                 break;
             }
 
@@ -957,13 +991,15 @@ public class Xd2XsdTreeAdapter {
                     cCurr.addItems(cPrev.getItems());
                     merge = true;
                 } else {
-                    final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(XmlSchemaChoiceWrapper.TransformDirection.BOTTOM_UP);
+                    final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(
+                            XmlSchemaChoiceWrapper.TransformDirection.BOTTOM_UP);
                     if (newGroupChoice != null) {
                         replaceLastGroupParticle(particleStack, newGroupChoice);
                     }
                 }
             } else if (cPrev.xsd() instanceof XmlSchemaAll) {
-                final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(XmlSchemaChoiceWrapper.TransformDirection.TOP_DOWN);
+                final XmlSchemaChoiceWrapper newGroupChoice = postProcessor.groupParticleAllToChoice(
+                        XmlSchemaChoiceWrapper.TransformDirection.TOP_DOWN);
                 if (newGroupChoice != null) {
                     particleStack.pop();
                     replaceLastGroupParticle(particleStack, newGroupChoice);
@@ -1016,7 +1052,7 @@ public class Xd2XsdTreeAdapter {
      * @return  if currParticle == null, then newly created instance of CXmlSchemaSequence
      *          else currParticle
      */
-    private XmlSchemaParticle createDefaultParticleGroup(XmlSchemaParticle currParticle,
+    private XmlSchemaParticle createDefaultParticleGroup(@Nullable XmlSchemaParticle currParticle,
                                                          final Stack<XmlSchemaParticle> particleStack,
                                                          final XElement xElem) {
         if (currParticle == null) {
