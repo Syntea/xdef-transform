@@ -14,8 +14,7 @@ import java.util.List;
 public interface UniqueConstraintAttributeList {
 
     /**
-     * Returns all values stored in list
-     * @return
+     * @return all values stored in list
      */
     List<Pair<String, XmlSchemaAttribute>> values();
 

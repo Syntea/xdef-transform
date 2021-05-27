@@ -380,7 +380,7 @@ public class XsdPostProcessor {
                 complexType.setMixed(true);
                 XsdNodeFactory.createAnnotation(
                         "Text content has been originally restricted by x-definition", adapterCtx
-                ).ifPresent(xmlSchemaAnnotation -> complexType.setAnnotation(xmlSchemaAnnotation));
+                ).ifPresent(complexType::setAnnotation);
             }
         }
     }
@@ -436,10 +436,10 @@ public class XsdPostProcessor {
 
         XsdNodeFactory.createAnnotation(
                 "Original group particle: all", adapterCtx
-        ).ifPresent(xmlSchemaAnnotation -> newGroupChoice.setAnnotation(xmlSchemaAnnotation));
+        ).ifPresent(newGroupChoice::setAnnotation);
 
-        long elementMinOccursSum = 0;
-        long elementMaxOccursSum = 0;
+        long elementMinOccursSum;
+        long elementMaxOccursSum;
 
         // Calculate member occurrences
         if (!unbounded) {
@@ -512,7 +512,7 @@ public class XsdPostProcessor {
                 final String maxOcc = memberParticle.getMaxOccurs() == Long.MAX_VALUE ? "unbounded" : String.valueOf(memberParticle.getMaxOccurs());
                 XsdNodeFactory.createAnnotation(
                         "Occurrence: [" + minOcc + ", " + maxOcc + "]", adapterCtx
-                ).ifPresent(xmlSchemaAnnotation -> memberParticle.setAnnotation(xmlSchemaAnnotation));
+                ).ifPresent(memberParticle::setAnnotation);
             }
 
             memberParticle.setMaxOccurs(1);

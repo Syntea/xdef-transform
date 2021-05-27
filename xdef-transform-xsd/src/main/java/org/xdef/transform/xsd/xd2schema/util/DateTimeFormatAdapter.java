@@ -145,10 +145,7 @@ public class DateTimeFormatAdapter {
 					ret.append(MMMM);
 				}
 			} else if (p.isChar('G')) {
-				int i = 1;
-				while (p.isChar('G')) {
-					i++;
-				}
+				while (p.isChar('G'));
 				ret.append(G);
 			} else if (p.isToken("mm")) {
 				ret.append(mm);
@@ -211,10 +208,7 @@ public class DateTimeFormatAdapter {
 					ret.append(ZZZZZZ);
 				}
 			} else if (p.isChar('a')) {
-				int i = 1;
-				while (p.isChar('a')) {
-					i++;
-				}
+				while (p.isChar('a'));
 				ret.append(a);
 			} else if (p.isChar('{')) {
 				p.findCharAndSkip('}');

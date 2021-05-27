@@ -198,7 +198,8 @@ public class XdDeclarationBuilder {
                 logHeader(TRANSFORMATION, simpleTypeRestriction), name, type);
 
         final QName baseType = simpleTypeRestriction.getBaseTypeName();
-        IDeclarationTypeFactory xdDeclarationTypeFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType);
+        IDeclarationTypeFactory xdDeclarationTypeFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType)
+                .orElse(null);
 
         if (xdDeclarationTypeFactory == null) {
             final XmlSchemaType itemSchemaType = Xsd2XdUtils.findSchemaTypeByQName(schema, baseType).orElse(null);
@@ -270,7 +271,8 @@ public class XdDeclarationBuilder {
         }
 
         if (baseType != null) {
-            IDeclarationTypeFactory xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType);
+            IDeclarationTypeFactory xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(baseType)
+                    .orElse(null);
             if (xdDeclarationFactory != null) {
                 xdDeclarationFactory.setType(type);
                 return xdDeclarationFactory.build(simpleTypeRestriction.getFacets(), reportWriter);
@@ -298,7 +300,8 @@ public class XdDeclarationBuilder {
         final QName[] qNames = simpleTypeUnion.getMemberTypesQNames();
         if (qNames != null && qNames.length > 0) {
             if (qNames.length == 1) {
-                final IDeclarationTypeFactory xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(qNames[0]);
+                final IDeclarationTypeFactory xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(qNames[0])
+                        .orElse(null);
                 if (xdDeclarationFactory != null) {
                     final XmlSchemaSimpleTypeContent unionSimpleContent = simpleTypeUnion.getBaseTypes().get(0).getContent();
                     if (unionSimpleContent instanceof XmlSchemaSimpleTypeRestriction) {
@@ -330,13 +333,15 @@ public class XdDeclarationBuilder {
             final List<XmlSchemaSimpleType> baseTypes = simpleTypeUnion.getBaseTypes();
             if (baseTypes != null && !baseTypes.isEmpty()) {
                 IDeclarationTypeFactory xdDeclarationFactory = null;
-                final List<XmlSchemaFacet> facets = new LinkedList<XmlSchemaFacet>();
+                final List<XmlSchemaFacet> facets = new LinkedList<>();
 
                 for (XmlSchemaSimpleType baseType : baseTypes) {
                     if (baseType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
                         facets.addAll(((XmlSchemaSimpleTypeRestriction)baseType.getContent()).getFacets());
                         if (xdDeclarationFactory == null) {
-                            xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(((XmlSchemaSimpleTypeRestriction) baseType.getContent()).getBaseTypeName());
+                            xdDeclarationFactory = Xsd2XdTypeMapping.findDefaultDataTypeFactory(
+                                    ((XmlSchemaSimpleTypeRestriction) baseType.getContent()).getBaseTypeName()
+                            ).orElse(null);
                         }
                     }
                 }

@@ -39,7 +39,7 @@ public class XdDeclarationFactory {
     /**
      * Set of names of already processed top level declarations
      */
-    final Set<String> processedTopDeclarations = new HashSet<String>();
+    final Set<String> processedTopDeclarations = new HashSet<>();
 
     public XdDeclarationFactory(XmlSchema schema, XdNodeFactory xdFactory, XdAdapterCtx adapterCtx) {
         this.schema = schema;

@@ -132,7 +132,7 @@ public class XsdSimpleContentFactory {
 
         if (!annotations.isEmpty()) {
             XsdNodeFactory.createAnnotation(annotations, adapterCtx)
-                    .ifPresent(xmlSchemaAnnotation -> res.setAnnotation(xmlSchemaAnnotation));
+                    .ifPresent(res::setAnnotation);
         }
 
         return res;
@@ -154,7 +154,7 @@ public class XsdSimpleContentFactory {
      * @param qName             XSD restriction base
      * @param facetBuilder      XSD restriction facet builder
      * @param parameters        source x-definition parameters for facets building
-     * @return <xs:restriction base="{@paramref qName}">...</xs:restriction>
+     * @return <xs:restriction base="{@code qName}">...</xs:restriction>
      */
     private XmlSchemaSimpleTypeRestriction simpleTypeRestriction(final QName qName,
                                                                  final IXsdFacetFactory facetBuilder,
@@ -174,7 +174,7 @@ public class XsdSimpleContentFactory {
      * Creates XSD simple type list node and restriction node with facets
      * @param qName             XSD list item type and XSD restriction base
      * @param facetBuilder      XSD restriction facet builder
-     * @return  <xs:list itemType="{@paramref qName}">...</xs:list> if restriction has no facets
+     * @return  <xs:list itemType="{@code qName}">...</xs:list> if restriction has no facets
      *          <xs:restriction>...</xs:restriction> otherwise
      */
     private XmlSchemaSimpleTypeContent simpleTypeList(final QName qName, final IXsdFacetFactory facetBuilder) {
@@ -188,7 +188,7 @@ public class XsdSimpleContentFactory {
     /**
      * Creates XSD simple type list node
      * @param qName     XSD list item type
-     * @return <xs:list itemType="{@paramref qName}">...</xs:list>
+     * @return <xs:list itemType="{@code qName}">...</xs:list>
      */
     private XmlSchemaSimpleTypeList simpleTypeList(final QName qName) {
         final XmlSchemaSimpleTypeList list = new XmlSchemaSimpleTypeList();
@@ -260,7 +260,7 @@ public class XsdSimpleContentFactory {
                 refQNames.add(new QName(NAMESPACE_PREFIX_EMPTY, refName));
             }
 
-            union.setMemberTypesQNames(refQNames.toArray(new QName[refQNames.size()]));
+            union.setMemberTypesQNames(refQNames.toArray(new QName[0]));
         }
 
         return union;
@@ -295,7 +295,7 @@ public class XsdSimpleContentFactory {
             XsdNodeFactory.createAnnotation(
                     "Original x-definition parser: " + xParser.parserName(),
                     adapterCtx
-            ).ifPresent(xmlSchemaAnnotation -> restriction.setAnnotation(xmlSchemaAnnotation));
+            ).ifPresent(restriction::setAnnotation);
         }
 
         String refName = XsdNameFactory.createUnionRefTypeName(nodeName, parserInfo.getKey().getLocalPart());
@@ -315,8 +315,8 @@ public class XsdSimpleContentFactory {
      * Wrap xs:list or xs:union node to xs:simpleType if input XSD restriction node has any facet
      * @param restriction   XSD restriction node
      * @param content       XSD list or union node
-     * @return  {@paramref content} if {@paramref restriction} has no facet
-     *          {@paramref restriction} containing <xs:simpleType>{@paramref content}</xs:simpleType>
+     * @return  {@code content} if {@code restriction} has no facet
+     *          {@code restriction} containing <xs:simpleType>{@code content}</xs:simpleType>
      */
     private XmlSchemaSimpleTypeContent wrapUpSimpleTypeContent(final XmlSchemaSimpleTypeRestriction restriction, final XmlSchemaSimpleTypeContent content) {
         // If exists some other restrictions for list, then wrap up list inside
@@ -332,11 +332,11 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD facet nodes based on input {@paramref parameters} by {@paramref facetBuilder}
+     * Creates XSD facet nodes based on input {@code parameters} by {@code facetBuilder}
      * @param qName             XSD restriction base
      * @param facetBuilder      XSD restriction facet builder
      * @param parameters        source x-definition parameters for facets building
-     * @return
+     * @return created XML schema facets
      */
     private List<XmlSchemaFacet> buildFacets(final QName qName, final IXsdFacetFactory facetBuilder, final XDNamedValue[] parameters) {
         if (qName != null && ("double".equals(qName.getLocalPart()) || "float".equals(qName.getLocalPart()))) {

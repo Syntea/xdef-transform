@@ -127,7 +127,7 @@ public class SchemaNodeFactory {
      * Creates schema node based on x-definition element node and XSD complex content extension
      * @param xElem             x-definition element node
      * @param xsdComplexExt     XSD complex content extension node
-     * @return schema node
+     * @return created schema node
      */
     private static SchemaNode createComplexExtNode(final XElement xElem, final XmlSchemaComplexContentExtension xsdComplexExt) {
         return new SchemaNode(xElem.getXDPosition(), xsdComplexExt, xElem);
@@ -137,7 +137,7 @@ public class SchemaNodeFactory {
      * Creates schema node based on x-definition element node and XSD group reference
      * @param xElem             x-definition element node
      * @param xsdGroupRef       XSD group reference node
-     * @return
+     * @return created schema node
      */
     private static SchemaNode createGroupRefNode(final XElement xElem, final XmlSchemaGroupRef xsdGroupRef) {
         return new SchemaNode(xElem.getXDPosition(), xsdGroupRef, xElem);

@@ -180,7 +180,7 @@ public class XdNodeFactory {
     /**
      * Creates empty x-definition named mixed node. Used for transformation of group of elements
      * @param name      Name of mixed node
-     * @return <xd:mixed name="{@paramref name}"/>
+     * @return <xd:mixed name="{@code name}"/>
      */
     public Element createEmptyNamedMixed(final String name) {
         final Element elem = doc.createElementNS(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_MIXED);

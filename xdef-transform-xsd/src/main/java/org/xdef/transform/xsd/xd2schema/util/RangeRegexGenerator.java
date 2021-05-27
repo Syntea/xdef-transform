@@ -63,11 +63,11 @@ public class RangeRegexGenerator
      */
     private List<Integer> getRegexPairs(int start, int end)
     {
-        List<Integer> pairs = new ArrayList<Integer>();
+        List<Integer> pairs = new ArrayList<>();
 
-        ArrayList<Integer> leftPairs = new ArrayList<Integer>();
+        ArrayList<Integer> leftPairs = new ArrayList<>();
         int middleStartPoint = fillLeftPairs(leftPairs, start, end);
-        ArrayList<Integer> rightPairs = new ArrayList<Integer>();
+        ArrayList<Integer> rightPairs = new ArrayList<>();
         int middleEndPoint = fillRightPairs(rightPairs, middleStartPoint, end);
 
         pairs.addAll(leftPairs);
@@ -124,7 +124,7 @@ public class RangeRegexGenerator
      */
     private List<String> toRegex(List<Integer> pairs, int minWidth)
     {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         String numberWithWidth = String.format("%%0%dd", minWidth);
         for (Iterator<Integer> iterator = pairs.iterator(); iterator.hasNext();)
         {

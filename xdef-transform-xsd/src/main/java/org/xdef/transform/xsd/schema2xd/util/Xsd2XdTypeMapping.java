@@ -10,6 +10,7 @@ import org.xdef.transform.xsd.schema2xd.factory.declaration.TextTypeFactory;
 import javax.xml.namespace.QName;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory.FACET_PATTERN;
 
@@ -61,9 +62,10 @@ public class Xsd2XdTypeMapping {
     /**
      * Converts given XSD qualified name to x-definition data type
      * @param xsdType   XSD qualified name
-     * @return x-definition data type if exists, otherwise null
+     * @return  x-definition data type if exists,
+     *          otherwise {@link Optional#empty()}
      */
-    public static IDeclarationTypeFactory findDefaultDataTypeFactory(final QName xsdType) {
-        return defaultQNameMap.get(xsdType);
+    public static Optional<IDeclarationTypeFactory> findDefaultDataTypeFactory(final QName xsdType) {
+        return Optional.ofNullable(defaultQNameMap.get(xsdType));
     }
 }

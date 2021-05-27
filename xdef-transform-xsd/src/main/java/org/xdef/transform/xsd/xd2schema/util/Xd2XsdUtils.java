@@ -19,7 +19,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import static org.xdef.model.XMNode.XMCHOICE;
 import static org.xdef.model.XMNode.XMMIXED;
@@ -60,7 +59,7 @@ public class Xd2XsdUtils {
         switch (kind) {
             case XMSEQUENCE:    result = "sequence"; break;
             case XMMIXED:       result = "mixed"; break;
-            case XMCHOICE:      result = "choise"; break;
+            case XMCHOICE:      result = "choice"; break;
         }
 
         return result;
@@ -76,8 +75,12 @@ public class Xd2XsdUtils {
         final StringBuilder stringBuilder = new StringBuilder();
         int lastMatchPos = 0;
         while (matcher.find()) {
-            stringBuilder.append(regex, lastMatchPos, matcher.start());
-            stringBuilder.append("[" + matcher.group(0).toLowerCase() + matcher.group(0).toUpperCase() + "]");
+            stringBuilder.append(regex, lastMatchPos, matcher.start())
+                    .append("[")
+                    .append(matcher.group(0).toLowerCase())
+                    .append(matcher.group(0).toUpperCase())
+                    .append("]");
+
             lastMatchPos = matcher.end();
         }
 
@@ -90,8 +93,7 @@ public class Xd2XsdUtils {
      * @return single regular expression
      */
     public static String regexCollectionToSingle(Collection<String> regex) {
-        final String result = regex.stream().collect(Collectors.joining("|"));
-        return result;
+        return String.join("|", regex);
     }
 
     /**
@@ -109,9 +111,9 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Creates relative xpath from given absolute xpaths
+     * Creates relative xpath from given absolute XPath
      * @param xPath         absolute full xpath
-     * @param xPathNode     absolute current xpath (part of {@paramref xPath})
+     * @param xPathNode     absolute current xpath (part of {@code xPath})
      * @return relative xpath
      */
     public static String relativeXPath(final String xPath, final String xPathNode) {
@@ -212,8 +214,6 @@ public class Xd2XsdUtils {
      * @return default algorithm features
      */
     public static Set<Xd2XsdFeature> defaultFeatures() {
-        final Set<Xd2XsdFeature> features = new HashSet();
-        features.addAll(Xd2XsdFeature.DEFAULT_POSTPROCESSING_FEATURES);
-        return features;
+        return new HashSet<>(Xd2XsdFeature.DEFAULT_POSTPROCESSING_FEATURES);
     }
 }

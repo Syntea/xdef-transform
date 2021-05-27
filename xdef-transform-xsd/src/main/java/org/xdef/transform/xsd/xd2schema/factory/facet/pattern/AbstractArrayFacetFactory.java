@@ -26,14 +26,14 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 
 public abstract class AbstractArrayFacetFactory extends DefaultFacetFactory {
 
-    protected Set<Integer> ignoredParams = new HashSet<Integer>();
+    protected Set<Integer> ignoredParams = new HashSet<>();
     protected QName type = null;
 
     @Override
     public List<XmlSchemaFacet> build(final XDNamedValue[] params) {
         LOG.info("{}Building facets ...", logHeader(TRANSFORMATION));
 
-        final List<XmlSchemaFacet> facets = new ArrayList<XmlSchemaFacet>();
+        final List<XmlSchemaFacet> facets = new ArrayList<>();
 
         if (params != null) {
             for (int i = 0; i < params.length; i++) {

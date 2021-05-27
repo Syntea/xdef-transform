@@ -22,7 +22,7 @@ public interface XmlSchemaUniqueConstraintMap {
 
     /**
      * Finds XDefinition uniqueSet map by given schema name
-     * @param schemaName
+     * @param schemaName        XML schema name
      * @return  XDefinition uniqueSet map if found
      *          otherwise {@link Optional#empty()}
      */
@@ -42,7 +42,7 @@ public interface XmlSchemaUniqueConstraintMap {
 
         /**
          * Finds list of unique constraints by given xpath
-         * @param xpath
+         * @param xpath         required unique constraint xpath
          * @return  XDefinition uniqueSet map if found
          *          otherwise {@link Collections#emptyList()}
          */

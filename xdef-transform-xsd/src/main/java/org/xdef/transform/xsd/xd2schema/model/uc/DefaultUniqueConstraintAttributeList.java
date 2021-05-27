@@ -5,7 +5,6 @@ import org.apache.ws.commons.schema.XmlSchemaAttribute;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author smid
@@ -15,7 +14,7 @@ public class DefaultUniqueConstraintAttributeList extends LinkedList<Pair<String
 
     @Override
     public List<Pair<String, XmlSchemaAttribute>> values() {
-        return this.stream().collect(Collectors.toList());
+        return this;
     }
 
 }

@@ -14,7 +14,7 @@ public interface XmlSchemaNodeMap {
 
     /**
      * Finds XDefinition node map by given schema name
-     * @param schemaName
+     * @param schemaName        XML schema name
      * @return  XDefinition node map if found
      *          otherwise {@link Optional#empty()}
      */

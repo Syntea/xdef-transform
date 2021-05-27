@@ -173,7 +173,7 @@ public class XdAdapterCtx {
     /**
      * Finds XSD document name by given XSD document
      * @param schema        XSD document
-     * @return XSD document name if exists, otherwise null
+     * @return XSD document name if exists
      */
     public String findXmlSchemaFileName(final XmlSchema schema) {
         return Optional.ofNullable(xsdNames.get(schema))

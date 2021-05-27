@@ -8,19 +8,8 @@ import org.xdef.transform.xsd.error.FormattedRuntimeException;
  */
 public class XsdNamespaceException extends FormattedRuntimeException {
 
-    public XsdNamespaceException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public XsdNamespaceException(String format, Object... args) {
         super(format, args);
     }
 
-    public XsdNamespaceException(Throwable cause) {
-        super(cause);
-    }
-
-    public XsdNamespaceException(Throwable cause, String format, Object... args) {
-        super(cause, format, args);
-    }
 }

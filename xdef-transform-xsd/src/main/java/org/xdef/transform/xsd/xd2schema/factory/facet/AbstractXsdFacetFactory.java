@@ -65,7 +65,7 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
     public List<XmlSchemaFacet> build(final XDNamedValue[] params) {
         LOG.debug("{}\"Building facets ...", logHeader(TRANSFORMATION));
 
-        List<XmlSchemaFacet> facets = new ArrayList<XmlSchemaFacet>();
+        List<XmlSchemaFacet> facets = new ArrayList<>();
         if (params != null && params.length > 0) {
             for (XDNamedValue param : params) {
                 build(facets, param);

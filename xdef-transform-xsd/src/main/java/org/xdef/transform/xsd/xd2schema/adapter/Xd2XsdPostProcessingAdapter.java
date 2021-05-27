@@ -66,7 +66,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
         LOG.info(HEADER_LINE);
 
         postProcessor = new XsdPostProcessor(adapterCtx);
-        final Set<String> updatedNamespaces = new HashSet<String>();
+        final Set<String> updatedNamespaces = new HashSet<>();
         processNodes(xdPool, updatedNamespaces);
         processReferences();
         processQNames(updatedNamespaces);
@@ -89,7 +89,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
         LOG.info(HEADER_LINE);
 
         postProcessor = new XsdPostProcessor(adapterCtx);
-        final Set<String> updatedNamespaces = new HashSet<String>();
+        final Set<String> updatedNamespaces = new HashSet<>();
         if (!adapterCtx.getProcessXDefNodeMap().isEmpty() && !adapterCtx.getExtraSchemaLocationsCtx().isEmpty()) {
             processNodes(xDef, updatedNamespaces);
         }
@@ -143,7 +143,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
     /**
      * Updates XSD attributes and elements QNames of schemas created by post processing
-     * @param updatedNamespaces
+     * @param updatedNamespaces namespace to be processed
      */
     private void processQNames(final Set<String> updatedNamespaces) {
         LOG.info("{}Processing qualified names ...", logHeader(POSTPROCESSING, XSD_PP_ADAPTER));
@@ -308,7 +308,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
                                 XsdNodeFactory.createAnnotation(
                                         "Unique set was placed in global declaration inside x-definition",
                                         adapterCtx
-                                ).ifPresent(xmlSchemaAnnotation -> identityConstraint.setAnnotation(xmlSchemaAnnotation));
+                                ).ifPresent(identityConstraint::setAnnotation);
                             }
 
                             rootElem.getConstraints().add(identityConstraint);
@@ -359,20 +359,17 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
      */
     private String getParentNodePath(final String uniquePath, final String xPath) {
         String res;
+        int splitPos;
         if (!uniquePath.isEmpty()) {
-            int splitPos = xPath.lastIndexOf('/');
-            if (splitPos != -1) {
-                res = xPath.substring(0, splitPos);
-            } else {
-                res = xPath;
-            }
+            splitPos = xPath.lastIndexOf('/');
         } else {
-            int splitPos = xPath.indexOf('/');
-            if (splitPos != -1) {
-                res = xPath.substring(0, splitPos);
-            } else {
-                res = xPath;
-            }
+            splitPos = xPath.indexOf('/');
+        }
+
+        if (splitPos == -1) {
+            res = xPath;
+        } else {
+            res = xPath.substring(0, splitPos);
         }
 
         return res;

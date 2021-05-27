@@ -434,7 +434,7 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Transform and add given XSD attributes {@paramref xsdAttrs} to x-definition element node.
+     * Transform and add given XSD attributes {@code xsdAttrs} to x-definition element node.
      * @param xdElem        x-definition element node
      * @param xsdAttrs      XSD attribute nodes
      */

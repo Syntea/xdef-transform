@@ -8,20 +8,8 @@ import org.xdef.transform.xsd.error.FormattedRuntimeException;
  */
 public class XsdNodeFactoryException extends FormattedRuntimeException {
 
-    public XsdNodeFactoryException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public XsdNodeFactoryException(String format, Object... args) {
         super(format, args);
-    }
-
-    public XsdNodeFactoryException(Throwable cause) {
-        super(cause);
-    }
-
-    public XsdNodeFactoryException(Throwable cause, String format, Object... args) {
-        super(cause, format, args);
     }
 
 }

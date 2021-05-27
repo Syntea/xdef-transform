@@ -16,7 +16,7 @@ public class UnionRegexFacetFactory extends AbstractArrayFacetFactory {
 
     static public final String XD_PARSER_NAME = "union";
 
-    private List<String> facetPatterns = new ArrayList<String>();
+    private List<String> facetPatterns = new ArrayList<>();
 
     @Override
     public boolean customFacet(List<XmlSchemaFacet> facets, XDNamedValue param) {

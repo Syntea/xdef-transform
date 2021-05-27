@@ -8,20 +8,8 @@ import org.xdef.transform.xsd.error.FormattedRuntimeException;
  */
 public class XsdTreeAdapterException extends FormattedRuntimeException {
 
-    public XsdTreeAdapterException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     public XsdTreeAdapterException(String format, Object... args) {
         super(format, args);
-    }
-
-    public XsdTreeAdapterException(Throwable cause) {
-        super(cause);
-    }
-
-    public XsdTreeAdapterException(Throwable cause, String format, Object... args) {
-        super(cause, format, args);
     }
 
 }

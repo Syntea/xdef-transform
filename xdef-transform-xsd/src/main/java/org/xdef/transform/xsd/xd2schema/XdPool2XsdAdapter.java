@@ -92,8 +92,8 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     private void initTargetNamespaces() {
         LOG.info("{}Initialize target namespaces ...", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
 
-        xDefsWithoutNs = new HashSet<String>();
-        xDefTargetNs = new HashMap<String, Pair<String, String>>();
+        xDefsWithoutNs = new HashSet<>();
+        xDefTargetNs = new HashMap<>();
 
         for (XMDefinition xDef : xdPool.getXMDefinitions()) {
             final String xDefName = xDef.getName();

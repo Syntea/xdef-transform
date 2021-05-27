@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_DELIMITER;
 import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
+import static org.xdef.transform.xsd.NamespaceConst.NAMESPACE_URI_EMPTY;
 import static org.xdef.transform.xsd.NamespaceConst.XDEF_DEFAULT_NAMESPACE_PREFIX;
 import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
@@ -102,7 +103,7 @@ public class XsdNamespaceUtils {
      * @return  true if x-definition node name contains prefix
      */
     public static boolean containsNsPrefix(final String name) {
-        return name.indexOf(NAMESPACE_DELIMITER) != -1;
+        return name.contains(NAMESPACE_DELIMITER);
     }
 
     /**
@@ -111,7 +112,7 @@ public class XsdNamespaceUtils {
      * @return  true if x-definition node name contains reference
      */
     public static boolean containsReference(final String name) {
-        return name.indexOf(XDEF_REF_DELIMITER) != -1;
+        return name.contains(XDEF_REF_DELIMITER);
     }
 
     /**
@@ -262,14 +263,14 @@ public class XsdNamespaceUtils {
             targetNamespaceError = true;
         }
 
-        if (targetNamespaceError == true) {
+        if (targetNamespaceError) {
             return Pair.of(targetNamespacePrefix, targetNamespaceUri);
         }
 
         // Try to find default namespace
-        if (targetNamespacePrefix == null && targetNamespaceUri == null) {
+        if (targetNamespacePrefix == null) {
             for (Map.Entry<String, String> entry : xDef._namespaces.entrySet()) {
-                if ("".equals(entry.getKey())) {
+                if (NAMESPACE_URI_EMPTY.equals(entry.getKey())) {
                     targetNamespacePrefix = entry.getKey();
                     targetNamespaceUri = entry.getValue();
                     break;
@@ -292,7 +293,7 @@ public class XsdNamespaceUtils {
     /**
      * Creates XSD document name based on namespace prefix
      * @param nsPrefix  namespace prefix
-     * @return
+     * @return  XML schema name
      */
     public static String createExtraSchemaNameFromNsPrefix(final String nsPrefix) {
         return "external_" + nsPrefix;
@@ -324,8 +325,7 @@ public class XsdNamespaceUtils {
         final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xDefPos);
         final XmlSchema refSchema = adapterCtx.findSchemaReq(systemId, phase);
         final String nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(xDefPos);
-        final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(nsPrefix);
-        return nsUri;
+        return refSchema.getNamespaceContext().getNamespaceURI(nsPrefix);
     }
 
 }

@@ -297,7 +297,7 @@ public class XsdNameUtils {
         final String parserName = xData.getParserName();
 
         final String name = Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx)
-                .map(defaultQName -> defaultQName.getLocalPart())
+                .map(QName::getLocalPart)
                 .orElse(parserName);
 
         if (!Constants.XSD_STRING.getLocalPart().equals(name)

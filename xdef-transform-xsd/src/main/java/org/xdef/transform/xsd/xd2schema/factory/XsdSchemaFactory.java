@@ -96,8 +96,7 @@ public class XsdSchemaFactory {
             final String nsPrefix = entry.getKey();
             final String nsUri = entry.getValue();
 
-            if (XsdNamespaceUtils.isDefaultNamespacePrefix(nsPrefix)
-                    || (targetNsPrefix != null && nsPrefix.equals(targetNsPrefix))) {
+            if (XsdNamespaceUtils.isDefaultNamespacePrefix(nsPrefix) || nsPrefix.equals(targetNsPrefix)) {
                 continue;
             }
 

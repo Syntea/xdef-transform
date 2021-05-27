@@ -16,7 +16,6 @@ import org.xdef.transform.xsd.xd2schema.model.SchemaNamespaceLocationMap;
 import org.xdef.transform.xsd.xd2schema.model.XsdSchemaImportLocation;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -53,16 +52,18 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
 
     /**
      * Set original (x-definition) namespace context
-     * @param namespaceCtx
-     * @param xsdTargetPrefix
+     * @param namespaceCtx              namespace context map
+     * @param schemaTargetNsPrefix      schema target namespace prefix
      */
-    public void setSourceNamespaceCtx(final NamespaceMap namespaceCtx, final String xsdTargetPrefix) {
-        sourceNamespaceCtx = new NamespaceMap((HashMap)namespaceCtx.clone());
-        sourceNamespaceCtx.remove(xsdTargetPrefix);
+    public void setSourceNamespaceCtx(final NamespaceMap namespaceCtx, final String schemaTargetNsPrefix) {
+        sourceNamespaceCtx = new NamespaceMap((Map)namespaceCtx.clone());
+        sourceNamespaceCtx.remove(schemaTargetNsPrefix);
     }
 
     /**
-     * Transform given x-definition nodes {@paramref allNodesToResolve} into XSD nodes and then insert them into related XSD documents
+     * Transform given x-definition nodes {@code allNodesToResolve} into XSD nodes and then insert them
+     * into related XSD documents
+     *
      * @param nodesToBeResolved     nodes to be transformed
      * @return All namespaces which have been updated
      */
@@ -72,7 +73,8 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         final String sourceSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(sourceXDefinition.getXDPosition());
         final Set<String> updatedNamespaces = new HashSet<>();
 
-        SchemaNamespaceLocationMap schemasByNsToResolve = (SchemaNamespaceLocationMap)adapterCtx.getExtraSchemaLocationsCtx().clone();
+        SchemaNamespaceLocationMap schemasByNsToResolve = (SchemaNamespaceLocationMap)adapterCtx.getExtraSchemaLocationsCtx()
+                .clone();
         int lastSizeMap = schemasByNsToResolve.size();
 
         while (!schemasByNsToResolve.isEmpty()) {
@@ -119,7 +121,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                         adapter.setAdapterCtx(adapterCtx);
                         adapter.setReportWriter(reportWriter);
                         adapter.createOrUpdateSchema(
-                                new NamespaceMap((HashMap) sourceNamespaceCtx.clone()),
+                                new NamespaceMap((Map) sourceNamespaceCtx.clone()),
                                 nodesToResolve,
                                 schemaTargetNsUri,
                                 importLocation);
@@ -146,7 +148,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     /**
      * Internal class for transformation of given x-definition nodes into related XSD document
      */
-    class SchemaAdapter extends AbstractXd2XsdAdapter {
+    static class SchemaAdapter extends AbstractXd2XsdAdapter {
 
         /**
          * Input x-definition used for transformation
@@ -178,7 +180,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                     logHeader(XSD_XDEF_EXTRA_ADAPTER), targetNsUri);
             LOG.info(HEADER_LINE);
 
-            final String schemaName = createOrGetXsdSchema(namespaceCtx, targetNsUri, importLocation);
+            final String schemaName = getOrCreateXmlSchema(namespaceCtx, targetNsUri, importLocation);
 
             final XsdNodeFactory xsdFactory = new XsdNodeFactory(schema, adapterCtx);
             final Xd2XsdTreeAdapter treeAdapter = new Xd2XsdTreeAdapter(schema, schemaName, xsdFactory, adapterCtx);
@@ -194,19 +196,19 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         /**
          * Creates or find XSD document. Then initialize XSD document
          *
-         * @param namespaceCtx
-         * @param targetNsUri
-         * @param importLocation
+         * @param namespaceCtx          namespace context map
+         * @param targetNsUri           target namespace URI
+         * @param importLocation        schema import location
          * @return  instance of xml schema
          */
-        private String createOrGetXsdSchema(final NamespaceMap namespaceCtx,
+        private String getOrCreateXmlSchema(final NamespaceMap namespaceCtx,
                                             final String targetNsUri,
                                             final XsdSchemaImportLocation importLocation) {
             final String schemaName = importLocation.getFileName();
             if (adapterCtx.existsSchemaLocation(targetNsUri, schemaName)) {
                 schema = adapterCtx.findSchemaReq(schemaName, POSTPROCESSING);
             } else {
-                schema = createOrGetXsdSchema(targetNsUri, schemaName);
+                schema = getOrCreateXmlSchema(targetNsUri, schemaName);
                 initSchemaNamespace(schemaName, namespaceCtx, targetNsUri, importLocation);
             }
 
@@ -223,7 +225,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * @param schemaName    XSD document name
          * @return instance of xml schema
          */
-        private XmlSchema createOrGetXsdSchema(final String targetNsUri, final String schemaName) {
+        private XmlSchema getOrCreateXmlSchema(final String targetNsUri, final String schemaName) {
             return OptionalExt.of(adapterCtx.findSchemaOpt(schemaName, POSTPROCESSING))
                     .ifPresent(xmlSchema -> LOG.info("{}Schema already exists. schemaName='{}'",
                             logHeader(PREPROCESSING, schemaName), schemaName))
@@ -240,7 +242,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         /**
          * Initializes XSD document namespace
          *
-         * If schema namespace context already exist, then merge it with {@paramref namespaceCtx)
+         * If schema namespace context already exist, then merge it with {@code namespaceCtx)
          *
          * @param schemaName        XSD document name
          * @param namespaceCtx      current x-definition namespace context

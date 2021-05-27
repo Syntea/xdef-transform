@@ -58,7 +58,7 @@ public class XDefAdapterConfigFactory {
     }
 
     private EnumSet<Xd2XsdFeature> parseFeatures(String[] features) {
-        Set<Xd2XsdFeature> featureSet = new HashSet<Xd2XsdFeature>();
+        Set<Xd2XsdFeature> featureSet = new HashSet<>();
 
         if (features == null || features.length == 0) {
             return null;

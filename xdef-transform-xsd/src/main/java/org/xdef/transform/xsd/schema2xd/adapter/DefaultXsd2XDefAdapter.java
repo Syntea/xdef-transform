@@ -125,7 +125,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     /**
      * Transforms given XSD node tree into x-definition node tree
      *
-     * Output will be saved in {@paramref xdDefRootElem}
+     * Output will be saved in {@code xdDefRootElem}
      *
      * @param treeAdapter       XSD to x-definition adapter to be used
      * @param xdDefRootElem     x-definition root node

@@ -118,7 +118,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD element node name based on {@paramref baseName}
+     * Creates new top level XSD element node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xElem         x-definition element node
@@ -130,7 +130,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD simple type node name based on {@paramref baseName}
+     * Creates new top level XSD simple type node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xData         x-definition node
@@ -142,7 +142,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD node name based on {@paramref baseName}
+     * Creates new top level XSD node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xNode         x-definition node
@@ -194,8 +194,7 @@ public class XsdNameFactory {
      * @return name storage map
      */
     private Map<String, String> getOrCreateTopLevelNameMap(final String systemId) {
-        final Map<String, String> mapName = topLevelNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
-        return mapName;
+        return topLevelNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
     }
 
     /**
@@ -204,8 +203,7 @@ public class XsdNameFactory {
      * @return base name storage map
      */
     private Map<String, List<XMNode>> getOrCreateTopLevelBaseNameMap(final String systemId) {
-        final Map<String, List<XMNode>> mapBaseName = topLevelBaseNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
-        return mapBaseName;
+        return topLevelBaseNameMap.computeIfAbsent(systemId, key -> new HashMap<>());
     }
 
     /**
@@ -215,15 +213,14 @@ public class XsdNameFactory {
      * @return list of x-definition nodes
      */
     private List<XMNode> getOrCreateListNodesInBaseNameMap(final Map<String, List<XMNode>> mapBaseName, final String baseName) {
-        final List<XMNode> nodeList = mapBaseName.computeIfAbsent(baseName, key -> new LinkedList<>());
-        return nodeList;
+        return mapBaseName.computeIfAbsent(baseName, key -> new LinkedList<>());
     }
 
     /**
      * Saves x-definition node base name.
      * @param xNode         x-definition node
      * @param nodeBaseName  x-definition node base name
-     * @return list of x-definition nodes using same {@paramref nodeBaseName}
+     * @return list of x-definition nodes using same {@code nodeBaseName}
      */
     private List<XMNode> addNodeWithBaseName(final XNode xNode, final String nodeBaseName) {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";

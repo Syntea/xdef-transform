@@ -13,7 +13,7 @@ public class OptionalExt<T> {
 
     private final Optional<T> optional;
 
-    public OptionalExt(Optional<T> optional) {
+    private OptionalExt(Optional<T> optional) {
         this.optional = optional;
     }
 

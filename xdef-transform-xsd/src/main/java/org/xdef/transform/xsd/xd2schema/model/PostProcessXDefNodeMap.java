@@ -19,7 +19,7 @@ public interface PostProcessXDefNodeMap {
 
     /**
      * Finds XDefinition node map by given namespace URI
-     * @param namespaceUri
+     * @param namespaceUri      XDefinition namespace
      * @return  XDefinition node map if found
      *          otherwise {@link Optional#empty()}
      */
@@ -34,7 +34,7 @@ public interface PostProcessXDefNodeMap {
     boolean isEmpty();
 
     /**
-     * Xdefinition node map
+     * XDefinition node map
      *
      * Key:     node name
      * Value:   XDefinition node
@@ -42,21 +42,19 @@ public interface PostProcessXDefNodeMap {
     interface XDefNodeMap {
 
         /**
-         * Returns true if contains given node name
-         * @param nodeName
-         * @return
+         * @param nodeName      XDefinition node name
+         * @return  true if contains given node name
          */
         boolean containsNodeName(String nodeName);
 
         /**
          * Put XDefinition node into the map if XDefinition node with that name has not yet been inserted
-         * @param xNode
+         * @param xNode         XDefinition node
          */
         void addNode(XNode xNode);
 
         /**
-         * Returns all XDefinition nodes
-         * @return
+         * @return  all XDefinition nodes
          */
         Collection<XNode> values();
 

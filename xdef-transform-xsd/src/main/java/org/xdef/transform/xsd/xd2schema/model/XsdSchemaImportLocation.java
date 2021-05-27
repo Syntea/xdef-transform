@@ -3,7 +3,7 @@ package org.xdef.transform.xsd.xd2schema.model;
 import org.xdef.sys.SRuntimeException;
 import org.xdef.transform.xsd.msg.XSD;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Definition of XSD document import.
@@ -15,22 +15,22 @@ public class XsdSchemaImportLocation {
     /**
      * XSD document namespace URI
      */
-    private String namespaceUri;
+    private final String namespaceUri;
+
+    /**
+     * XSD document file name
+     */
+    private final String fileName;
+
+    /**
+     * XSD document file extension
+     */
+    private final String fileExt = ".xsd";
 
     /**
      * XSD document path
      */
     private String path;
-
-    /**
-     * XSD document file name
-     */
-    private String fileName;
-
-    /**
-     * XSD document file extension
-     */
-    private String fileExt = ".xsd";
 
     public XsdSchemaImportLocation(String namespaceUri, String fileName) {
         this.namespaceUri = namespaceUri;
@@ -55,22 +55,21 @@ public class XsdSchemaImportLocation {
      * @return XSD document import path
      */
     public String buildLocation(final String schemaName) {
-        String res = "";
+        final StringBuilder sb = new StringBuilder();
         if (path != null && !path.trim().isEmpty()) {
-            res += path + "\\";
+            sb.append(path).append('/');
         }
 
         if (fileName != null) {
-            res += fileName;
+            sb.append(fileName);
         } else if (schemaName != null) {
-            res += schemaName;
+            sb.append(schemaName);
         } else {
             throw new SRuntimeException(XSD.XSD008, schemaName, namespaceUri);
         }
 
-        res += fileExt;
-
-        return res;
+        sb.append(fileExt);
+        return sb.toString();
     }
 
     @Override
@@ -78,15 +77,15 @@ public class XsdSchemaImportLocation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         XsdSchemaImportLocation that = (XsdSchemaImportLocation) o;
-        return equals(namespaceUri, that.namespaceUri) &&
-                equals(path, that.path) &&
-                equals(fileName, that.fileName) &&
-                equals(fileExt, that.fileExt);
+        return Objects.equals(namespaceUri, that.namespaceUri)
+                && Objects.equals(path, that.path)
+                && Objects.equals(fileName, that.fileName)
+                && Objects.equals(fileExt, that.fileExt);
     }
 
     @Override
     public int hashCode() {
-        return hash(namespaceUri, path, fileName, fileExt);
+        return Objects.hash(namespaceUri, path, fileName, fileExt);
     }
 
     @Override
@@ -99,11 +98,4 @@ public class XsdSchemaImportLocation {
                 '}';
     }
 
-    private static boolean equals(Object a, Object b) {
-        return (a == b) || (a != null && a.equals(b));
-    }
-
-    private static int hash(Object... values) {
-        return Arrays.hashCode(values);
-    }
 }

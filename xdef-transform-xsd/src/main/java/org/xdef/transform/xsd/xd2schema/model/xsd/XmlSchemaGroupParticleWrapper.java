@@ -12,20 +12,19 @@ import java.util.List;
 public interface XmlSchemaGroupParticleWrapper<T extends XmlSchemaObjectBase> {
 
     /**
-     * Returns particle XML schema items
-     * @return
+     * @return particle XML schema items
      */
     List<T> getItems();
 
     /**
      * Add XML schema item into particle
-     * @param item
+     * @param item      XML schema item
      */
     void addItem(final XmlSchemaObjectBase item);
 
     /**
      * Add XML schema items into particle
-     * @param items
+     * @param items     list of XML schema items
      */
     void addItems(final List<XmlSchemaObjectBase> items);
 

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
@@ -75,9 +74,8 @@ public class DefaultSchemaNamespaceLocationMap extends HashMap<String, SchemaFil
         LOG.trace("{}Finding schema by namespace URI and name. mapName='{}', schemaName='{}', namespaceURI='{}'",
                 logHeader(XSD_ADAPTER_CTX), mapName, schemaName, nsUri);
 
-        return Optional.ofNullable(get(nsUri)).map(schemaFileNameLocationMap ->
-                schemaFileNameLocationMap.findSchemaLocation(schemaName)
-        ).orElse(Optional.empty());
+        return Optional.ofNullable(get(nsUri))
+                .flatMap(schemaFileNameLocationMap -> schemaFileNameLocationMap.findSchemaLocation(schemaName));
     }
 
     @Override
@@ -85,10 +83,9 @@ public class DefaultSchemaNamespaceLocationMap extends HashMap<String, SchemaFil
         LOG.trace("{}Finding schema by namespace URI. mapName='{}', namespaceURI='{}'",
                 logHeader(XSD_ADAPTER_CTX), mapName, nsUri);
 
-        return Optional.ofNullable(get(nsUri)).map(schemaFileNameLocationMap ->
-                schemaFileNameLocationMap.getSchemaLocations().stream()
-                        .collect(Collectors.toList())
-        ).orElse(new ArrayList<>());
+        return Optional.ofNullable(get(nsUri))
+                .map(schemaFileNameLocationMap -> new ArrayList<>(schemaFileNameLocationMap.getSchemaLocations()))
+                .orElse(new ArrayList<>());
     }
 
     @Override

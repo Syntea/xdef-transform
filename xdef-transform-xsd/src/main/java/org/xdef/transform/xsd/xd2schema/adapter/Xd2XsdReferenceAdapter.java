@@ -14,6 +14,7 @@ import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMElement;
 import org.xdef.model.XMNode;
+import org.xdef.transform.xsd.model.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.error.XdAdapterCtxException;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
@@ -28,7 +29,6 @@ import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
@@ -114,9 +114,9 @@ public class Xd2XsdReferenceAdapter {
      * @param xDef  input x-definition
      */
     public void createRefsAndImports(XDefinition xDef) {
-        simpleTypeReferences = new HashSet<String>();
-        namespaceImports = new HashSet<String>();
-        namespaceIncludes = new HashSet<String>();
+        simpleTypeReferences = new HashSet<>();
+        namespaceImports = new HashSet<>();
+        namespaceIncludes = new HashSet<>();
         extractRefsAndImports(xDef);
     }
 
@@ -163,7 +163,7 @@ public class Xd2XsdReferenceAdapter {
         LOG.info("{}Creating definition of references and schemas import/include", logHeader(PREPROCESSING, xDef));
         LOG.info(HEADER_LINE);
 
-        final Set<XMNode> processed = new HashSet<XMNode>();
+        final Set<XMNode> processed = new HashSet<>();
 
         // Extract all simple types and imports
         LOG.info("{}Extracting simple references and imports ...", logHeader(PREPROCESSING, xDef));
@@ -183,7 +183,7 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Transform top-level x-definition element node into XSD node (element, complex-type, simple-type, group)
-     * @param xElem
+     * @param xElem top-level x-definition element to be transformed
      */
     private void transformTopLevelElem(final XMElement xElem) {
         LOG.debug("{}Creating definition of reference.", logHeader(PREPROCESSING, xElem));
@@ -195,7 +195,7 @@ public class Xd2XsdReferenceAdapter {
         if (elementType == null) {
             LOG.info("{}Add definition of reference as element. name='{}'",
                     logHeader(PREPROCESSING, xElem), xsdElem.getName());
-        } else if (elementType instanceof XmlSchemaType) {
+        } else {
             if (Xd2XsdUtils.containsMixedElement(xElem) && elementType instanceof XmlSchemaComplexType) {
                 // Convert xd:mixed to group
                 final XmlSchemaGroup schemaGroup = xsdFactory.createEmptyGroup(xsdElem.getName());
@@ -265,7 +265,7 @@ public class Xd2XsdReferenceAdapter {
                 } else {
                     // Element is not reference but name contains different namespace prefix ->
                     // we will have to create reference in new namespace in post-processing
-                    if (XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xElem, schema) && isPostProcessingPhase == false) {
+                    if (XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xElem, schema) && !isPostProcessingPhase) {
                         String nsPrefix = XsdNamespaceUtils.getNamespacePrefixRequired(xElem.getName());
                         String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
 
@@ -286,7 +286,7 @@ public class Xd2XsdReferenceAdapter {
                             if (XsdNamespaceUtils.isValidNsUri(nsUri)) {
                                 addSchemaImportFromElem(nsUri, xDefPos);
                             } else {
-                                if (parentRef == false) {
+                                if (!parentRef) {
                                     nsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(xDefPos);
                                     adapterCtx.getReportWriter().error(XSD.XSD004, nsPrefix);
                                     LOG.error("{}Element referencing to unknown namespace! namespacePrefix='{}'",
@@ -299,10 +299,10 @@ public class Xd2XsdReferenceAdapter {
                     }
                 }
 
-                if (isRef == false) {
-                    XMNode[] attrs = xElem.getAttrs();
-                    for (int i = 0; i < attrs.length; i++) {
-                        processSimpleTypeReference((XData)attrs[i]);
+                if (!isRef) {
+                    final XMNode[] elemAttrs = xElem.getAttrs();
+                    for (XMNode attr : elemAttrs) {
+                        processSimpleTypeReference((XData) attr);
                     }
 
                     int childrenCount = xElem._childNodes.length;
@@ -323,10 +323,10 @@ public class Xd2XsdReferenceAdapter {
                 LOG.debug("{}Processing XDefinition node. nodeName='{}'",
                         logHeader(PREPROCESSING, xNode), xNode.getName());
 
-                XDefinition def = (XDefinition)xNode;
-                XMElement[] elems = def.getModels();
-                for (int i = 0; i < elems.length; i++){
-                    extractSimpleRefsAndImports(elems[i], processed, false);
+                final XDefinition def = (XDefinition)xNode;
+                final XMElement[] xmElements = def.getModels();
+                for (XMElement elem : xmElements) {
+                    extractSimpleRefsAndImports(elem, processed, false);
                 }
                 break;
             }
@@ -342,7 +342,7 @@ public class Xd2XsdReferenceAdapter {
     private void processSimpleTypeReference(final XData xData) {
         // Element is not reference but name contains different namespace prefix ->
         // we will have to create reference in new namespace in post-processing
-        if (XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xData, schema) && isPostProcessingPhase == false) {
+        if (XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xData, schema) && !isPostProcessingPhase) {
             final String nsPrefix = XsdNamespaceUtils.getNamespacePrefixRequired(xData.getName());
             final String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
 
@@ -358,7 +358,7 @@ public class Xd2XsdReferenceAdapter {
         } else {
             final boolean isAttrRef = xData.getKind() == XMATTRIBUTE;
 
-            if (isAttrRef == true) {
+            if (isAttrRef) {
                 final UniqueConstraint uniqueConstraint = adapterCtx.findUniqueConst(xData).orElse(null);
                 // Do not create reference if attribute is using unique set
                 if (uniqueConstraint != null) {
@@ -368,14 +368,12 @@ public class Xd2XsdReferenceAdapter {
             }
 
             String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false)
-                    .orElseGet(() -> {
-                        final Optional<String> defaultRefTypeNameOpt = XsdNameFactory.createLocalSimpleTypeName(xData);
-                        if (defaultRefTypeNameOpt.isPresent()) {
-                            adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt.get());
-                        }
-
-                        return defaultRefTypeNameOpt.orElse(null);
-                    });
+                    .orElseGet(() ->
+                        OptionalExt.of(XsdNameFactory.createLocalSimpleTypeName(xData))
+                                .ifPresent(defaultRefTypeNameOpt ->
+                                        adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt))
+                                .orElseGet(() -> null)
+                    );
 
             if (refTypeName != null && simpleTypeReferences.add(refTypeName)) {
                 xsdFactory.createSimpleTypeTop(xData, refTypeName);
@@ -386,7 +384,7 @@ public class Xd2XsdReferenceAdapter {
 
             if (!isAttrRef
                     && refTypeName == null
-                    && Xd2XsdParserMapping.getDefaultParserQName(xData, adapterCtx, true) == null
+                    && !Xd2XsdParserMapping.findDefaultParserQName(xData, adapterCtx, true).isPresent()
                     && xData.getValueTypeName() != null) {
                 refTypeName = XsdNameUtils.createRefNameFromParser(xData, adapterCtx).orElse(null);
                 if (refTypeName != null && simpleTypeReferences.add(refTypeName)) {

@@ -30,7 +30,7 @@ public class DateTimeFormatFacetFactory extends AbstractXsdFacetFactory {
 
     @Override
     public List<XmlSchemaPatternFacet> pattern(final XDNamedValue param) {
-        List<XmlSchemaPatternFacet> facets = new ArrayList<XmlSchemaPatternFacet>();
+        List<XmlSchemaPatternFacet> facets = new ArrayList<>();
         final String[] values = param.getValue().stringValue().split("\n");
         for (String v : values) {
             addPattern(facets, v);

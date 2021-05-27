@@ -140,7 +140,9 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
     private XdPool2XsdAdapter createXdPoolAdapter() {
         final XdPool2XsdAdapter adapter = new XdPool2XsdAdapter();
-        final Set<Xd2XsdFeature> features = config.useDefaultFeatures() ? Xd2XsdUtils.defaultFeatures() : new HashSet<Xd2XsdFeature>();
+        final Set<Xd2XsdFeature> features = config.useDefaultFeatures()
+                ? Xd2XsdUtils.defaultFeatures()
+                : new HashSet<>();
         if (config.getFeatures() != null) {
             features.addAll(config.getFeatures());
         }

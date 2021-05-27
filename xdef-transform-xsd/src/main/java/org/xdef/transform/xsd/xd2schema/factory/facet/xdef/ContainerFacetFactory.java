@@ -16,7 +16,7 @@ public class ContainerFacetFactory extends DefaultFacetFactory {
     static public final String XD_PARSER_NAME_NC_NAMELIST = "NCNameList";
 
     private final String regex;
-    private Set<String> separators = new HashSet<String>();
+    private Set<String> separators = new HashSet<>();
 
     public ContainerFacetFactory(String regex) {
         this.regex = regex;

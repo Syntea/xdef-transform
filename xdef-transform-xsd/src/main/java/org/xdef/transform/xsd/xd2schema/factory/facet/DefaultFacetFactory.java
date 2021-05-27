@@ -99,7 +99,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
     public List<XmlSchemaPatternFacet> pattern(final XDNamedValue param) {
         LOG.debug("{}Add facet pattern", logHeader(TRANSFORMATION));
 
-        List<XmlSchemaPatternFacet> facets = new ArrayList<XmlSchemaPatternFacet>();
+        List<XmlSchemaPatternFacet> facets = new ArrayList<>();
         String[] patterns = param.getValue().stringValue().split("\n");
         for (String p : patterns) {
             facets.add(super.pattern(p));
@@ -112,7 +112,7 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
     public List<XmlSchemaEnumerationFacet> enumeration(XDNamedValue param) {
         LOG.debug("{}Add facet enumeration", logHeader(TRANSFORMATION));
 
-        List<XmlSchemaEnumerationFacet> facets = new ArrayList<XmlSchemaEnumerationFacet>();
+        List<XmlSchemaEnumerationFacet> facets = new ArrayList<>();
         if (param.getValue().getItemId() == XDValue.XD_CONTAINER) {
             for (XDValue value : ((XDContainer) param.getValue()).getXDItems()) {
                 XmlSchemaEnumerationFacet facet = new XmlSchemaEnumerationFacet();

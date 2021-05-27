@@ -178,7 +178,8 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document location if exists by given namespace URI
      * @param nsUri     XSD document namespace URI
-     * @return XSD document location if exists, otherwise null
+     * @return  XSD document location if exists,
+     *          otherwise {@link Optional#empty()}
      */
     public Optional<XsdSchemaImportLocation> findSchemaLocation(final String nsUri, final String xsdName) {
         return schemaLocationsCtx.findSchemaImport(nsUri, xsdName);
@@ -187,7 +188,8 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document locations if exists by given namespace URI
      * @param nsUri     XSD document namespace URI
-     * @return XSD document location if exists, otherwise null
+     * @return  XSD document location if exists,
+     *          otherwise {@link Collections#emptyList()}
      */
     public List<XsdSchemaImportLocation> findSchemaLocations(final String nsUri) {
         return schemaLocationsCtx.findSchemaImports(nsUri);
@@ -196,7 +198,8 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document location if exists by given namespace URI
      * @param nsUri     XSD document namespace URI
-     * @return XSD document location if exists, otherwise null
+     * @return  XSD document location if exists,
+     *          otherwise {@link Optional#empty()}
      */
     public Optional<XsdSchemaImportLocation> findPostProcessingSchemaLocation(final String nsUri,
                                                                               final String schemaName) {
@@ -206,7 +209,8 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document location if exists by given namespace URI
      * @param nsUri     XSD document namespace URI
-     * @return XSD document location if exists, otherwise null
+     * @return  XSD document location if exists,
+     *          otherwise {@link Collections#emptyList()}
      */
     public List<XsdSchemaImportLocation> findPostProcessingSchemaLocations(final String nsUri) {
         return extraSchemaLocationsCtx.findSchemaImports(nsUri);
@@ -257,7 +261,7 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document by given system identifier.
      *
-     * Throws exception if {@paramref shouldExists} value is true and XSD document does not exist
+     * Throws exception if {@code shouldExists} value is true and XSD document does not exist
      * @param systemId      XSD document system identifier
      * @param phase         phase of transforming algorithm (just for logging purposes)
      * @return  XSD document if exists
@@ -282,7 +286,7 @@ public class XsdAdapterCtx {
     /**
      * Finds XSD document by given system identifier.
      *
-     * Throws exception if {@paramref shouldExists} value is true and XSD document does not exist
+     * Throws exception if {@code shouldExists} value is true and XSD document does not exist
      * @param systemId      XSD document system identifier
      * @param phase         phase of transforming algorithm (just for logging purposes)
      * @return  XSD document if exists
@@ -309,7 +313,7 @@ public class XsdAdapterCtx {
      * @param shouldExists  flag, it non-existing schema should throw exception
      * @param phase         phase of transforming algorithm (just for logging purposes)
      * @return  XSD document name if XSD document exists
-     *          null if XSD document does not exist and {@paramref shouldExists} value is false
+     *          null if XSD document does not exist and {@code shouldExists} value is false
      */
     public Set<String> findSchemaNamesByNamespace(final String nsUri, boolean shouldExists, final AlgPhase phase) {
         LOG.debug("{}Finding schema names by namespace. nsUri='{}', shouldExists={}",
@@ -321,7 +325,7 @@ public class XsdAdapterCtx {
         ).filter(Optional::isPresent)
                 .map(Optional::get)
                 .findFirst()
-                .map(schemaLocations -> schemaLocations.getSchemaFileNames())
+                .map(SchemaFileNameLocationMap::getSchemaFileNames)
                 .orElse(null);
 
         if (schemaNames == null && shouldExists) {
@@ -338,7 +342,7 @@ public class XsdAdapterCtx {
      * @param shouldExists  flag, it non-existing schema should throw exception
      * @param phase         phase of transforming algorithm (just for logging purposes)
      * @return  XSD document name if XSD document exists
-     *          null if XSD document does not exist and {@paramref shouldExists} value is false
+     *          null if XSD document does not exist and {@code shouldExists} value is false
      */
     public boolean hasSchemaNameWithNamespaceAndName(final String nsUri,
                                                      final String schemaName,
@@ -353,10 +357,10 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by namespace of input {@paramref node}
+     * Add new or update already existing schema node into XSD document defined by namespace of input {@code node}
      * @param node  schema node to be added
-     * @return  schema node defined by {@paramref node} if no node exists with same node path
-     *          otherwise already existing node with same node path merged with {@paramref node}
+     * @return  schema node defined by {@code node} if no node exists with same node path
+     *          otherwise already existing node with same node path merged with {@code node}
      */
     public SchemaNode addOrUpdateNode(final SchemaNode node) {
         final String xPos = node.getXdNodeReq().getXDPosition();
@@ -366,11 +370,11 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by {@paramref systemId}
+     * Add new or update already existing schema node into XSD document defined by {@code systemId}
      * @param node      schema node to be added
      * @param systemId  XSD document identifier
-     * @return  schema node defined by {@paramref node} if no node exists with same node path
-     *          otherwise already existing node with same node path merged with {@paramref node}
+     * @return  schema node defined by {@code node} if no node exists with same node path
+     *          otherwise already existing node with same node path merged with {@code node}
      */
     public SchemaNode addOrUpdateNodeInDiffNs(final SchemaNode node, final String systemId) {
         final String xPos = node.getXdNodeReq().getXDPosition();
@@ -379,12 +383,12 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by {@paramref systemId} and {@paramref nodePath}
+     * Add new or update already existing schema node into XSD document defined by {@code systemId} and {@code nodePath}
      * @param systemId  XSD document identifier
      * @param nodePath  x-definition node path
      * @param node      schema node to be added
-     * @return  schema node defined by {@paramref node} if no node exists with same node path
-     *          otherwise already existing node with same node path merged with {@paramref node}
+     * @return  schema node defined by {@code node} if no node exists with same node path
+     *          otherwise already existing node with same node path merged with {@code node}
      */
     public SchemaNode addOrUpdateNode(final String systemId, final String nodePath, final SchemaNode node) {
         XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
@@ -435,7 +439,7 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Updates XSD node of schema node defined by x-definition node {@paramref xNode}
+     * Updates XSD node of schema node defined by x-definition node {@code xNode}
      * @param xNode         x-definition node of schema node
      * @param newXsdNode    new XSD document node
      */
@@ -466,26 +470,24 @@ public class XsdAdapterCtx {
      * @return  map of schema nodes
      */
     public XmlSchemaNodeMap.SchemaNodeMap findOrCreateSchemaNodeMap(final String systemId) {
-        final XmlSchemaNodeMap.SchemaNodeMap xsdSystemRefs = xmlSchemaNodeMap.computeIfAbsent(
+        return xmlSchemaNodeMap.computeIfAbsent(
                 systemId,
                 key -> new DefaultXmlSchemaNodeMap.DefaultSchemaNodeMap());
-        return xsdSystemRefs;
     }
 
     /**
-     * Finds schema node defined by {@paramref systemId} and {@paramref nodePath}
+     * Finds schema node defined by {@code systemId} and {@code nodePath}
      * @param systemId  XSD document identifier
      * @param nodePath  x-definition path
-     * @return  schema node if exists, otherwise null
+     * @return  schema node if exists,
+     *          otherwise {@link Optional#empty()}
      */
     public Optional<SchemaNode> findSchemaNode(final String systemId, final String nodePath) {
-        return xmlSchemaNodeMap.findByXmlSchema(systemId)
-                .map(schemaNodeMap -> schemaNodeMap.findSchemaNode(nodePath))
-                .orElse(Optional.empty());
+        return xmlSchemaNodeMap.findByXmlSchema(systemId).flatMap(schemaNodeMap -> schemaNodeMap.findSchemaNode(nodePath));
     }
 
     /**
-     * Deletes created schema node defined by x-definition node {@paramref xNode}
+     * Deletes created schema node defined by x-definition node {@code xNode}
      * @param xNode     x-definition node
      */
     public void removeNode(final XNode xNode) {
@@ -504,10 +506,9 @@ public class XsdAdapterCtx {
         LOG.info("{}Removing xsd node. system='{}', nodePath='{}'", logHeader(XSD_REFERENCE), systemId, nodePath);
 
         final XmlSchemaNodeMap.SchemaNodeMap schemaNodeMap = findOrCreateSchemaNodeMap(systemId);
-        schemaNodeMap.removeNode(nodePath).ifPresent(removedNode -> {
-            LOG.debug("{}Node has been removed! system='{}', nodePath='{}', nodeName='{}'",
-                    logHeader(XSD_REFERENCE), systemId, nodePath, removedNode.getXdName());
-        });
+        schemaNodeMap.removeNode(nodePath).ifPresent(removedNode ->
+                LOG.debug("{}Node has been removed! system='{}', nodePath='{}', nodeName='{}'",
+                logHeader(XSD_REFERENCE), systemId, nodePath, removedNode.getXdName()));
     }
 
     /**
@@ -624,7 +625,7 @@ public class XsdAdapterCtx {
 
     /**
      * Finds unique constrain in tree of unique constraints.
-     * Iterates through tree, starting at {@paramref uniquestSetPath} path and going to root of XML tree
+     * Iterates through tree, starting at {@code uniquestSetPath} path and going to root of XML tree
      * @param uniqueInfoName        unique constraint name
      * @param systemId              XSD document identifier
      * @param uniquestSetPath       unique constraint path
@@ -665,17 +666,15 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Create or get unique constraints map in givet XSD document
+     * Create or get unique constraints map in given XSD document
      * @param systemId  XSD document identifier
      * @return  unique constraints map
      */
     private XmlSchemaUniqueConstraintMap.XDefUniqueSetMap getOrCreateXDefUniqueSetMap(final String systemId) {
-        final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueInfo = xmlSchemaUniqueConstraintMap.computeIfAbsent(
+        return xmlSchemaUniqueConstraintMap.computeIfAbsent(
                 systemId,
                 key -> new DefaultXmlSchemaUniqueConstraintMap.DefaultXDefUniqueSetMap()
         );
-
-        return uniqueInfo;
     }
 
 

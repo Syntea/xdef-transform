@@ -1109,7 +1109,7 @@ public abstract class XDTester extends STester {
 			new File(u.getFile()).getAbsolutePath().replace('\\', '/');
 		classDir = classDir.substring(0, classDir.indexOf(className));
 		// prepare parameters
-		ArrayList<String> ar = new ArrayList<String>();
+		ArrayList<String> ar = new ArrayList<>();
 		ar.add("-classpath");
 		ar.add(classpath + File.pathSeparatorChar + classDir); // classpath
 		ar.add("-d");

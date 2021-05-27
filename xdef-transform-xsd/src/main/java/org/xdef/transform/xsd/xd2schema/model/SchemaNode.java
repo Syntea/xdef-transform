@@ -278,8 +278,8 @@ public class SchemaNode {
 
     /**
      * Creates binding between referencing node and reference definition
-     * @param ptr
-     * @param ref
+     * @param ptr       node containing reference
+     * @param ref       node reference definition
      */
     public static void createBinding(final SchemaNode ptr, final SchemaNode ref) {
         LOG.info("{}Creating binding between nodes. from='{}', to='{}'",
@@ -306,11 +306,11 @@ public class SchemaNode {
 
     /**
      * Get x-definition reference node position for post processing
-     * @param systemId  XSD document name
-     * @param path
-     * @return
+     * @param systemId          XSD document name
+     * @param xDefNodePos       XDefinition node position
+     * @return XDefinition node position in XDefinition
      */
-    public static String getPostProcessingNodePos(final String systemId, final String path) {
-        return systemId + XDEF_REF_DELIMITER + path;
+    public static String getPostProcessingNodePos(final String systemId, final String xDefNodePos) {
+        return systemId + XDEF_REF_DELIMITER + xDefNodePos;
     }
 }

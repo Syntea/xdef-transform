@@ -39,11 +39,6 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
      */
     private XDefinition xDefinition = null;
 
-    /**
-     * Output XSD document
-     */
-    private XmlSchema schema = null;
-
     @Override
     public XmlSchemaCollection createSchema(final XDPool xdPool) {
         if (xdPool == null) {
@@ -65,6 +60,9 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
         boolean poolPostProcessing = true;
 
         this.xDefinition = (XDefinition)xDef;
+
+        // Output XSD document
+        final XmlSchema schema;
         if (adapterCtx == null) {
             adapterCtx = new XsdAdapterCtx(features, reportWriter);
             adapterCtx.init();

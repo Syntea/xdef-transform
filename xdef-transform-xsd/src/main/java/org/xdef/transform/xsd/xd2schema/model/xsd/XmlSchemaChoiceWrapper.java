@@ -53,10 +53,10 @@ public class XmlSchemaChoiceWrapper extends AbstractXmlSchemaGroupParticleWrappe
         transformDirection = direction;
     }
 
-    public void updateOccurence(final XsdAdapterCtx adapterCtx) {
-        final Pair<Long, Long> memberOccurence = Xd2XsdUtils.calculateGroupChoiceMembersOccurrence(xsdNode, adapterCtx);
-        long elementMinOccursSum = memberOccurence.getKey();
-        long elementMaxOccursSum = memberOccurence.getValue();
+    public void updateOccurrence(final XsdAdapterCtx adapterCtx) {
+        final Pair<Long, Long> memberOccurrence = Xd2XsdUtils.calculateGroupChoiceMembersOccurrence(xsdNode, adapterCtx);
+        long elementMinOccursSum = memberOccurrence.getKey();
+        long elementMaxOccursSum = memberOccurrence.getValue();
 
         xsdNode.setMaxOccurs(elementMaxOccursSum);
         if (xsdNode.getMinOccurs() > 0) {
