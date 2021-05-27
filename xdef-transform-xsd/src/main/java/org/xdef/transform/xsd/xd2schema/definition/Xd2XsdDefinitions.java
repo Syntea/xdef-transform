@@ -1,7 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.definition;
 
 /**
- * Definitions of constant used in x-definition -> XSD transform algorithm
+ * Definitions of constant used in X-Definition -> XSD transform algorithm
  */
 public interface Xd2XsdDefinitions {
 

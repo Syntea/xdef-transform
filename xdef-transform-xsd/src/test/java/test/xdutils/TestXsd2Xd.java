@@ -60,7 +60,7 @@ public class TestXsd2Xd extends TesterXdSchema {
         try {
             res = getFile(_outputFilesRoot.getAbsolutePath(), fileName, ".xdef");
         } catch (FileNotFoundException ex) {
-            assertTrue(false, "Output x-definition file is not generated, fileName: " + fileName);
+            assertTrue(false, "Output X-Definition file is not generated, fileName: " + fileName);
         }
 
         return res;
@@ -110,9 +110,9 @@ public class TestXsd2Xd extends TesterXdSchema {
                 .build();
 
         boolean mismatch = diff.hasDifferences();
-        assertFalse(mismatch, "Output x-definition is different to reference x-definition. Test=" + fileName);
+        assertFalse(mismatch, "Output X-Definition is different to reference X-Definition. Test=" + fileName);
 
-        // Reference x-definition
+        // Reference X-Definition
         {
             String outFileName = fileName;
             if (mismatch) {
@@ -125,7 +125,7 @@ public class TestXsd2Xd extends TesterXdSchema {
             }
         }
 
-        // Output x-definition
+        // Output X-Definition
         {
             String outFileName = fileName;
             if (mismatch) {
@@ -140,7 +140,7 @@ public class TestXsd2Xd extends TesterXdSchema {
     }
 
     private void validateXmlAgainstXDef(final String fileName, List<String> validTestingData, List<String> invalidTestingData, boolean validateRef) throws FileNotFoundException {
-        // Validate valid XML file against x-definition
+        // Validate valid XML file against X-Definition
         File xDefFile = getOutputXDefFile(fileName);
         File refXDefFile = validateRef ? getRefXDefFile(fileName) : null;
 
@@ -150,30 +150,30 @@ public class TestXsd2Xd extends TesterXdSchema {
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
                     ArrayReporter reporter = new ArrayReporter();
                     XDDocument xdDocument = XValidate.validate(null, xmlDataFile, (File[])Arrays.asList(refXDefFile).toArray(), fileName, reporter);
-                    assertTrue(xdDocument != null, "XML is not valid against x-definition. Test=" + fileName + ", File=" + testingFile);
-                    assertFalse(reporter.errors(), "Error occurs on x-definition validation. Test=" + fileName + ", File=" + testingFile);
+                    assertTrue(xdDocument != null, "XML is not valid against X-Definition. Test=" + fileName + ", File=" + testingFile);
+                    assertFalse(reporter.errors(), "Error occurs on X-Definition validation. Test=" + fileName + ", File=" + testingFile);
                 }
 
                 ArrayReporter reporter = new ArrayReporter();
                 XDDocument xdDocument = XValidate.validate(null, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), fileName, reporter);
-                assertTrue(xdDocument != null, "XML is not valid against x-definition. Test=" + fileName + ", File=" + testingFile);
-                assertFalse(reporter.errors(), "Error occurs on x-definition validation. Test=" + fileName + ", File=" + testingFile);
+                assertTrue(xdDocument != null, "XML is not valid against X-Definition. Test=" + fileName + ", File=" + testingFile);
+                assertFalse(reporter.errors(), "Error occurs on X-Definition validation. Test=" + fileName + ", File=" + testingFile);
             }
         }
 
-        // Validate invalid XML file against x-definition
+        // Validate invalid XML file against X-Definition
         if (invalidTestingData != null) {
             for (String testingFile : invalidTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
                     ArrayReporter reporter = new ArrayReporter();
                     XValidate.validate(null, xmlDataFile, (File[])Arrays.asList(refXDefFile).toArray(), fileName, reporter);
-                    assertTrue(reporter.errors(), "Error does not occurs on x-definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
+                    assertTrue(reporter.errors(), "Error does not occurs on X-Definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
                 }
 
                 ArrayReporter reporter = new ArrayReporter();
                 XValidate.validate(null, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), fileName, reporter);
-                assertTrue(reporter.errors(), "Error does not occurs on x-definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
+                assertTrue(reporter.errors(), "Error does not occurs on X-Definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
             }
         }
     }
@@ -238,7 +238,7 @@ public class TestXsd2Xd extends TesterXdSchema {
             XmlSchema inputXmlSchema = compileXsd(fileName);
             String outputXDefinition = adapter.createXDefinition(inputXmlSchema, fileName);
 
-            // Compare output x-definition to x-definition reference
+            // Compare output X-Definition to X-Definition reference
             if (validateAgainstRef) {
                 validateXDefinition(fileName, outputXDefinition);
             } else {

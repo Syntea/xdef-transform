@@ -6,7 +6,7 @@ import org.xdef.sys.ReportWriter;
 import java.util.List;
 
 /**
- * Transform XSD restrictions/facets into x-definition declaration type
+ * Transform XSD restrictions/facets into X-Definition declaration type
  */
 public interface IDeclarationTypeFactory {
 
@@ -32,37 +32,37 @@ public interface IDeclarationTypeFactory {
     }
 
     /**
-     * Set type of x-definition declaration
-     * @param type      type of x-definition declaration
+     * Set type of X-Definition declaration
+     * @param type      type of X-Definition declaration
      */
     void setType(final Type type);
 
     /**
      * Set declaration variable name.
      * Use only with mode {@link Type.TOP_DECL}
-     * @param typeName      x-definition declaration variable name
+     * @param typeName      X-Definition declaration variable name
      */
     void setName(final String typeName);
 
     /**
      * Get variable data type
-     * @return x-definition variable data type
+     * @return X-Definition variable data type
      */
     String getDataType();
 
     /**
-     * Creates x-definition declaration type restrictions based on given XSD facets
+     * Creates X-Definition declaration type restrictions based on given XSD facets
      * @param facets        list of XSD facets
      * @param reportWriter  output report writer
-     * @return x-definition restriction
+     * @return X-Definition restriction
      */
     String build(final List<XmlSchemaFacet> facets, ReportWriter reportWriter);
 
     /**
-     * Creates x-definition declaration type restrictions from given facets string
+     * Creates X-Definition declaration type restrictions from given facets string
      * @param facets    list of XSD facets
      * @param reportWriter  output report writer
-     * @return x-definition restriction
+     * @return X-Definition restriction
      */
     String build(final String facets, ReportWriter reportWriter);
 

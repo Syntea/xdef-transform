@@ -13,9 +13,9 @@ import java.util.function.Function;
 public interface XmlSchemaNodeMap {
 
     /**
-     * Finds XDefinition node map by given schema name
+     * Finds X-Definition node map by given schema name
      * @param schemaName        XML schema name
-     * @return  XDefinition node map if found
+     * @return  X-Definition node map if found
      *          otherwise {@link Optional#empty()}
      */
     Optional<SchemaNodeMap> findByXmlSchema(String schemaName);

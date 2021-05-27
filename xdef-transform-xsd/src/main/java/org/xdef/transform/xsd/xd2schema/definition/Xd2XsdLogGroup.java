@@ -3,7 +3,7 @@ package org.xdef.transform.xsd.xd2schema.definition;
 import org.xdef.transform.xsd.util.LoggingGroup;
 
 /**
- * Logging definitions for x-definition -> XSD transformation algorithm
+ * Logging definitions for X-Definition -> XSD transformation algorithm
  */
 public enum Xd2XsdLogGroup implements LoggingGroup {
 

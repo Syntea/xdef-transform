@@ -1,7 +1,7 @@
 package org.xdef.transform.xsd.console;
 
 public interface XDefToXsdOptionsConst {
-    // Input directory containing x-definition file(s)
+    // Input directory containing X-Definition file(s)
     String INPUT_DIR = "inputDir";
     // output directory
     String OUTPUT_DIR = "outputDir";
@@ -11,7 +11,7 @@ public interface XDefToXsdOptionsConst {
     // output XML schema file extension
     String OUTPUT_EXT = "schemaExt";
 
-    // root name of x-definition
+    // root name of X-Definition
     String INPUT_ROOT = "root";
     // XML data file(s) for testing validation of positive case
     String VALIDATE_POSITIVE_CASE = "validatePos";

@@ -8,7 +8,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="\d{2}\-([1-9]|1[0-2])\-([1-9]|[1-2][0-9]|3[0-1])\s([0-9]|1[0-9]|2[0-3]):([0-9]|[1-5][0-9]):([1-9]|[1-5][0-9])(\.\d+)?(\s(\+|\-)(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9])?">
                         <xs:annotation>
@@ -22,7 +22,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="\d{4}\d*\-[A-Za-z][a-z]{2}\-(0[1-9]|[1-2][0-9]|3[0-1])(\s(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\s[a-zA-Z0-9]{1,5})?)?">
                         <xs:annotation>
@@ -36,7 +36,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="([1-9]|1[0-2]):([0-9]|[1-5][0-9])\s[a-zA-Z]+\s(00[1-9]|0[1-9][0-9]|[1-2][0-9][0-9]|3[0-5][0-9]|36[0-6])\s\d{4}\d*\s[a-zA-Z]*(\s[a-zA-Z])*">
                         <xs:annotation>
@@ -50,7 +50,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="[a-zA-z]+,\s([1-9]|[1-2][0-9]|3[0-1])\sof\s[A-Za-z][a-z]*\s\d{4}\d*">
                         <xs:annotation>
@@ -64,7 +64,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="\d{4}\d*\-([0-9]|[1-5][0-9])\-([1-9]|[1-2][0-9]|3[0-1])|(0[1-9]|[1-2][0-9]|3[0-1])\.[0-5][0-9]\.\d{4}\d*">
                         <xs:annotation>

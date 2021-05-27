@@ -261,8 +261,8 @@ public class TestXd2Xsd extends TesterXdSchema {
                 File xDefFile = getInputXDefFile(path, fileName);
                 ArrayReporter reporter = new ArrayReporter();
                 XDDocument xdDocument = XValidate.validate(props, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), fileName, reporter);
-                assertTrue(xdDocument != null, "XML is not valid against x-definition. Test=" + fileName + ", File=" + testingFile);
-                assertFalse(reporter.errors(), "Error occurs on x-definition validation. Test=" + fileName + ", File=" + testingFile);
+                assertTrue(xdDocument != null, "XML is not valid against X-Definition. Test=" + fileName + ", File=" + testingFile);
+                assertFalse(reporter.errors(), "Error occurs on X-Definition validation. Test=" + fileName + ", File=" + testingFile);
             }
         }
 
@@ -273,7 +273,7 @@ public class TestXd2Xsd extends TesterXdSchema {
                 File xDefFile = getInputXDefFile(path, fileName);
                 ArrayReporter reporter = new ArrayReporter();
                 XValidate.validate(props, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), fileName, reporter);
-                assertTrue(reporter.errors(), "Error does not occurs on x-definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
+                assertTrue(reporter.errors(), "Error does not occurs on X-Definition validation (but it should). Test=" + fileName + ", File=" + testingFile);
             }
         }
     }
@@ -348,7 +348,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         try {
             XdPool2XsdAdapter adapter = createXdAdapter(features);
 
-            // Load x-definition files
+            // Load X-Definition files
             File[] defFiles = SUtils.getFileGroup(_inputFilesRoot.getAbsolutePath() + "\\" + path + "\\*.xdef");
             final Properties props = new Properties();
             // Do not check deprecated

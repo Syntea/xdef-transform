@@ -13,7 +13,7 @@ import java.util.function.Function;
  * Unique constraint nodes which will be created in post-procession
  *
  * Key:     schema name
- * Value:   XDefinition uniqueSet map
+ * Value:   X-Definition uniqueSet map
  *
  * @author smid
  * @since 2021-05-27
@@ -21,9 +21,9 @@ import java.util.function.Function;
 public interface XmlSchemaUniqueConstraintMap {
 
     /**
-     * Finds XDefinition uniqueSet map by given schema name
+     * Finds X-Definition uniqueSet map by given schema name
      * @param schemaName        XML schema name
-     * @return  XDefinition uniqueSet map if found
+     * @return  X-Definition uniqueSet map if found
      *          otherwise {@link Optional#empty()}
      */
     Optional<XDefUniqueSetMap> findByXmlSchema(String schemaName);
@@ -43,7 +43,7 @@ public interface XmlSchemaUniqueConstraintMap {
         /**
          * Finds list of unique constraints by given xpath
          * @param xpath         required unique constraint xpath
-         * @return  XDefinition uniqueSet map if found
+         * @return  X-Definition uniqueSet map if found
          *          otherwise {@link Collections#emptyList()}
          */
         List<UniqueConstraint> findByXPath(String xpath);

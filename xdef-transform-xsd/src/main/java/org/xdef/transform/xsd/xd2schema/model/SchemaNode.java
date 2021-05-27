@@ -29,10 +29,10 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
- * Couples x-definition nodes with XSD nodes. Saves binding between element references.
+ * Couples X-Definition nodes with XSD nodes. Saves binding between element references.
  * Nodes are created in transformation phase and used for advanced post-processing.
  *
- * Supported types of x-definition nodes:
+ * Supported types of X-Definition nodes:
  *      element ({@link XElement})
  *      attribute ({@link org.xdef.impl.XData}, kind {@link XNode.XMATTRIBUTE})
  *
@@ -91,7 +91,7 @@ public class SchemaNode {
     }
 
     /**
-     * Sets XSD node and updates x-definition position
+     * Sets XSD node and updates X-Definition position
      * @param xsdNode   XSD node
      */
     public void setXsdNode(XmlSchemaObjectBase xsdNode) {
@@ -208,7 +208,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if x-definition node is element
+     * @return true if X-Definition node is element
      */
     public boolean isXdElem() {
         return xdNode != null && xdNode.getKind() == XNode.XMELEMENT;
@@ -216,7 +216,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if x-definition node is attribute
+     * @return true if X-Definition node is attribute
      */
     public boolean isXdAttr() {
         return xdNode != null && xdNode.getKind() == XNode.XMATTRIBUTE;
@@ -227,14 +227,14 @@ public class SchemaNode {
     }
 
     /**
-     * @return x-definition node name
+     * @return X-Definition node name
      */
     public String getXdName() {
         return xdNode.getName();
     }
 
     /**
-     * @return x-definition node local name
+     * @return X-Definition node local name
      */
     public String getXdLocalName() {
         return XdNameUtils.getLocalName(xdNode.getName());
@@ -291,8 +291,8 @@ public class SchemaNode {
 
 
     /**
-     * Get x-definition reference node path for post processing
-     * @param refPos    x-definition reference node position
+     * Get X-Definition reference node path for post processing
+     * @param refPos    X-Definition reference node position
      * @return  position for post processing
      */
     public static String getPostProcessingReferenceNodePath(final String refPos) {
@@ -305,10 +305,10 @@ public class SchemaNode {
     }
 
     /**
-     * Get x-definition reference node position for post processing
+     * Get X-Definition reference node position for post processing
      * @param systemId          XSD document name
      * @param xDefNodePos       XDefinition node position
-     * @return XDefinition node position in XDefinition
+     * @return X-Definition node position in X-Definition
      */
     public static String getPostProcessingNodePos(final String systemId, final String xDefNodePos) {
         return systemId + XDEF_REF_DELIMITER + xDefNodePos;

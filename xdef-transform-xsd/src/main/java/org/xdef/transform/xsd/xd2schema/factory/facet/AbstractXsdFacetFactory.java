@@ -163,9 +163,9 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
     }
 
     /**
-     * Creates facet from given x-definition parameter
+     * Creates facet from given X-Definition parameter
      * @param facets    list of facets, where newly created facet will be inserted
-     * @param param     x-definition parameter
+     * @param param     X-Definition parameter
      */
     protected void build(final List<XmlSchemaFacet> facets, final XDNamedValue param) {
         LOG.debug("{}Creating Facet. typeName='{}'",
@@ -211,8 +211,8 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
     }
 
     /**
-     * Check if given x-definition parameter is internal and should not be transformed
-     * @param param     x-definition parameter
+     * Check if given X-Definition parameter is internal and should not be transformed
+     * @param param     X-Definition parameter
      * @return true, if given parameter is internal
      */
     private boolean isInternalFacet(XDNamedValue param) {

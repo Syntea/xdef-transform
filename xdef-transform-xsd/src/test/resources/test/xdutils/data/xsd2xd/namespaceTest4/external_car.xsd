@@ -14,7 +14,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: an</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: an</xs:documentation>
                      </xs:annotation>
                      <xs:pattern value="[a-zA-Z0-9]*"/>
                   </xs:restriction>
@@ -24,7 +24,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                      </xs:annotation>
                      <xs:enumeration value="Škoda"/>
                      <xs:enumeration value="Audi"/>
@@ -42,7 +42,7 @@
       <xs:simpleType>
          <xs:restriction base="xs:string">
             <xs:annotation>
-               <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+               <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
             </xs:annotation>
             <xs:pattern value="\d{4}\d*/(0[1-9]|1[0-2])">
                <xs:annotation>

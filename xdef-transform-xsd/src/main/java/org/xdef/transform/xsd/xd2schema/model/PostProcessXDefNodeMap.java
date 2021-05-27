@@ -10,7 +10,7 @@ import java.util.function.Function;
  * Namespace node map
  *
  * Key:     namespace URI
- * Value:   XDefinition node map
+ * Value:   X-Definition node map
  *
  * @author smid
  * @since 2021-05-27
@@ -18,9 +18,9 @@ import java.util.function.Function;
 public interface PostProcessXDefNodeMap {
 
     /**
-     * Finds XDefinition node map by given namespace URI
-     * @param namespaceUri      XDefinition namespace
-     * @return  XDefinition node map if found
+     * Finds X-Definition node map by given namespace URI
+     * @param namespaceUri      X-Definition namespace
+     * @return  X-Definition node map if found
      *          otherwise {@link Optional#empty()}
      */
     Optional<XDefNodeMap> findByNamespaceUri(String namespaceUri);
@@ -34,27 +34,27 @@ public interface PostProcessXDefNodeMap {
     boolean isEmpty();
 
     /**
-     * XDefinition node map
+     * X-Definition node map
      *
      * Key:     node name
-     * Value:   XDefinition node
+     * Value:   X-Definition node
      */
     interface XDefNodeMap {
 
         /**
-         * @param nodeName      XDefinition node name
+         * @param nodeName      X-Definition node name
          * @return  true if contains given node name
          */
         boolean containsNodeName(String nodeName);
 
         /**
-         * Put XDefinition node into the map if XDefinition node with that name has not yet been inserted
-         * @param xNode         XDefinition node
+         * Put XDefinition node into the map if X-Definition node with that name has not yet been inserted
+         * @param xNode         X-Definition node
          */
         void addNode(XNode xNode);
 
         /**
-         * @return  all XDefinition nodes
+         * @return  all X-Definition nodes
          */
         Collection<XNode> values();
 

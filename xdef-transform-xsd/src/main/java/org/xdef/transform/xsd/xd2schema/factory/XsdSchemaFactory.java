@@ -38,8 +38,8 @@ public class XsdSchemaFactory {
 
     /**
      * Creates and initialize XSD document
-     * @param xDef              source x-definition
-     * @param targetNamespace   target namespace (prefix, URI) of input x-definition
+     * @param xDef              source X-Definition
+     * @param targetNamespace   target namespace (prefix, URI) of input X-Definition
      * @return empty initialized XSD document
      */
     public XmlSchema createXsdSchema(final XDefinition xDef, Pair<String, String> targetNamespace) {
@@ -69,7 +69,7 @@ public class XsdSchemaFactory {
     /**
      * Initialize XSD document namespace context
      * @param xmlSchema         XSD document to be initialized
-     * @param xDef              source x-definition
+     * @param xDef              source X-Definition
      * @param targetNamespace   XSD document target namespace (prefix, URI)
      */
     private void initSchemaNamespace(final XmlSchema xmlSchema,
@@ -115,7 +115,7 @@ public class XsdSchemaFactory {
     /**
      * Sets attributeFormDefault and elementFormDefault to XSD document
      * @param xmlSchema         XSD document to be initialized
-     * @param xDef              source x-definition
+     * @param xDef              source X-Definition
      * @param targetNamespace   XSD document target namespace (prefix, URI)
      */
     private void initSchemaFormDefault(final XmlSchema xmlSchema,
@@ -133,8 +133,8 @@ public class XsdSchemaFactory {
 
     /**
      * Determines default element schema form for XSD document
-     * @param xDef              input x-definition
-     * @param targetNsPrefix    x-definition target namespace prefix
+     * @param xDef              input X-Definition
+     * @param targetNsPrefix    X-Definition target namespace prefix
      * @return schema form
      */
     private XmlSchemaForm getElemDefaultForm(final XDefinition xDef, final String targetNsPrefix) {
@@ -168,8 +168,8 @@ public class XsdSchemaFactory {
 
     /**
      * Determines default attribute schema form for XSD document
-     * @param xDef              input x-definition
-     * @param targetNsPrefix    x-definition target namespace prefix
+     * @param xDef              input X-Definition
+     * @param targetNsPrefix    X-Definition target namespace prefix
      * @return schema form
      */
     private XmlSchemaForm getAttrDefaultForm(final XDefinition xDef, final String targetNsPrefix) {

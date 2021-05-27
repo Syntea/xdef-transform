@@ -30,12 +30,12 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_ADAPTER;
 
 /**
- * Transformation of given x-definition or x-definition pool to collection of XSD documents
+ * Transformation of given X-Definition or X-Definition pool to collection of XSD documents
  */
 public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2SchemaAdapter<XmlSchemaCollection> {
 
     /**
-     * Input x-definition used for transformation
+     * Input X-Definition used for transformation
      */
     private XDefinition xDefinition = null;
 
@@ -54,7 +54,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
         }
 
         LOG.info(HEADER_LINE);
-        LOG.info("{}Transforming x-definition. xdefName='{}'", logHeader(XSD_XDEF_ADAPTER), xDef.getName());
+        LOG.info("{}Transforming X-Definition. xdefName='{}'", logHeader(XSD_XDEF_ADAPTER), xDef.getName());
         LOG.info(HEADER_LINE);
 
         boolean poolPostProcessing = true;
@@ -92,12 +92,12 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
     }
 
     /**
-     * Transform x-definition tree to XSD document via treeAdapter
+     * Transform X-Definition tree to XSD document via treeAdapter
      * @param treeAdapter   transformation algorithm
      */
     private void transformXdef(final Xd2XsdTreeAdapter treeAdapter) {
         LOG.info(HEADER_LINE);
-        LOG.info("{}Transformation of x-definition tree", logHeader(TRANSFORMATION, xDefinition));
+        LOG.info("{}Transformation of X-Definition tree", logHeader(TRANSFORMATION, xDefinition));
         LOG.info(HEADER_LINE);
 
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(xDefinition.getName());

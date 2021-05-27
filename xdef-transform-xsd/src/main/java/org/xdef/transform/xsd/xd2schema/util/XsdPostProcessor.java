@@ -83,7 +83,7 @@ public class XsdPostProcessor {
             for (Map.Entry<String, SchemaNode> refEntry : schemaNodes.getValue().entrySet()) {
                 final SchemaNode node = refEntry.getValue();
                 if (isTopElement(node)) {
-                    // Process elements which are on top level but they are not root of x-definition
+                    // Process elements which are on top level but they are not root of X-Definition
                     boolean elementNotInXDefRoot = adapterCtx.hasEnableFeature(XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS)
                             ? (!schemaRootNodeNames.isEmpty() && !schemaRootNodeNames.contains(node.getXdName()))
                             : (schemaRootNodeNames.isEmpty() || !schemaRootNodeNames.contains(node.getXdName()));
@@ -341,7 +341,7 @@ public class XsdPostProcessor {
     /**
      * Transform XSD complex type of XSD element node to be valid
      * @param complexType   XSD complex type
-     * @param defEl         x-definition element node
+     * @param defEl         X-Definition element node
      */
     public void elementComplexType(final XmlSchemaComplexType complexType, final XElement defEl) {
         LOG.debug("{}Updating complex content of element", logHeader(POSTPROCESSING, defEl));
@@ -379,7 +379,7 @@ public class XsdPostProcessor {
                 complexType.setContentModel(null);
                 complexType.setMixed(true);
                 XsdNodeFactory.createAnnotation(
-                        "Text content has been originally restricted by x-definition", adapterCtx
+                        "Text content has been originally restricted by X-Definition", adapterCtx
                 ).ifPresent(complexType::setAnnotation);
             }
         }

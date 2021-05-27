@@ -22,7 +22,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 
 /**
- * Basic x-definition context for transformation XSD document to x-definition
+ * Basic X-Definition context for transformation XSD document to X-Definition
  */
 public class XdAdapterCtx {
 
@@ -34,23 +34,23 @@ public class XdAdapterCtx {
     final private Set<Xsd2XdFeature> features;
 
     /**
-     * Target namespaces per x-definition
-     * Key:     x-definition name
+     * Target namespaces per X-Definition
+     * Key:     X-Definition name
      * Value:   target namespace
      */
     private Map<String, Namespace> targetNamespaces;
 
     /**
-     * All used namespaces per x-definition
-     * Key:     x-definition name
+     * All used namespaces per X-Definition
+     * Key:     X-Definition name
      * Value:   namespace map
      */
     private Map<String, NamespaceMap> xDefNamespaces;
 
     /**
-     * Target namespace URI per x-definition
+     * Target namespace URI per X-Definition
      * Key:     target namespace URI
-     * Value:   set of x-definition names
+     * Value:   set of X-Definition names
      */
     private Map<String, Set<String>> xDefTargetNamespaces;
 
@@ -86,7 +86,7 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Add target namespace information used by given x-definition to context
+     * Add target namespace information used by given X-Definition to context
      * @param xDefName          X-definition name
      * @param targetNamespace   Target namespace information
      */
@@ -98,7 +98,7 @@ public class XdAdapterCtx {
             return;
         }
 
-        LOG.info("{}Add x-definition target namespace. xDefinitionName='{}', targetNsPrefix='{}', targetNsUri='{}'",
+        LOG.info("{}Add X-Definition target namespace. xDefinitionName='{}', targetNsPrefix='{}', targetNsUri='{}'",
                 logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, targetNamespace.getPrefix(), targetNamespace.getUri());
         targetNamespaces.put(xDefName, targetNamespace);
 
@@ -110,7 +110,7 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Finds target namespace used by given x-definition
+     * Finds target namespace used by given X-Definition
      * @param xDefName      X-definition name
      * @return  namespace if found
      *          otherwise {@link Optional#empty()}
@@ -120,7 +120,7 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Add namespace used by given x-definition to context
+     * Add namespace used by given X-Definition to context
      * @param xDefName      X-definition name
      * @param nsPrefix      Namespace prefix
      * @param nsUri         Namespace URI
@@ -131,7 +131,7 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Finds namespaces used by given x-definition
+     * Finds namespaces used by given X-Definition
      * @param xDefName      X-definition name
      * @return  namespace map if found
      *          otherwise {@link Optional#empty()}
@@ -141,7 +141,7 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Finds namespace prefix used by given x-definition and namespace URI
+     * Finds namespace prefix used by given X-Definition and namespace URI
      * @param xDefName      X-definition name
      * @param nsUri         Namespace URI
      * @return namespace prefix
@@ -167,7 +167,7 @@ public class XdAdapterCtx {
      * @param schemaFileName    XSD file name
      */
     public void addXmlSchemaFileName(final XmlSchema schema, final String schemaFileName) {
-        LOG.info("{}Add x-definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaFileName);
+        LOG.info("{}Add X-Definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaFileName);
         xsdNames.put(schema, schemaFileName);
     }
 

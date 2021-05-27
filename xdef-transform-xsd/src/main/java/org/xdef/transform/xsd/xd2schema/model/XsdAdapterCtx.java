@@ -38,7 +38,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ADA
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
- * Basic XSD context for transformation x-definition to XSD document
+ * Basic XSD context for transformation X-Definition to XSD document
  */
 public class XsdAdapterCtx {
 
@@ -50,7 +50,7 @@ public class XsdAdapterCtx {
     private Set<String> schemaNames = null;
 
     /**
-     * Schemas location based on x-definition
+     * Schemas location based on X-Definition
      */
     private SchemaNamespaceLocationMap schemaLocationsCtx = null;
 
@@ -76,7 +76,7 @@ public class XsdAdapterCtx {
 
     /**
      * Names of nodes which can be root of x-definitions
-     * Key:     x-definition name
+     * Key:     X-Definition name
      * Value:   set of node names
      */
     private Map<String, Set<String>> rootNodeNames = null;
@@ -148,7 +148,7 @@ public class XsdAdapterCtx {
 
     /**
      * Add XSD document name to name set
-     * @param name  x-definition name
+     * @param name  X-Definition name
      */
     public void addSchemaName(final String name) throws SRuntimeException {
         if (!schemaNames.add(name)) {
@@ -244,7 +244,7 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Mark x-definition node to be converted in post-processing phase
+     * Mark X-Definition node to be converted in post-processing phase
      * @param nsUri     XSD document namespace URI
      * @param xNode     X-definition node
      */
@@ -385,7 +385,7 @@ public class XsdAdapterCtx {
     /**
      * Add new or update already existing schema node into XSD document defined by {@code systemId} and {@code nodePath}
      * @param systemId  XSD document identifier
-     * @param nodePath  x-definition node path
+     * @param nodePath  X-Definition node path
      * @param node      schema node to be added
      * @return  schema node defined by {@code node} if no node exists with same node path
      *          otherwise already existing node with same node path merged with {@code node}
@@ -439,8 +439,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Updates XSD node of schema node defined by x-definition node {@code xNode}
-     * @param xNode         x-definition node of schema node
+     * Updates XSD node of schema node defined by X-Definition node {@code xNode}
+     * @param xNode         X-Definition node of schema node
      * @param newXsdNode    new XSD document node
      */
     public void updateNode(final XMNode xNode, final XmlSchemaNamed newXsdNode) {
@@ -478,7 +478,7 @@ public class XsdAdapterCtx {
     /**
      * Finds schema node defined by {@code systemId} and {@code nodePath}
      * @param systemId  XSD document identifier
-     * @param nodePath  x-definition path
+     * @param nodePath  X-Definition path
      * @return  schema node if exists,
      *          otherwise {@link Optional#empty()}
      */
@@ -487,8 +487,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Deletes created schema node defined by x-definition node {@code xNode}
-     * @param xNode     x-definition node
+     * Deletes created schema node defined by X-Definition node {@code xNode}
+     * @param xNode     X-Definition node
      */
     public void removeNode(final XNode xNode) {
         final String xPos = xNode.getXDPosition();
@@ -500,7 +500,7 @@ public class XsdAdapterCtx {
     /**
      * Deletes created schema node defined by XSD document identifier and node path
      * @param systemId      XSD document identifier
-     * @param nodePath      x-definition node path
+     * @param nodePath      X-Definition node path
      */
     private void removeNode(final String systemId, final String nodePath) {
         LOG.info("{}Removing xsd node. system='{}', nodePath='{}'", logHeader(XSD_REFERENCE), systemId, nodePath);
@@ -524,7 +524,7 @@ public class XsdAdapterCtx {
     /**
      * Add XSD document root node name
      * @param systemId      XSD document identifier
-     * @param nodeName      x-definition name
+     * @param nodeName      X-Definition name
      */
     public void addRootNodeName(final String systemId, final String nodeName) {
         final Set<String> schemaRootNodeNames = rootNodeNames.computeIfAbsent(systemId, key -> new HashSet<>());
@@ -605,8 +605,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds unique constraint by x-definition node
-     * @param xData x-definition node
+     * Finds unique constraint by X-Definition node
+     * @param xData X-Definition node
      * @return  unique constraint if exists,
      *          otherwise {@link Optional#empty()}
      */

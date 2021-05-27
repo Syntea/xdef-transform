@@ -34,11 +34,11 @@ public class XdNameUtils {
     /**
      * Creates string qualified name from given arguments.
      *
-     * If qualified name is using unknown namespace URI in given x-definition, then output will not contain namespace prefix.
+     * If qualified name is using unknown namespace URI in given X-Definition, then output will not contain namespace prefix.
      *
      * @param qName             qualified name
-     * @param xDefName          x-definition name
-     * @param xdAdapterCtx      x-definition adapter context
+     * @param xDefName          X-Definition name
+     * @param xdAdapterCtx      X-Definition adapter context
      * @return qualified name
      */
     public static String createQualifiedName(final QName qName, final String xDefName, final XdAdapterCtx xdAdapterCtx) {

@@ -28,7 +28,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Creates x-definition node's attributes
+ * Creates X-Definition node's attributes
  */
 public class XdAttributeFactory {
 
@@ -50,8 +50,8 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add attribute to given x-definition node
-     * @param el            x-definition node
+     * Add attribute to given X-Definition node
+     * @param el            X-Definition node
      * @param attrName      attribute name
      * @param attrValue     attribute value
      */
@@ -61,8 +61,8 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add attribute based on input XSD attribute to given x-definition node
-     * @param el                x-definition node
+     * Add attribute based on input XSD attribute to given X-Definition node
+     * @param el                X-Definition node
      * @param xsdAttr           XSD attribute node
      * @param xDefName          XSD document name
      */
@@ -93,8 +93,8 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add reference attribute into given x-definition element node
-     * @param el        x-definition element node
+     * Add reference attribute into given X-Definition element node
+     * @param el        X-Definition element node
      * @param qName     reference qualified name
      */
     public static void addAttrRef(final Element el, final QName qName) {
@@ -102,9 +102,9 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add reference (in different x-definition) attribute into given x-definition element node
-     * @param el        x-definition element node
-     * @param xDefName  x-definition name
+     * Add reference (in different X-Definition) attribute into given X-Definition element node
+     * @param el        X-Definition element node
+     * @param xDefName  X-Definition name
      * @param qName     reference qualified name
      */
     public static void addAttrRefInDiffXDef(final Element el, final String xDefName, final QName qName) {
@@ -113,14 +113,14 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add or append value to currently existing x-definition attribute (using namespace {@value Xsd2XdDefinitions.XD_NAMESPACE_URI})
-     * to given x-definition element node
-     * @param el        x-definition element node
+     * Add or append value to currently existing X-Definition attribute (using namespace {@value Xsd2XdDefinitions.XD_NAMESPACE_URI})
+     * to given X-Definition element node
+     * @param el        X-Definition element node
      * @param qName     reference qualified name
      * @param value     attribute value
      */
     private static void addAttrXDef(final Element el, final String qName, final String value) {
-        LOG.debug("{}Add x-definition attribute. qName='{}', value='{}'",
+        LOG.debug("{}Add X-Definition attribute. qName='{}', value='{}'",
                 logHeader(TRANSFORMATION, el), qName, value);
         final String localName = XdNameUtils.getLocalName(qName);
         final Attr attr = el.getAttributeNodeNS(XDEF_DEFAULT_NAMESPACE_URI, localName);
@@ -132,8 +132,8 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add x-definition occurrence attribute into given x-definition element node
-     * @param xdNode        x-definition node
+     * Add X-Definition occurrence attribute into given X-Definition element node
+     * @param xdNode        X-Definition node
      * @param xsdNode       XSD document node containing occurrence info
      */
     public void addOccurrence(final Element xdNode, final XmlSchemaParticle xsdNode) {
@@ -173,16 +173,16 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add x-definition text attribute into given x-definition element node
-     * @param el        x-definition element node
+     * Add X-Definition text attribute into given X-Definition element node
+     * @param el        X-Definition element node
      */
     public void addAttrText(final Element el) {
         addAttrXDef(el, XD_ATTR_TEXT, (!adapterCtx.hasEnableFeature(XD_MIXED_REQUIRED) ? "? " : "") + "string()");
     }
 
     /**
-     * Add x-definition nillable attribute into given x-definition element node
-     * @param el        x-definition element node
+     * Add X-Definition nillable attribute into given X-Definition element node
+     * @param el        X-Definition element node
      * @param xsdElem   XSD element node
      */
     public void addAttrNillable(final Element el, final XmlSchemaElement xsdElem) {
@@ -192,9 +192,9 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Creates x-definition attribute based on given XSD attribute node
+     * Creates X-Definition attribute based on given XSD attribute node
      * @param xsdAttr   XSD attribute node
-     * @return x-definition attribute
+     * @return X-Definition attribute
      */
     private String createAttribute(final XmlSchemaAttribute xsdAttr) {
         LOG.debug("{}Creating attribute.", logHeader(TRANSFORMATION, xsdAttr));

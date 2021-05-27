@@ -55,14 +55,14 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms XSD tree node structure to x-definition tree node structure
+ * Transforms XSD tree node structure to X-Definition tree node structure
  */
 public class Xsd2XdTreeAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(Xsd2XdTreeAdapter.class);
 
     /**
-     * Output x-definition name
+     * Output X-Definition name
      */
     final private String xDefName;
 
@@ -102,7 +102,7 @@ public class Xsd2XdTreeAdapter {
 
     /**
      * Gathers names of all XSD top level element nodes
-     * @return concatenate names in required format of x-definition
+     * @return concatenate names in required format of X-Definition
      */
     public String loadXsdRootElementNames() {
         LOG.info("{}Loading root elements of XSD", logHeader(PREPROCESSING, xDefName));
@@ -127,9 +127,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Transforms XSD node tree into x-definition node tree.
+     * Transforms XSD node tree into X-Definition node tree.
      * @param xsdNode       XSD document node
-     * @param parentNode    parent x-definition node
+     * @param parentNode    parent X-Definition node
      */
     public void convertTree(final XmlSchemaObjectBase xsdNode, final Element parentNode) {
         if (xsdNode instanceof XmlSchemaElement) {
@@ -157,9 +157,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition element node based od XSD element node
+     * Creates X-Definition element node based od XSD element node
      * @param xsdElementNode    XSD element node
-     * @param parentNode        parent x-definition node
+     * @param parentNode        parent X-Definition node
      */
     private void createElement(final XmlSchemaElement xsdElementNode, final Element parentNode) {
         LOG.info("{}Creating element ...", logHeader(TRANSFORMATION, xsdElementNode));
@@ -221,10 +221,10 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition element node based od XSD complex schema type node
+     * Creates X-Definition element node based od XSD complex schema type node
      * This transformation is always used only for top level XSD nodes
      * @param xsdComplexNode    XSD top level complex schema type node
-     * @param parentNode        parent x-definition node
+     * @param parentNode        parent X-Definition node
      */
     private void createTopNonRootElement(final XmlSchemaComplexType xsdComplexNode, final Element parentNode) {
         LOG.info("{}Creating top level non-root element ...", logHeader(TRANSFORMATION, xsdComplexNode));
@@ -235,8 +235,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition element node based od XSD complex schema type node
-     * @param xdElem            x-definition node, which will be filled
+     * Creates X-Definition element node based od XSD complex schema type node
+     * @param xdElem            X-Definition node, which will be filled
      * @param xsdComplexNode    XSD complex schema type node
      */
     private void createElementFromComplex(final Element xdElem, final XmlSchemaComplexType xsdComplexNode) {
@@ -298,12 +298,12 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition particle node based od XSD particle node
+     * Creates X-Definition particle node based od XSD particle node
      *
      * Possible created output nodes: xd:sequence, xd:choice, xd:mixed
      *
      * @param xsdParticleNode   XSD group particle node
-     * @param parentNode        x-definition node, which will be filled
+     * @param parentNode        X-Definition node, which will be filled
      * @param mixed             flag, if attribute xd:text should be created
      */
     private void createGroupParticle(final XmlSchemaGroupParticle xsdParticleNode, final Element parentNode, final boolean mixed) {
@@ -315,7 +315,7 @@ public class Xsd2XdTreeAdapter {
             xdParticle = xdFactory.createEmptySequence();
             final List<XmlSchemaSequenceMember> xsdSequenceMembers = xsdSequence.getItems();
             if (xsdSequenceMembers != null && !xsdSequenceMembers.isEmpty()) {
-                // If xs:sequence contains only element nodes, then remove sequence from x-definition
+                // If xs:sequence contains only element nodes, then remove sequence from X-Definition
                 boolean onlyElems = true;
                 for (XmlSchemaSequenceMember xsdSequenceMember : xsdSequenceMembers) {
                     if (!(xsdSequenceMember instanceof XmlSchemaElement)) {
@@ -373,9 +373,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition group of elements (xd:mixed) node based od XSD group node
+     * Creates X-Definition group of elements (xd:mixed) node based od XSD group node
      * @param xsdGroupNode      XSD group node
-     * @param parentNode        x-definition node, which will be filled
+     * @param parentNode        X-Definition node, which will be filled
      */
     private void createElementGroup(final XmlSchemaGroup xsdGroupNode, final Element parentNode) {
         LOG.debug("{}Creating group.", logHeader(TRANSFORMATION, xsdGroupNode));
@@ -389,9 +389,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition group reference (xd:mixed) node based od XSD group reference node
+     * Creates X-Definition group reference (xd:mixed) node based od XSD group reference node
      * @param xsdGroupRefNode       XSD group reference node
-     * @param parentNode            x-definition node, which will be filled
+     * @param parentNode            X-Definition node, which will be filled
      */
     private void createElementGroupRef(final XmlSchemaGroupRef xsdGroupRefNode, final Element parentNode) {
         LOG.debug("{}Creating group reference.", logHeader(TRANSFORMATION, xsdGroupRefNode));
@@ -411,7 +411,7 @@ public class Xsd2XdTreeAdapter {
                     logHeader(TRANSFORMATION, xsdGroupRefNode));
             if (xsdGroupRefNode.getMaxOccurs() > 1) {
                 adapterCtx.getReportWriter().error(XSD.XSD203);
-                LOG.error("{}Group reference is using multiple occurence - prohibited in x-definition.",
+                LOG.error("{}Group reference is using multiple occurence - prohibited in X-Definition.",
                         logHeader(TRANSFORMATION, xsdGroupRefNode));
             }
 
@@ -420,9 +420,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition any node based od XSD any node
+     * Creates X-Definition any node based od XSD any node
      * @param xsdAnyNode        XSD any node
-     * @param parentNode        x-definition node, which will be filled
+     * @param parentNode        X-Definition node, which will be filled
      */
     private void createAny(final XmlSchemaAny xsdAnyNode, final Element parentNode) {
         LOG.debug("{}Creating any.", logHeader(TRANSFORMATION, xsdAnyNode));
@@ -433,8 +433,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Transform and add given XSD attributes {@code xsdAttrs} to x-definition element node.
-     * @param xdElem        x-definition element node
+     * Transform and add given XSD attributes {@code xsdAttrs} to X-Definition element node.
+     * @param xdElem        X-Definition element node
      * @param xsdAttrs      XSD attribute nodes
      */
     private void addAttrsToElem(final Element xdElem, final @Nullable List<XmlSchemaAttributeOrGroupRef> xsdAttrs) {
@@ -448,9 +448,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition attribute defining reference
+     * Creates X-Definition attribute defining reference
      * @param baseType      reference qualified name
-     * @param xdNode        x-definition element node
+     * @param xdNode        X-Definition element node
      * @param simple        flag, if reference is originally pointing to simple schema type in XSD document
      * @return  true if reference attribute has been successfully created
      *          false otherwise
@@ -471,11 +471,11 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates x-definition attribute defining reference
+     * Creates X-Definition attribute defining reference
      * @param baseType      reference qualified name
-     * @param xDefRefName   name of reference x-definition
-     * @param xdNode        x-definition element node
-     * @return  true if x-definition attribure reference has been created
+     * @param xDefRefName   name of reference X-Definition
+     * @param xdNode        X-Definition element node
+     * @return  true if X-Definition attribure reference has been created
      *          false otherwise
      */
     private boolean externalRef(final QName baseType, final @Nullable String xDefRefName, final Element xdNode) {

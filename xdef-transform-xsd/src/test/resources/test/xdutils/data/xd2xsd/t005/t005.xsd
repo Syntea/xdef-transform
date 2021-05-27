@@ -71,7 +71,7 @@
   <xs:simpleType name="PlatnostSTK_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="neplatná"/>
       <xs:enumeration value="nezjištěno"/>
@@ -101,7 +101,7 @@
   <xs:simpleType name="PojisteniText_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="Nepodléhá pojištění"/>
       <xs:enumeration value="Potvrzení nepředloženo"/>
@@ -133,7 +133,7 @@
   <xs:simpleType name="DruhSoupravy_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="vlak"/>
     </xs:restriction>
@@ -146,7 +146,7 @@
   <xs:simpleType name="AlkoholDech_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="Alkohol"/>
     </xs:restriction>
@@ -164,7 +164,7 @@
   <xs:simpleType name="PokutaZapl_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="zaplacena"/>
       <xs:enumeration value="nezaplacena"/>
@@ -173,7 +173,7 @@
   <xs:simpleType name="Pachatel_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="Pachatel DN"/>
     </xs:restriction>
@@ -181,7 +181,7 @@
   <xs:simpleType name="Poskozeny_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="Poškozený"/>
     </xs:restriction>
@@ -194,7 +194,7 @@
   <xs:simpleType name="Pohlavi_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="M"/>
       <xs:enumeration value="Ž"/>

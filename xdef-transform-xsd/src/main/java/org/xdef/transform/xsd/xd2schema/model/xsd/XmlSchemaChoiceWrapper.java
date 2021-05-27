@@ -20,7 +20,7 @@ public class XmlSchemaChoiceWrapper extends AbstractXmlSchemaGroupParticleWrappe
     }
 
     /**
-     * Used to be true if the instance has x-definition source mixed element
+     * Used to be true if the instance has X-Definition source mixed element
      */
     private TransformDirection transformDirection = TransformDirection.NONE;
 

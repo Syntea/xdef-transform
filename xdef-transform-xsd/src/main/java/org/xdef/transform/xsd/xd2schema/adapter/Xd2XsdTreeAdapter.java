@@ -76,7 +76,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_EQ;
 
 /**
- * Transforms x-definition tree node structure to XSD tree node structure
+ * Transforms X-Definition tree node structure to XSD tree node structure
  */
 public class Xd2XsdTreeAdapter {
 
@@ -133,32 +133,32 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Gather names of all x-definition root element nodes
-     * @param xDef  input x-definition
+     * Gather names of all X-Definition root element nodes
+     * @param xDef  input X-Definition
      */
     public void loadXdefRootNames(final XDefinition xDef) {
-        LOG.info("{}Loading root of x-definition", logHeader(PREPROCESSING, xDef));
+        LOG.info("{}Loading root of X-Definition", logHeader(PREPROCESSING, xDef));
 
         if (xDef._rootSelection != null) {
             for (String rootName : xDef._rootSelection.keySet()) {
                 adapterCtx.addRootNodeName(schemaName, rootName);
 
-                LOG.debug("{}Add x-definition element root name. name='{}'", logHeader(PREPROCESSING, xDef), rootName);
+                LOG.debug("{}Add X-Definition element root name. name='{}'", logHeader(PREPROCESSING, xDef), rootName);
             }
         }
     }
 
     /**
-     * Gather data of all global and local uniqueSets used by x-definition
-     * @param xDef  input x-definition
+     * Gather data of all global and local uniqueSets used by X-Definition
+     * @param xDef  input X-Definition
      */
     public void loadXdefRootUniqueSets(final XDefinition xDef) {
         loadUniqueSets(xDef, xDef.getXDPool().getVariableTable(), "");
     }
 
     /**
-     * Gather data of uniqueSets used by x-definition element node
-     * @param xElem input x-definition element node
+     * Gather data of uniqueSets used by X-Definition element node
+     * @param xElem input X-Definition element node
      */
     public void loadElementUniqueSets(final XElement xElem) {
         loadUniqueSets(xElem.getDefinition(), xElem._vartable, XsdNameUtils.getXNodePath(xElem.getXDPosition()));
@@ -172,7 +172,7 @@ public class Xd2XsdTreeAdapter {
      */
     private void loadUniqueSets(final XNode xNode, final XMVariableTable varTable, final String varTablePath) {
         if (varTable != null && varTable.size() > 0) {
-            LOG.info("{}Loading unique sets of x-definition.", logHeader(PREPROCESSING, xNode));
+            LOG.info("{}Loading unique sets of X-Definition.", logHeader(PREPROCESSING, xNode));
 
             for (XMVariable xmVariable : varTable.toArray()) {
                 if ((xmVariable.getType() == UNIQUESET_M_VALUE || xmVariable.getType() == UNIQUESET_VALUE)
@@ -187,8 +187,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Transforms x-definition node tree into XSD node tree.
-     * @param xNode     root of x-definition tree
+     * Transforms X-Definition node tree into XSD node tree.
+     * @param xNode     root of X-Definition tree
      * @return root of XSD node tree, may return null
      */
     public Optional<XmlSchemaObject> convertTree(XMNode xNode) {
@@ -197,9 +197,9 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Transforms x-definition node tree into XSD node tree.
-     * @param xNode     root of x-definition tree
-     * @param topLevel  flag if x-definition node is placed on top level
+     * Transforms X-Definition node tree into XSD node tree.
+     * @param xNode     root of X-Definition tree
+     * @param topLevel  flag if X-Definition node is placed on top level
      * @return root of XSD node tree, may return null
      */
     private Optional<XmlSchemaObject> convertTreeInt(final XMNode xNode, boolean topLevel) {
@@ -230,7 +230,7 @@ public class Xd2XsdTreeAdapter {
                 return Optional.of(xsdFactory.createGroupParticle(xNode));
             case XNode.XMDEFINITION: {
                 adapterCtx.getReportWriter().warning(XSD.XSD017);
-                LOG.warn("{}XDefinition node can't be transformed, it has to be pre-processed only!",
+                LOG.warn("{}X-Definition node can't be transformed, it has to be pre-processed only!",
                         logHeader(TRANSFORMATION, xNode));
                 return Optional.empty();
             }
@@ -244,8 +244,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates XSD attribute node based on x-definition attribute node
-     * @param xData     x-definition source (attribute node)
+     * Creates XSD attribute node based on X-Definition attribute node
+     * @param xData     X-Definition source (attribute node)
      * @param topLevel  flag if source node is placed on top level
      * @return XSD attribute node
      */
@@ -320,7 +320,7 @@ public class Xd2XsdTreeAdapter {
 
                 final String nsUri = schema.getNamespaceContext().getNamespaceURI(nsPrefix);
                 attr.setSchemaTypeName(new QName(nsUri, refTypeName));
-                LOG.info("{}Creating attribute reference in same namespace/x-definition. name='{}', type='{}'",
+                LOG.info("{}Creating attribute reference in same namespace/X-Definition. name='{}', type='{}'",
                         logHeader(TRANSFORMATION, xData), xData.getName(), attr.getSchemaTypeName());
             } else if ((qName = Xd2XsdParserMapping.findDefaultParserQName(xData, adapterCtx, true).orElse(null)) != null) {
                 attr.setSchemaTypeName(qName);
@@ -377,8 +377,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates XSD element node based on x-definition element node
-     * @param xElem     x-definition source (element node)
+     * Creates XSD element node based on X-Definition element node
+     * @param xElem     X-Definition source (element node)
      * @param topLevel  flag if source node is placed on top level
      * @return XSD element node
      */
@@ -433,7 +433,7 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XSD element node using reference
-     * @param xElem     x-definition source (element node)
+     * @param xElem     X-Definition source (element node)
      * @param refQName  reference QName
      * @param xsdElem   XSD element node which will be filled (output)
      */
@@ -452,11 +452,11 @@ public class Xd2XsdTreeAdapter {
                     logHeader(TRANSFORMATION, xElem), xElem.getName(), xsdElem.getRef().getTargetQName());
         } else if (XsdNamespaceUtils.isRefInDifferentNamespacePrefix(refXPos, schema)) {
             xsdElem.getRef().setTargetQName(refQName);
-            LOG.info("{}Element referencing to different x-definition and namespace. refXDefName='{}', refQName='{}'",
+            LOG.info("{}Element referencing to different X-Definition and namespace. refXDefName='{}', refQName='{}'",
                     logHeader(TRANSFORMATION, xElem), refSystemId, xsdElem.getRef().getTargetQName());
         } else if (XsdNamespaceUtils.isRefInDifferentSystem(refXPos, xPos)) {
             xsdElem.getRef().setTargetQName(refQName);
-            LOG.info("{}Element referencing to different x-definition. refXDefName='{}'",
+            LOG.info("{}Element referencing to different X-Definition. refXDefName='{}'",
                     logHeader(TRANSFORMATION, xElem), refSystemId);
         } else if (Xd2XsdUtils.isAnyElement(xElem)) {
             xsdElem.getRef().setTargetQName(refQName);
@@ -465,7 +465,7 @@ public class Xd2XsdTreeAdapter {
             xsdElem.setSchemaTypeName(refQName);
             XsdNameUtils.resolveElementQName(schema, xElem, xsdElem, adapterCtx);
 
-            LOG.info("{}Element referencing to same namespace/x-definition. refLocalName='{}'",
+            LOG.info("{}Element referencing to same namespace/X-Definition. refLocalName='{}'",
                     logHeader(TRANSFORMATION, xElem), refLocalName);
         }
 
@@ -474,8 +474,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates XSD element node using reference, where source x-definition node is extending the reference
-     * @param xElem     x-definition source (element node)
+     * Creates XSD element node using reference, where source X-Definition node is extending the reference
+     * @param xElem     X-Definition source (element node)
      * @param refQName  reference QName
      * @param topLevel  flag if source node is placed on top level
      * @param xsdElem   XSD element node which will be filled (output)
@@ -577,8 +577,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates XSD element where source x-definition node is using different namespace
-     * @param xElem     x-definition source (element node)
+     * Creates XSD element where source X-Definition node is using different namespace
+     * @param xElem     X-Definition source (element node)
      * @param xsdElem   XSD element node which will be filled (output)
      */
     private void createElementInDiffNamespace(final XElement xElem, final XmlSchemaElement xsdElem) {
@@ -630,7 +630,7 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates content of standard XSD element node
-     * @param xElem     x-definition source (element node)
+     * @param xElem     X-Definition source (element node)
      * @param topLevel  flag if source node is placed on top level
      * @param xsdElem   XSD element node which will be filled (output)
      */
@@ -668,8 +668,8 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Determines reference QName based on x-definition element node
-     * @param xElem x-definition source (element node)
+     * Determines reference QName based on X-Definition element node
+     * @param xElem X-Definition source (element node)
      * @return reference QName
      */
     private QName getRefQName(final XElement xElem) {
@@ -723,9 +723,9 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates simple type from x-definition text node and fill XSD element node by created simple type
+     * Creates simple type from X-Definition text node and fill XSD element node by created simple type
      * @param xsdElem       XSD element node
-     * @param xDataText     x-definition text node
+     * @param xDataText     X-Definition text node
      */
     private void addSimpleTypeToElem(final XmlSchemaElement xsdElem, final XData xDataText) {
         LOG.info("{}Creating simple type of element. elementName='{}'",
@@ -745,9 +745,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XSD complex type node based on input parameters
-     * @param xAttrs            x-definition attribute nodes
-     * @param xChildrenNodes    x-definition children nodes
-     * @param xElem             x-definition element node
+     * @param xAttrs            X-Definition attribute nodes
+     * @param xChildrenNodes    X-Definition children nodes
+     * @param xElem             X-Definition element node
      * @param topLevel          flag if source node is placed on top level
      * @return XSD complex type node
      */
@@ -906,11 +906,11 @@ public class Xd2XsdTreeAdapter {
     }
 
     /**
-     * Creates xs:group reference based on x-definition mixed node with reference
-     * @param xChildrenNodes        XDefinition children nodes
+     * Creates xs:group reference based on X-Definition mixed node with reference
+     * @param xChildrenNodes        X-Definition children nodes
      * @param currGroup             current XML schema particle group node
      * @param groups                XML schema particle group node stack
-     * @param defEl                 source XDefinition element
+     * @param defEl                 source X-Definition element
      * @return  null if node is not using reference
      *          instance of XmlSchemaGroupRef if node is only child of element {@code defEl}
      *          instance of XmlSchemaParticle if node is not only child of element {@code defEl}
@@ -1056,7 +1056,7 @@ public class Xd2XsdTreeAdapter {
      * Creates default particle if no group particle is created yet
      * @param currParticle      current particle
      * @param particleStack     particle stack
-     * @param xElem             parent x-definition element node
+     * @param xElem             parent X-Definition element node
      * @return  if currParticle == null, then newly created instance of CXmlSchemaSequence
      *          else currParticle
      */

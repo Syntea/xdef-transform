@@ -48,7 +48,7 @@ public class XsdSimpleContentFactory {
     private final XsdNodeFactory xsdFactory;
     private final XsdAdapterCtx adapterCtx;
     /**
-     * Source x-definition node
+     * Source X-Definition node
      */
     private final XData xData;
     /**
@@ -63,7 +63,7 @@ public class XsdSimpleContentFactory {
     /**
      * @param xsdFactory    XSD element factory
      * @param adapterCtx    XSD adapter context
-     * @param xData         source x-definition node
+     * @param xData         source X-Definition node
      */
     public XsdSimpleContentFactory(XsdNodeFactory xsdFactory, XsdAdapterCtx adapterCtx, XData xData) {
         this.xsdFactory = xsdFactory;
@@ -79,8 +79,8 @@ public class XsdSimpleContentFactory {
     /**
      * Create XSD simple content node
      * @param nodeName  node name (required for <xs:union/> node)
-     * @param isAttr    flag if x-definition node is attribute
-     * @return based on x-definition node parser
+     * @param isAttr    flag if X-Definition node is attribute
+     * @return based on X-Definition node parser
      *          <xs:restriction base="...">...</xs:restriction>
      *          <xs:list itemType="...">...</xs:list>
      *          <xs:union memberTypes="...">...</xs:union>
@@ -122,12 +122,12 @@ public class XsdSimpleContentFactory {
         } else {
             res = simpleTypeRestriction(parserInfo.getKey(), parserInfo.getValue(), parameters);
             if (customParser.get() || unknownParser.get()) {
-                annotations.add("Original x-definition parser: " + parserName);
+                annotations.add("Original X-Definition parser: " + parserName);
             }
         }
 
         if (!isAttr && xData.getDefaultValue() != null) {
-            annotations.add("Original x-definition default value: " + xData.getDefaultValue());
+            annotations.add("Original X-Definition default value: " + xData.getDefaultValue());
         }
 
         if (!annotations.isEmpty()) {
@@ -153,7 +153,7 @@ public class XsdSimpleContentFactory {
      * Creates XSD simple type restriction node with facet based on input parameters
      * @param qName             XSD restriction base
      * @param facetBuilder      XSD restriction facet builder
-     * @param parameters        source x-definition parameters for facets building
+     * @param parameters        source X-Definition parameters for facets building
      * @return <xs:restriction base="{@code qName}">...</xs:restriction>
      */
     private XmlSchemaSimpleTypeRestriction simpleTypeRestriction(final QName qName,
@@ -216,7 +216,7 @@ public class XsdSimpleContentFactory {
     /**
      * Creates XSD simple type union node and restriction node with facets optionally
      * @param facetBuilder      XSD restriction facet builder
-     * @param nodeName          source x-definition node name
+     * @param nodeName          source X-Definition node name
      * @return  <xs:union memberTypes="...">...</xs:union> if restriction has no facets
      *          <xs:restriction><xs:union memberTypes="...">...</xs:union>...</xs:restriction> otherwise
      */
@@ -230,7 +230,7 @@ public class XsdSimpleContentFactory {
 
     /**
      * Creates XSD simple type union node
-     * @param nodeName      source x-definition node name
+     * @param nodeName      source X-Definition node name
      * @return <xs:union memberTypes="...">...</xs:union>
      */
     private XmlSchemaSimpleTypeUnion simpleTypeUnion(final String nodeName) {
@@ -268,9 +268,9 @@ public class XsdSimpleContentFactory {
 
     /**
      * Creates top level simple type node which contains union member type reference
-     * @param xParser   x-definition parser
+     * @param xParser   X-Definition parser
      * @param refNames  used reference names
-     * @param nodeName  source x-definition node name
+     * @param nodeName  source X-Definition node name
      */
     private void simpleTypeUnionTopReference(final XDParser xParser, final Set<String> refNames, final String nodeName) {
         final AtomicBoolean unknownParser = new AtomicBoolean(false);
@@ -293,7 +293,7 @@ public class XsdSimpleContentFactory {
                 xParser.getNamedParams().getXDNamedItems());
         if (unknownParser.get()) {
             XsdNodeFactory.createAnnotation(
-                    "Original x-definition parser: " + xParser.parserName(),
+                    "Original X-Definition parser: " + xParser.parserName(),
                     adapterCtx
             ).ifPresent(restriction::setAnnotation);
         }
@@ -335,7 +335,7 @@ public class XsdSimpleContentFactory {
      * Creates XSD facet nodes based on input {@code parameters} by {@code facetBuilder}
      * @param qName             XSD restriction base
      * @param facetBuilder      XSD restriction facet builder
-     * @param parameters        source x-definition parameters for facets building
+     * @param parameters        source X-Definition parameters for facets building
      * @return created XML schema facets
      */
     private List<XmlSchemaFacet> buildFacets(final QName qName, final IXsdFacetFactory facetBuilder, final XDNamedValue[] parameters) {

@@ -10,7 +10,7 @@
    <xs:simpleType name="refLoc_x">
       <xs:restriction base="xs:string">
          <xs:annotation>
-            <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+            <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
          </xs:annotation>
          <xs:pattern value="([1-9]|[1-2][0-9]|3[0-1])\.([1-9]|1[0-2])\.\d{4}\d*">
             <xs:annotation>
@@ -22,7 +22,7 @@
    <xs:simpleType name="refLoc_y">
       <xs:restriction base="xs:string">
          <xs:annotation>
-            <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+            <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
          </xs:annotation>
          <xs:pattern value="([1-9]|[1-2][0-9]|3[0-1])\.([1-9]|1[0-2])\.\d{4}\d*">
             <xs:annotation>

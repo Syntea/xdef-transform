@@ -142,9 +142,9 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
     }
 
     /**
-     * Set given x-definition value into XSD facet
+     * Set given X-Definition value into XSD facet
      * @param facet     XSD facet
-     * @param xdValue   x-definition value
+     * @param xdValue   X-Definition value
      */
     protected void setValue(final XmlSchemaFacet facet, final XDValue xdValue) {
         if (DECIMAL_INTEGER.equals(valueType)) {

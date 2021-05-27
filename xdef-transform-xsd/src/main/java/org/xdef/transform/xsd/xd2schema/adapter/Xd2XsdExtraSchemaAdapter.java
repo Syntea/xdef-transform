@@ -30,19 +30,19 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_EXTRA_ADAPTER;
 
 /**
- * Transforms x-definition nodes into xsd nodes
+ * Transforms X-Definition nodes into xsd nodes
  *
  * Creates new schemas based on post-processing via {@link #transformNodes}
  */
 public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
 
     /**
-     * Input x-definition used for transformation
+     * Input X-Definition used for transformation
      */
     private final XDefinition sourceXDefinition;
 
     /**
-     * Original namespace context used in x-definition {@link #sourceXDefinition}
+     * Original namespace context used in X-Definition {@link #sourceXDefinition}
      */
     private NamespaceMap sourceNamespaceCtx = null;
 
@@ -51,7 +51,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Set original (x-definition) namespace context
+     * Set original (X-Definition) namespace context
      * @param namespaceCtx              namespace context map
      * @param schemaTargetNsPrefix      schema target namespace prefix
      */
@@ -61,7 +61,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Transform given x-definition nodes {@code allNodesToResolve} into XSD nodes and then insert them
+     * Transform given X-Definition nodes {@code allNodesToResolve} into XSD nodes and then insert them
      * into related XSD documents
      *
      * @param nodesToBeResolved     nodes to be transformed
@@ -105,7 +105,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                                 new RuntimeException("Schema file name location map should contain at least one location"));
 
                 nodesToBeResolved.findByNamespaceUri(schemaTargetNsUri).ifPresent(nodesInSchemaToResolve -> {
-                    // Filter nodes which should be resolved by current x-definition
+                    // Filter nodes which should be resolved by current X-Definition
                     final List<XNode> nodesToResolve = new LinkedList<>(nodesInSchemaToResolve.values());
                     final Iterator<XNode> itr = nodesToResolve.iterator();
                     XNode n;
@@ -146,12 +146,12 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Internal class for transformation of given x-definition nodes into related XSD document
+     * Internal class for transformation of given X-Definition nodes into related XSD document
      */
     static class SchemaAdapter extends AbstractXd2XsdAdapter {
 
         /**
-         * Input x-definition used for transformation
+         * Input X-Definition used for transformation
          */
         private final XDefinition sourceXDefinition;
 
@@ -245,7 +245,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
          * If schema namespace context already exist, then merge it with {@code namespaceCtx)
          *
          * @param schemaName        XSD document name
-         * @param namespaceCtx      current x-definition namespace context
+         * @param namespaceCtx      current X-Definition namespace context
          * @param targetNsUri       XSD document target namespace URI
          * @param importLocation    XSD document location
          * @return
@@ -280,13 +280,13 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         }
 
         /**
-         * Transforms given x-definition nodes into org.xdef.transform.xsd elements and insert them into {@link #schema}
+         * Transforms given X-Definition nodes into org.xdef.transform.xsd elements and insert them into {@link #schema}
          * @param treeAdapter       transformation algorithm
          * @param nodes             source nodes to transform
          */
         private void transformNodes(final Xd2XsdTreeAdapter treeAdapter, final List<XNode> nodes) {
             LOG.info(HEADER_LINE);
-            LOG.info("{}Transformation of x-definition tree to schema", logHeader(XSD_XDEF_EXTRA_ADAPTER));
+            LOG.info("{}Transformation of X-Definition tree to schema", logHeader(XSD_XDEF_EXTRA_ADAPTER));
             LOG.info(HEADER_LINE);
 
             for (XNode node : nodes) {

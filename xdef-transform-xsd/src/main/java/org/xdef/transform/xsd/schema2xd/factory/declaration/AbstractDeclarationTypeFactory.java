@@ -60,7 +60,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     private final Map<String, List<Object>> facetMultipleValues = new HashMap<>();
 
     /**
-     * Flag of x-definition declaration builder, if first XSD facet has been converted
+     * Flag of X-Definition declaration builder, if first XSD facet has been converted
      */
     private boolean builderFirstFacet;
 
@@ -104,10 +104,10 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Creates x-definition declaration type restrictions based on given type and facet string
+     * Creates X-Definition declaration type restrictions based on given type and facet string
      * @param type      X-definition output declaration type
      * @param facets    X-definition facet string
-     * @return x-definition declaration type
+     * @return X-Definition declaration type
      */
     private String build(final String type, final String facets) {
         StringBuilder sb = new StringBuilder();
@@ -305,7 +305,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Custom implementation of converting XSD facet into x-definition declaration.
+     * Custom implementation of converting XSD facet into X-Definition declaration.
      * Called before {@link #defaultBuildFacets}
      * @param sb string builder where should be custom string appended
      */
@@ -327,7 +327,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Default implementation of transforming XSD facets to x-definition declaration
+     * Default implementation of transforming XSD facets to X-Definition declaration
      * @param sb
      */
     protected void defaultBuildFacets(final StringBuilder sb) {

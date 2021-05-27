@@ -18,7 +18,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 
 
 /**
- * Creates x-definition declarations
+ * Creates X-Definition declarations
  */
 public class XdDeclarationFactory {
 
@@ -48,9 +48,9 @@ public class XdDeclarationFactory {
     }
 
     /**
-     * Creates x-definition declaration based on given builder.
-     * Append created declaration to builder x-definition parent node
-     * @param builder   x-definition declaration builder
+     * Creates X-Definition declaration based on given builder.
+     * Append created declaration to builder X-Definition parent node
+     * @param builder   X-Definition declaration builder
      */
     public void createDeclaration(final XdDeclarationBuilder builder) {
         LOG.info("{}Creating declaration ...", logHeader(TRANSFORMATION, builder.simpleType));
@@ -67,9 +67,9 @@ public class XdDeclarationFactory {
     }
 
     /**
-     * Creates x-definition declaration content based on given builder.
-     * @param builder   x-definition declaration builder
-     * @return x-definition declaration content
+     * Creates X-Definition declaration content based on given builder.
+     * @param builder   X-Definition declaration builder
+     * @return X-Definition declaration content
      */
     public String createDeclarationContent(final XdDeclarationBuilder builder) {
         LOG.info("{}Creating declaration content ...", logHeader(TRANSFORMATION, builder.simpleType));
@@ -77,9 +77,9 @@ public class XdDeclarationFactory {
     }
 
     /**
-     * Creates x-definition declaration content without any restrictions
+     * Creates X-Definition declaration content without any restrictions
      * @param baseType      declaration qualified name
-     * @return x-definition declaration content
+     * @return X-Definition declaration content
      */
     public String createSimpleTextDeclaration(final QName baseType) {
         final DefaultTypeFactory defaultTypeFactory = new DefaultTypeFactory(baseType.getLocalPart());
@@ -88,7 +88,7 @@ public class XdDeclarationFactory {
     }
 
     /**
-     * Creates default initialized x-definition declaration builder
+     * Creates default initialized X-Definition declaration builder
      * @return
      */
     public XdDeclarationBuilder createBuilder() {
@@ -96,9 +96,9 @@ public class XdDeclarationFactory {
     }
 
     /**
-     * Check if top level x-definition declaration can be created
+     * Check if top level X-Definition declaration can be created
      * @param name  declaration name
-     * @return true, if x-definition declaration with given name has not been created yet
+     * @return true, if X-Definition declaration with given name has not been created yet
      */
     boolean canBeProcessed(final String name) {
         return processedTopDeclarations.add(name);

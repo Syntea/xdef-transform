@@ -28,7 +28,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Creates x-definition declaration and declaration content for x-definition declarations
+ * Creates X-Definition declaration and declaration content for X-Definition declarations
  */
 public class XdDeclarationBuilder implements Cloneable {
 
@@ -50,12 +50,12 @@ public class XdDeclarationBuilder implements Cloneable {
     XmlSchemaSimpleType simpleType;
 
     /**
-     * Parent x-definition node where should be declaration
+     * Parent X-Definition node where should be declaration
      */
     Element parentNode;
 
     /**
-     * Type of x-definition declaration
+     * Type of X-Definition declaration
      */
     private IDeclarationTypeFactory.Type type;
 
@@ -77,7 +77,7 @@ public class XdDeclarationBuilder implements Cloneable {
     XdDeclarationBuilder() { }
 
     /**
-     * Initialize x-definition declaration builder with default values
+     * Initialize X-Definition declaration builder with default values
      * @param schema                    input XML schema
      * @param xdDeclarationFactory      X-Definition declaration factory
      * @return X-Definition declaration builder for give XML schema
@@ -100,8 +100,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Sets Parent x-definition node
-     * @param parentNode Parent x-definition node
+     * Sets Parent X-Definition node
+     * @param parentNode Parent X-Definition node
      * @return current instance
      */
     public XdDeclarationBuilder setParentNode(Element parentNode) {
@@ -110,8 +110,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Sets x-definition declaration
-     * @param type x-definition declaration
+     * Sets X-Definition declaration
+     * @param type X-Definition declaration
      * @return current instance
      */
     public XdDeclarationBuilder setType(IDeclarationTypeFactory.Type type) {
@@ -153,8 +153,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration/declaration content based on internal state
-     * @return x-definition declaration/declaration content
+     * Creates X-Definition declaration/declaration content based on internal state
+     * @return X-Definition declaration/declaration content
      */
     String build() {
         if (type == null) {
@@ -172,8 +172,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition root declaration based on internal state
-     * @return x-definition declaration
+     * Creates X-Definition root declaration based on internal state
+     * @return X-Definition declaration
      */
     private String createTopDeclaration() {
         LOG.info("{}Building top declaration content ...", logHeader(TRANSFORMATION, simpleType));
@@ -191,9 +191,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition root declaration based on internal state and input XSD restriction node
+     * Creates X-Definition root declaration based on internal state and input XSD restriction node
      * @param simpleTypeRestriction     XSD restriction node
-     * @return x-definition declaration
+     * @return X-Definition declaration
      */
     private String createTop(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction) {
         LOG.info("{}Building declaration content. name='{}', type='{}'",
@@ -236,9 +236,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration content based on internal state and input XSD schema simple content node
+     * Creates X-Definition declaration content based on internal state and input XSD schema simple content node
      * @param simpleTypeContent     XSD schema simple content node
-     * @return x-definition declaration content
+     * @return X-Definition declaration content
      */
     private String createDeclaration(final XmlSchemaSimpleTypeContent simpleTypeContent) {
         if (simpleTypeContent instanceof XmlSchemaSimpleTypeRestriction) {
@@ -249,10 +249,10 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration of x-definition list/union based on internal state and input XSD union/list node
+     * Creates X-Definition declaration of X-Definition list/union based on internal state and input XSD union/list node
      * @param simpleTypeContent     XSD union/list node
      * @param extraFacets           additional list of XSD facet nodes, which should be applied
-     * @return x-definition declaration
+     * @return X-Definition declaration
      */
     private String createSetDeclaration(final XmlSchemaSimpleTypeContent simpleTypeContent, final List<XmlSchemaFacet> extraFacets) {
         if (simpleTypeContent instanceof XmlSchemaSimpleTypeList) {
@@ -267,9 +267,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration/declaration content based on internal state and input XSD restriction node
+     * Creates X-Definition declaration/declaration content based on internal state and input XSD restriction node
      * @param simpleTypeRestriction     XSD restriction node
-     * @return x-definition declaration/declaration content
+     * @return X-Definition declaration/declaration content
      */
     private String createDeclaration(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction) {
         if (baseType == null) {
@@ -297,10 +297,10 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration/declaration content based on internal state and input XSD union node
+     * Creates X-Definition declaration/declaration content based on internal state and input XSD union node
      * @param simpleTypeUnion       XSD union node
      * @param extraFacets           additional list of XSD facet nodes, which should be applied
-     * @return x-definition declaration/declaration content
+     * @return X-Definition declaration/declaration content
      */
     private String create(final XmlSchemaSimpleTypeUnion simpleTypeUnion, final List<XmlSchemaFacet> extraFacets) {
         final QName[] qNames = simpleTypeUnion.getMemberTypesQNames();
@@ -369,10 +369,10 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates x-definition declaration/declaration content based on internal state and input XSD list node
+     * Creates X-Definition declaration/declaration content based on internal state and input XSD list node
      * @param simpleTypeList        XSD list node
      * @param extraFacets           additional list of XSD facet nodes, which should be applied
-     * @return x-definition declaration/declaration content
+     * @return X-Definition declaration/declaration content
      */
     private String create(final XmlSchemaSimpleTypeList simpleTypeList, final List<XmlSchemaFacet> extraFacets) {
         LOG.info("{}Creating list declaration content. name='{}', type='{}'",

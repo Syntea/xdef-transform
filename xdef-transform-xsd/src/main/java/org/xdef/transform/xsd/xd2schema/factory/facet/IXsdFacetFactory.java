@@ -7,7 +7,7 @@ import org.xdef.transform.xsd.xd2schema.model.XsdAdapterCtx;
 import java.util.List;
 
 /**
- * Transform x-definition XDNamedValue parameters into XSD facet facets
+ * Transform X-Definition XDNamedValue parameters into XSD facet facets
  */
 public interface IXsdFacetFactory {
 

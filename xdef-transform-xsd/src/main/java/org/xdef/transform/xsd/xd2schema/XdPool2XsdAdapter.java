@@ -28,7 +28,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDPOOL_ADAPTER;
 
 /**
- * Transformation of given x-definition pool to collection of XSD documents
+ * Transformation of given X-Definition pool to collection of XSD documents
  */
 public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2SchemaAdapter<XmlSchemaCollection> {
 
@@ -38,8 +38,8 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     private XDPool xdPool = null;
 
     /**
-     * Target namespace per x-definition
-     * Key:     x-definition name
+     * Target namespace per X-Definition
+     * Key:     X-Definition name
      * Value:   namespace prefix, namespace URI
      */
     private Map<String, Pair<String, String>> xDefTargetNs = null;
@@ -87,7 +87,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     }
 
     /**
-     * Gathers target namespaces for all x-definitions from source x-definition pool
+     * Gathers target namespaces for all x-definitions from source X-Definition pool
      */
     private void initTargetNamespaces() {
         LOG.info("{}Initialize target namespaces ...", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
@@ -101,11 +101,11 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
             if (targetNamespace.getKey() != null && targetNamespace.getValue() != null) {
                 if (xDefTargetNs.containsKey(xDefName)) {
                     reportWriter.warning(XSD.XSD014, xDefName);
-                    LOG.warn("{}Target namespace of x-definition is already defined. xDefName='{}'",
+                    LOG.warn("{}Target namespace of X-Definition is already defined. xDefName='{}'",
                             logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName);
                 } else {
                     xDefTargetNs.put(xDefName, Pair.of(targetNamespace.getKey(), targetNamespace.getValue()));
-                    LOG.info("{}Add target namespace to x-definition. xDefName='{}', nsPrefix='{}', nsUri='{}'",
+                    LOG.info("{}Add target namespace to X-Definition. xDefName='{}', nsPrefix='{}', nsUri='{}'",
                             logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER),
                             xDefName,
                             targetNamespace.getKey(),
@@ -120,7 +120,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     }
 
     /**
-     * Initializes all XSD documents based on source x-definition from x-definition pool
+     * Initializes all XSD documents based on source X-Definition from X-Definition pool
      */
     private void initXsdSchemas() {
         LOG.info("{}Initialize XSD documents ...", logHeader(INITIALIZATION, XSD_XDPOOL_ADAPTER));
@@ -132,7 +132,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     }
 
     /**
-     * Creates schema location context based on x-definition target namespace and x-definition name
+     * Creates schema location context based on X-Definition target namespace and X-Definition name
      */
     private void initSchemaLocations() {
         LOG.info("{}Initialize schema locations ...", logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER));
@@ -146,13 +146,13 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
         for (String xDefName : xDefsWithoutNs) {
             final String nsUri = NAMESPACE_URI_EMPTY;
             adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName));
-            LOG.debug("{}Creating namespace URI from x-definition name. xDefName='{}', nsUri='{}'",
+            LOG.debug("{}Creating namespace URI from X-Definition name. xDefName='{}', nsUri='{}'",
                     logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName, nsUri);
         }
     }
 
     /**
-     * Creates and initialize adapter for transformation of single x-definition
+     * Creates and initialize adapter for transformation of single X-Definition
      * @return Transformation adapter
      */
     private XDef2XsdAdapter createXDefAdapter() {

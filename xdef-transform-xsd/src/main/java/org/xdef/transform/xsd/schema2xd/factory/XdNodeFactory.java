@@ -38,7 +38,7 @@ public class XdNodeFactory {
     private final XdAdapterCtx adapterCtx;
 
     /**
-     * Output x-definition document
+     * Output X-Definition document
      */
     private Document doc;
 
@@ -47,7 +47,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates file header of output XML x-definition document
+     * Creates file header of output XML X-Definition document
      * @return file header
      */
     public static String createFileHeader() {
@@ -55,8 +55,8 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates x-definition pool node in root of document
-     * @return x-definition pool node
+     * Creates X-Definition pool node in root of document
+     * @return X-Definition pool node
      */
     public Element createPool() {
         doc = KXmlUtils.newDocument(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_POOL, null);
@@ -64,10 +64,10 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates and initializes x-definition node in root of document
+     * Creates and initializes X-Definition node in root of document
      * @param xDefName          X-definition name
      * @param rootNodeName      X-definition root node's names
-     * @return x-definition node
+     * @return X-Definition node
      */
     public Element createRootXdefinition(final String xDefName, final String rootNodeName) {
         LOG.info("{}X-definition node in root. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
@@ -78,10 +78,10 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates and initializes x-definition node
+     * Creates and initializes X-Definition node
      * @param xDefName          X-definition name
      * @param rootNodeName      X-definition root node's names
-     * @return x-definition node
+     * @return X-Definition node
      */
     public Element createXDefinition(final String xDefName, final String rootNodeName) {
         LOG.info("{}Creating X-definition node. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
@@ -91,10 +91,10 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates x-definition element node based on XSD element node
+     * Creates X-Definition element node based on XSD element node
      * @param xsdElem       XSD element node
      * @param xDefName      X-definition name
-     * @return x-definition element node
+     * @return X-Definition element node
      */
     public Element createElement(final XmlSchemaElement xsdElem, final String xDefName) {
         if (xsdElem.isRef()) {
@@ -130,10 +130,10 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition element node based on XSD complex type node
+     * Creates empty X-Definition element node based on XSD complex type node
      * @param xsdComplex        XSD complex type node
      * @param xDefName          X-definition name
-     * @return x-definition element node
+     * @return X-Definition element node
      */
     public Element createEmptyElement(final XmlSchemaComplexType xsdComplex, final String xDefName) {
         final QName xsdQName = xsdComplex.getQName();
@@ -146,7 +146,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition declaration node
+     * Creates empty X-Definition declaration node
      * @return <xd:declaration/>
      */
     public Element createEmptyDeclaration() {
@@ -154,7 +154,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition sequence node
+     * Creates empty X-Definition sequence node
      * @return <xd:sequence/>
      */
     public Element createEmptySequence() {
@@ -162,7 +162,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition choice node
+     * Creates empty X-Definition choice node
      * @return <xd:choice/>
      */
     public Element createEmptyChoice() {
@@ -170,7 +170,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition mixed node
+     * Creates empty X-Definition mixed node
      * @return <xd:mixed/>
      */
     public Element createEmptyMixed() {
@@ -178,7 +178,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition named mixed node. Used for transformation of group of elements
+     * Creates empty X-Definition named mixed node. Used for transformation of group of elements
      * @param name      Name of mixed node
      * @return <xd:mixed name="{@code name}"/>
      */
@@ -189,7 +189,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty x-definition any node
+     * Creates empty X-Definition any node
      * @return <xd:any/>
      */
     public Element createEmptyAny() {
@@ -197,7 +197,7 @@ public class XdNodeFactory {
     }
 
     /**
-     * Initializes given root node of x-definition. Set name and root node names
+     * Initializes given root node of X-Definition. Set name and root node names
      * @param xDef              X-definition root node
      * @param xDefName          X-definition name
      * @param rootNodesName     X-definition root node's names

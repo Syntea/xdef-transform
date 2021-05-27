@@ -14,7 +14,7 @@ import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_
 
 
 /**
- * Basic utils used in transformation XSD -> x-definition
+ * Basic utils used in transformation XSD -> X-Definition
  */
 public class Xsd2XdUtils {
 

@@ -48,7 +48,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms XSD schema to x-definition or x-definiton pool
+ * Transforms XSD schema to X-Definition or x-definiton pool
  */
 public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd2XDefAdapter<XmlSchema> {
 
@@ -101,7 +101,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
         Element xdRootElem;
 
         if (schemasToBeProcessed.size() > 1) {
-            LOG.info("{}Creating x-definition collection ...", logHeader(TRANSFORMATION, XD_ADAPTER));
+            LOG.info("{}Creating X-Definition collection ...", logHeader(TRANSFORMATION, XD_ADAPTER));
             xdRootElem = elementFactory.createPool();
 
             // First transform root XSD document
@@ -116,7 +116,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
                 xdRootElem.appendChild(createXDef(schemaName, schema, true));
             }
         } else {
-            LOG.info("{}Creating single x-definition ...", logHeader(TRANSFORMATION, XD_ADAPTER));
+            LOG.info("{}Creating single X-Definition ...", logHeader(TRANSFORMATION, XD_ADAPTER));
             xdRootElem = createXDef(xDefName, rootSchema, false);
         }
 
@@ -124,13 +124,13 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Transforms given XSD node tree into x-definition node tree
+     * Transforms given XSD node tree into X-Definition node tree
      *
      * Output will be saved in {@code xdDefRootElem}
      *
-     * @param treeAdapter       XSD to x-definition adapter to be used
-     * @param xdDefRootElem     x-definition root node
-     * @param xDefName          x-definition name
+     * @param treeAdapter       XSD to X-Definition adapter to be used
+     * @param xdDefRootElem     X-Definition root node
+     * @param xDefName          X-Definition name
      * @param schema            input XSD document to be transformed
      */
     private void transformXsdTree(final Xsd2XdTreeAdapter treeAdapter,
@@ -167,7 +167,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
      * Initializes XSD document's name
      * @param schemas       XSD documents
      * @param rootSchema    XSD root document
-     * @param xDefName      output x-definition name
+     * @param xDefName      output X-Definition name
      * @return XSD document name per XSD document
      */
     private Map<XmlSchema, String> initializeSchemaNames(final List<XmlSchema> schemas,
@@ -222,7 +222,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
      * Gather basic data from input XSD documents and initializes XSD documents
      * @param schemas       XSD documents
      * @param rootSchema    XSD root document
-     * @param xDefName      output x-definition name
+     * @param xDefName      output X-Definition name
      * @return Collection of input XML schemas
      */
     private List<XmlSchema> initializeSchemas(final List<XmlSchema> schemas,
@@ -309,7 +309,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
         LOG.info(HEADER_LINE);
 
         schemaToBeProcessed.forEach(xmlSchema -> {
-            // XDefinition name equals to schema file name
+            // X-Definition name equals to schema file name
             final String xDefName = adapterCtx.findXmlSchemaFileName(xmlSchema);
             final Namespace targetNamespace = getTargetNamespace(xmlSchema)
                     .orElse(DefaultNamespace.createEmptyNamespace());
@@ -345,9 +345,9 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Add namespaces to x-definition root node
-     * @param xdRootElem    x-definition root node
-     * @param xDefName      x-definition name
+     * Add namespaces to X-Definition root node
+     * @param xdRootElem    X-Definition root node
+     * @param xDefName      X-Definition name
      */
     private void addNamespaces(final Element xdRootElem, final String xDefName) {
         final List<Namespace> namespaces = adapterCtx.findNamespaces(xDefName)
@@ -365,15 +365,15 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Creates XML node structure of x-definition from given XSD document
-     * @param schemaName    XSD document name (output x-definition name)
+     * Creates XML node structure of X-Definition from given XSD document
+     * @param schemaName    XSD document name (output X-Definition name)
      * @param schema        input XSD document
-     * @param pool          flag, if x-definition is part of x-definition pool
-     * @return root node of x-definition
+     * @param pool          flag, if X-Definition is part of X-Definition pool
+     * @return root node of X-Definition
      */
     private Element createXDef(final String schemaName, final XmlSchema schema, final boolean pool) {
         LOG.info(HEADER_LINE);
-        LOG.info("{}Creating x-definition. name='{}'", logHeader(XD_ADAPTER), schemaName);
+        LOG.info("{}Creating X-Definition. name='{}'", logHeader(XD_ADAPTER), schemaName);
         LOG.info(HEADER_LINE);
 
         final Xsd2XdTreeAdapter treeAdapter = new Xsd2XdTreeAdapter(schemaName, schema, elementFactory, adapterCtx);

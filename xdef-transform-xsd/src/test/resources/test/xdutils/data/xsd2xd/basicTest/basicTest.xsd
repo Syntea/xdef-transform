@@ -19,7 +19,7 @@
             <xs:simpleType>
                <xs:restriction base="xs:string">
                   <xs:annotation>
-                     <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                     <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                   </xs:annotation>
                   <xs:enumeration value="bb"/>
                   <xs:enumeration value="aa"/>

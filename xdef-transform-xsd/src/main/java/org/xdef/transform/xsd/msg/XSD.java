@@ -29,7 +29,7 @@ public interface XSD {
 	public static final long XSD012 = 1180499979L;
 	/** Required schema import has not been found! NamespaceURI="&amp;{0}" */
 	public static final long XSD013 = 1180499980L;
-	/** Target namespace of x-definition is already defined. XDefinition="&amp;{0}" */
+	/** Target namespace of X-Definition is already defined. XDefinition="&amp;{0}" */
 	public static final long XSD014 = 1180499981L;
 	/** Root node of unique set has not been found. UniqueSet="&amp;{0}", XPath="&amp;{1}" */
 	public static final long XSD015 = 1180499982L;
@@ -103,7 +103,7 @@ public interface XSD {
 	public static final long XSD201 = 1180500016L;
 	/** Unsuccessful loading of XSD document. Name="&amp;{0}" */
 	public static final long XSD202 = 1180500017L;
-	/** Group reference is using multiple occurence - unsupported in x-definition. */
+	/** Group reference is using multiple occurence - unsupported in X-Definition. */
 	public static final long XSD203 = 1180500018L;
 	/** Declaration type is not set! */
 	public static final long XSD204 = 1180500019L;

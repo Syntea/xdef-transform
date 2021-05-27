@@ -54,7 +54,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: num</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: num</xs:documentation>
                </xs:annotation>
                <xs:minLength value="1"/>
                <xs:maxLength value="10"/>
@@ -82,7 +82,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                </xs:annotation>
                <xs:enumeration value="1"/>
                <xs:enumeration value="0"/>
@@ -104,7 +104,7 @@
                            <xs:simpleType>
                               <xs:restriction base="xs:string">
                                  <xs:annotation>
-                                    <xs:documentation>Original x-definition parser: xdatetime</xs:documentation>
+                                    <xs:documentation>Original X-Definition parser: xdatetime</xs:documentation>
                                  </xs:annotation>
                                  <xs:pattern value="\d{4}\d*">
                                     <xs:annotation>
@@ -229,7 +229,7 @@
                            <xs:simpleType>
                               <xs:restriction base="xs:string">
                                  <xs:annotation>
-                                    <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                                    <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                                  </xs:annotation>
                                  <xs:enumeration value="-3"/>
                                  <xs:enumeration value="-2"/>
@@ -354,7 +354,7 @@
                            <xs:simpleType>
                               <xs:restriction base="xs:string">
                                  <xs:annotation>
-                                    <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                                    <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                                  </xs:annotation>
                                  <xs:enumeration value="N"/>
                                  <xs:enumeration value="A"/>
@@ -377,7 +377,7 @@
                   <xs:simpleType>
                      <xs:restriction base="xs:string">
                         <xs:annotation>
-                           <xs:documentation>Original x-definition parser: num</xs:documentation>
+                           <xs:documentation>Original X-Definition parser: num</xs:documentation>
                         </xs:annotation>
                         <xs:minLength value="1"/>
                         <xs:maxLength value="10"/>
@@ -421,7 +421,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: num</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: num</xs:documentation>
                </xs:annotation>
                <xs:minLength value="1"/>
                <xs:maxLength value="10"/>
@@ -433,7 +433,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                </xs:annotation>
                <xs:enumeration value="U"/>
                <xs:enumeration value="T"/>
@@ -445,7 +445,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                </xs:annotation>
                <xs:enumeration value="A"/>
             </xs:restriction>
@@ -455,7 +455,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                </xs:annotation>
                <xs:enumeration value="A"/>
             </xs:restriction>
@@ -475,7 +475,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                </xs:annotation>
                <xs:enumeration value="1"/>
                <xs:enumeration value="0"/>
@@ -615,7 +615,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: num</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: num</xs:documentation>
                </xs:annotation>
                <xs:minLength value="9"/>
                <xs:maxLength value="10"/>
@@ -663,7 +663,7 @@
          <xs:simpleType>
             <xs:restriction base="xs:string">
                <xs:annotation>
-                  <xs:documentation>Original x-definition parser: num</xs:documentation>
+                  <xs:documentation>Original X-Definition parser: num</xs:documentation>
                </xs:annotation>
                <xs:minLength value="1"/>
                <xs:maxLength value="10"/>
@@ -679,7 +679,7 @@
                <xs:simpleType>
                   <xs:restriction base="xs:string">
                      <xs:annotation>
-                        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
                      </xs:annotation>
                      <xs:enumeration value="N"/>
                      <xs:enumeration value="A"/>

@@ -50,7 +50,7 @@ import static org.xdef.transform.xsd.XDefConst.XDEF_REF_DELIMITER;
 
 /** Support of tests.
  *
- * Derived from x-definition library (class XDTester).
+ * Derived from X-Definition library (class XDTester).
  *
  * @author Vaclav Trojan
  */
@@ -138,7 +138,7 @@ public abstract class XDTester extends STester {
 
 	public final boolean getGenObjFile() {return _genObj;}
 
-	final public Element test(final String[] xdefs,
+	final public Element test(final String[] xDefs,
 		final String data,
 		final String name,
 		final OutputStream out,
@@ -148,9 +148,9 @@ public abstract class XDTester extends STester {
 		System.out.flush();
 		System.err.flush();
 		try {
-			InputStream[] xdin = new InputStream[xdefs.length];
-			for (int i = 0; i <xdefs.length; i++) {
-				xdin[i] = new ByteArrayInputStream(xdefs[i].getBytes("ASCII"));
+			InputStream[] xdin = new InputStream[xDefs.length];
+			for (int i = 0; i <xDefs.length; i++) {
+				xdin[i] = new ByteArrayInputStream(xDefs[i].getBytes("ASCII"));
 			}
 			InputStream in = null;
 			if (data != null && data.length() > 0) {
@@ -165,32 +165,32 @@ public abstract class XDTester extends STester {
 		return null;
 	}
 
-	final public Element test(final String xdef,
+	final public Element test(final String xDef,
 		final String data,
 		final String name,
 		final OutputStream out,
 		final ReportWriter reporter,
 		final char mode,
 		final Class[] exts) {
-		return test(new String[] {xdef}, data, name, out, reporter, mode, exts);
+		return test(new String[] {xDef}, data, name, out, reporter, mode, exts);
 	}
 
 	/** Returns the available element model represented by given name or
 	 * <i>null</i> if definition item is not available.
-	 * @param xdef XDefinition.
-	 * @param key The name of definition item used for search.
+	 * @param xDef		X-Definition.
+	 * @param key		The name of definition item used for search.
 	 * @return The required XElement or null.
 	 */
-	private static XMElement getXElement(final XMDefinition xdef,
+	private static XMElement getXElement(final XMDefinition xDef,
 		final String key) {
 		int ndx = key.lastIndexOf(XDEF_REF_DELIMITER);
 		String lockey;
 		XMDefinition def;
 		if (ndx < 0) { //reference to this set, element with the name from key.
 			lockey = key;
-			def = xdef;
+			def = xDef;
 		} else {
-			def = xdef.getXDPool().getXMDefinition(key.substring(0,ndx));
+			def = xDef.getXDPool().getXMDefinition(key.substring(0,ndx));
 			if (def == null) {
 				return null;
 			}
@@ -257,7 +257,7 @@ public abstract class XDTester extends STester {
 	}
 
 	@SuppressWarnings("deprecation")
-	public final Element test(final InputStream[] xdefs,
+	public final Element test(final InputStream[] xDefs,
 		final InputStream data,
 		final String name,
 		final OutputStream out,
@@ -270,13 +270,13 @@ public abstract class XDTester extends STester {
 			}
 			XDBuilder xb = XDFactory.getXDBuilder(_props);
 			xb.setExternals(exts);
-			xb.setSource(xdefs, null);
+			xb.setSource(xDefs, null);
 			XDPool xp = xb.compileXD();
 			xp = checkExtObjects(xp);
 			if (out != null) {
 				out.flush();
 			}
-			if (xdefs == null) {
+			if (xDefs == null) {
 				throw new Exception("XDefinition " + name + " doesn't exist");
 			}
 			DefOutStream stdout;
@@ -318,7 +318,7 @@ public abstract class XDTester extends STester {
 
 	// if reporter is not null checking of result of data proecessin is
 	// skipped!
-	final public Element test(final InputStream[] xdefs,
+	final public Element test(final InputStream[] xDefs,
 		final InputStream data,
 		final String name,
 		final OutputStream os,
@@ -329,7 +329,7 @@ public abstract class XDTester extends STester {
 			if (reporter == null) {
 				myreporter = new ArrayReporter();
 			}
-			Element result = test(xdefs, data, name, os, reporter, 'P', exts);
+			Element result = test(xDefs, data, name, os, reporter, 'P', exts);
 			if (reporter == null) {
 				if (myreporter.errors()) {
 					StringWriter sw = new StringWriter();
@@ -389,7 +389,7 @@ public abstract class XDTester extends STester {
 
 	@SuppressWarnings("deprecation")
 	final public Element test(final Class[] objs,
-		final String xdef,
+		final String xDef,
 		final String data,
 		final String name,
 		final OutputStream out,
@@ -397,11 +397,11 @@ public abstract class XDTester extends STester {
 		final char mode) throws Exception { // 'P' => parse, 'C' => create
 		if (_chkSyntax) {
 			genXdOfXd();
-			_xdOfxd.createXDDocument().xparse(genCollection(xdef), null);
+			_xdOfxd.createXDDocument().xparse(genCollection(xDef), null);
 		}
 		XDBuilder xb = XDFactory.getXDBuilder(_props);
 		xb.setExternals(objs);
-		xb.setSource(xdef);
+		xb.setSource(xDef);
 		XDPool xp = checkExtObjects(xb.compileXD());
 		XDDocument xd = xp.createXDDocument(name);
 		xd.setProperties(_props);
@@ -419,24 +419,24 @@ public abstract class XDTester extends STester {
 		}
 	}
 
-	final public boolean test(final String xdef,
+	final public boolean test(final String xDef,
 		final String data,
 		final String name,
 		final char mode) {  // 'P' => parse, 'C' => create
-		return test(xdef, data, name, mode, data, "");
+		return test(xDef, data, name, mode, data, "");
 	}
 
-	final public boolean test(final String xdef,
+	final public boolean test(final String xDef,
 		final String data,
 		final String name,
 		final char mode,  // 'P' => parse, 'C' => create
 		final String result,
 		final String stdout,
 		final Class<?>... exts) {
-		return test(new String[]{xdef}, data, name, mode, result, stdout, exts);
+		return test(new String[]{xDef}, data, name, mode, result, stdout, exts);
 	}
 
-	final public boolean test(final String[] xdef,
+	final public boolean test(final String[] xDef,
 		final String data,
 		final String name,
 		final char mode,  // 'P' => parse, 'C' => create
@@ -445,7 +445,7 @@ public abstract class XDTester extends STester {
 		final Class<?>... exts) {
 		if (_chkSyntax) {
 			genXdOfXd();
-			_xdOfxd.createXDDocument().xparse(genCollection(xdef), null);
+			_xdOfxd.createXDDocument().xparse(genCollection(xDef), null);
 		}
 		boolean error = false;
 		System.err.flush();
@@ -453,7 +453,7 @@ public abstract class XDTester extends STester {
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ArrayReporter reporter = new ArrayReporter();
-			Element el = test(xdef, data, name, bos, reporter, mode, exts);
+			Element el = test(xDef, data, name, bos, reporter, mode, exts);
 			if (reporter.errors()) {
 				error = true;
 				ReportPrinter.printListing(System.out, data, reporter, true);
@@ -502,15 +502,15 @@ public abstract class XDTester extends STester {
 	}
 
 	final public String getListing(final ReportReader r,
-		final String xdef) {
-		if (xdef.charAt(0) == '<') {
-			return ReportPrinter.printListing(xdef, r);
+		final String xDef) {
+		if (xDef.charAt(0) == '<') {
+			return ReportPrinter.printListing(xDef, r);
 		} else {
 			try {
-				return "File: " + xdef + "\n" + ReportPrinter.printListing(
-					FUtils.readString(new File(xdef)), r);
+				return "File: " + xDef + "\n" + ReportPrinter.printListing(
+					FUtils.readString(new File(xDef)), r);
 			} catch (Exception ex) {
-				return "File: " + xdef + "\n" + ex;
+				return "File: " + xDef + "\n" + ex;
 			}
 		}
 	}
@@ -567,20 +567,20 @@ public abstract class XDTester extends STester {
 		return checkExtObjects(XDFactory.compileXD(_props, file, obj));
 	}
 
-	final public XDPool compile(final String xdef, final Class<?>... obj) {
+	final public XDPool compile(final String xDef, final Class<?>... obj) {
 		if (_chkSyntax) {
 			genXdOfXd();
-			_xdOfxd.createXDDocument().xparse(genCollection(xdef), null);
+			_xdOfxd.createXDDocument().xparse(genCollection(xDef), null);
 		}
-		return checkExtObjects(XDFactory.compileXD(_props, xdef, obj));
+		return checkExtObjects(XDFactory.compileXD(_props, xDef, obj));
 	}
 
-	final public XDPool compile(String[] xdefs, final Class<?>... obj) {
+	final public XDPool compile(String[] xDefs, final Class<?>... obj) {
 		if (_chkSyntax) {
 			genXdOfXd();
-			_xdOfxd.createXDDocument().xparse(genCollection(xdefs), null);
+			_xdOfxd.createXDDocument().xparse(genCollection(xDefs), null);
 		}
-		return checkExtObjects(XDFactory.compileXD(_props, xdefs, obj));
+		return checkExtObjects(XDFactory.compileXD(_props, xDefs, obj));
 	}
 
 	final public String createListnig(final String data,
@@ -634,11 +634,11 @@ public abstract class XDTester extends STester {
 		return xd.xcreate(qname, reporter);
 	}
 
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String defName,
 		final QName qname,
 		final ReportWriter reporter) {
-		return create(compile(xdef), defName, qname, reporter);
+		return create(compile(xDef), defName, qname, reporter);
 	}
 
 	final public Element create(final XDPool xp,
@@ -655,37 +655,37 @@ public abstract class XDTester extends STester {
 			: xd.xcreate(name, null);
 	}
 
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String defName,
 		final Element el,
 		final String name) {
-		return create(compile(xdef), defName, el, name);
+		return create(compile(xDef), defName, el, name);
 	}
 
 	/**
 	 Compose a new XML document from the specified data.
-	 * @param xdef the X-Definition as source for data construction.
-	 * @param defName X-Definition name, or null if it is not specified.
-	 * @param el Element as X-Definition context or null.
-	 * @param name root element name of the constructed XML document.
-	 * @param param global parameter in X-Script or null.
-	 * @param obj the value of the global parameter or null.
-	 * @param reporter ArrayReporter.
+	 * @param xDef		the X-Definition as source for data construction.
+	 * @param defName	X-Definition name, or null if it is not specified.
+	 * @param el		Element as X-Definition context or null.
+	 * @param name		root element name of the constructed XML document.
+	 * @param param		global parameter in X-Script or null.
+	 * @param obj 		the value of the global parameter or null.
+	 * @param reporter 	ArrayReporter.
 	 * @return root element of the created XML document.
 	 */
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String defName,
 		final Element el,
 		final String name,
 		final String param,
 		final Object obj,
 		final ArrayReporter reporter) {
-		return create(compile(xdef), defName, el, name, param, obj, reporter);
+		return create(compile(xDef), defName, el, name, param, obj, reporter);
 	}
 
 	/**
 	 Compose a new XML document from the specified data.
-	 * @param xp XDPool containing XDefinitions.
+	 * @param xp XDPool containing X-Definitions.
 	 * @param defName X-Definition name, or null if it is not specified.
 	 * @param el Element as X-Definition context or null.
 	 * @param name root element name of the constructed XML document.
@@ -756,14 +756,14 @@ public abstract class XDTester extends STester {
 		return result;
 	}
 
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String xdName,
 		final QName qname,
 		final ArrayReporter reporter,
 		final String xml,
 		final StringWriter strw,
 		final Object userObj) {
-		return create(compile(xdef), xdName, qname, reporter, xml,strw,userObj);
+		return create(compile(xDef), xdName, qname, reporter, xml,strw,userObj);
 	}
 
 	final public Element create(final XDPool xp,
@@ -776,14 +776,14 @@ public abstract class XDTester extends STester {
 		return create(xp, xdName, new QName(name),reporter, xml, strw, userObj);
 	}
 
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String xdName,
 		final String name,
 		final ArrayReporter reporter,
 		final String xml,
 		final StringWriter strw,
 		final Object userObj) {
-		return create(compile(xdef), xdName, name, reporter, xml, strw,userObj);
+		return create(compile(xDef), xdName, name, reporter, xml, strw,userObj);
 	}
 
 	final public Element create(final XDPool xp,
@@ -813,12 +813,12 @@ public abstract class XDTester extends STester {
 		return create(xd, new QName(name), reporter, xml, null, null);
 	}
 
-	final public Element create(final String xdef,
+	final public Element create(final String xDef,
 		final String xdName,
 		final String name,
 		final ArrayReporter reporter,
 		final String xml) {
-		return create(xdef, xdName, name, reporter, xml, null, null);
+		return create(xDef, xdName, name, reporter, xml, null, null);
 	}
 
 	final public Element create(final XDDocument xd,
@@ -840,11 +840,11 @@ public abstract class XDTester extends STester {
 		return xd.xparse(xml, reporter);
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final String xml,
 		final ReportWriter reporter) {
-		return parse(compile(xdef), defName, xml, reporter);
+		return parse(compile(xDef), defName, xml, reporter);
 	}
 
 	final public Element parse(final XDPool xp,
@@ -859,11 +859,11 @@ public abstract class XDTester extends STester {
 		return xd.xparse(el, reporter);
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final Element el,
 		final ReportWriter reporter) {
-		return parse(compile(xdef), defName, el, reporter);
+		return parse(compile(xDef), defName, el, reporter);
 	}
 
 	final public Element parse(final XDPool xp,
@@ -874,10 +874,10 @@ public abstract class XDTester extends STester {
 		return xd.xparse(el, null);
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final Element el) {
-		return parse(compile(xdef), defName, el);
+		return parse(compile(xDef), defName, el);
 	}
 
 	final public Element parse(final XDPool xp,
@@ -888,10 +888,10 @@ public abstract class XDTester extends STester {
 		return xd.xparse(xml, null);
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final String xml) {
-		return parse(compile(xdef), defName, xml);
+		return parse(compile(xDef), defName, xml);
 	}
 
 	final public Element parse(final XDPool xp,
@@ -910,12 +910,12 @@ public abstract class XDTester extends STester {
 		return xd.xparse(xml, reporter);
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final ArrayReporter reporter,
 		final String xml,
 		final Object obj) {
-		return parse(compile(xdef), defName, xml, reporter, obj);
+		return parse(compile(xDef), defName, xml, reporter, obj);
 	}
 
 	final public Element parse(final XDPool xp,
@@ -990,14 +990,14 @@ public abstract class XDTester extends STester {
 		return xd.getElement();
 	}
 
-	final public Element parse(final String xdef,
+	final public Element parse(final String xDef,
 		final String defName,
 		final String xml,
 		final ArrayReporter reporter,
 		final StringWriter strw,
 		final Object input,
 		final Object obj) {
-		return parse(compile(xdef), defName, xml, reporter, strw, input, obj);
+		return parse(compile(xDef), defName, xml, reporter, strw, input, obj);
 	}
 
 	final public void printReports(final ReportReader reporter,

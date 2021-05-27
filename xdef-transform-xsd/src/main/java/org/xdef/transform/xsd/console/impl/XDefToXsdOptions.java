@@ -9,7 +9,7 @@ public class XDefToXsdOptions {
     public static Options cli() {
         Options options = new Options();
 
-        Option input = new Option("i", XDefToXsdOptionsConst.INPUT_DIR, true, "input directory path containing x-definition file(s)");
+        Option input = new Option("i", XDefToXsdOptionsConst.INPUT_DIR, true, "input directory path containing X-Definition file(s)");
         input.setRequired(true);
         options.addOption(input);
 
@@ -25,7 +25,7 @@ public class XDefToXsdOptions {
         schemaFileExt.setRequired(false);
         options.addOption(schemaFileExt);
 
-        Option xDefRootModel = new Option("r", XDefToXsdOptionsConst.INPUT_ROOT, true, "name of root x-definition (used for validation purposes)");
+        Option xDefRootModel = new Option("r", XDefToXsdOptionsConst.INPUT_ROOT, true, "name of root X-Definition (used for validation purposes)");
         xDefRootModel.setRequired(false);
         options.addOption(xDefRootModel);
 

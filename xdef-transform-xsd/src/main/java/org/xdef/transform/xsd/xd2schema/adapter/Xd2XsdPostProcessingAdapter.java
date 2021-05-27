@@ -74,10 +74,10 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Run post processing on x-definition
+     * Run post processing on X-Definition
      * Post processing features can be enabled by calling {@link #setFeatures(Set)} or {@link #addFeature(Xd2XsdFeature)}
      *
-     * @param xDef  x-definition to be processed
+     * @param xDef  X-Definition to be processed
      */
     public void process(final XDefinition xDef) {
         if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING)) {
@@ -85,7 +85,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
         }
 
         LOG.info(HEADER_LINE);
-        LOG.info("{}Post-processing XDefinition", logHeader(POSTPROCESSING, XSD_PP_ADAPTER));
+        LOG.info("{}Post-processing X-Definition", logHeader(POSTPROCESSING, XSD_PP_ADAPTER));
         LOG.info(HEADER_LINE);
 
         postProcessor = new XsdPostProcessor(adapterCtx);
@@ -99,8 +99,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Run post processing on x-definition pool
-     * @param xdPool                x-definition pool to be processed
+     * Run post processing on X-Definition pool
+     * @param xdPool                X-Definition pool to be processed
      * @param updatedNamespaces     already processed namespaces
      */
     private void processNodes(final XDPool xdPool, final Set<String> updatedNamespaces) {
@@ -112,8 +112,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates XSD nodes which are originally located in different x-definition namespace
-     * @param xDef                  x-definition source of XSD nodes
+     * Creates XSD nodes which are originally located in different X-Definition namespace
+     * @param xDef                  X-Definition source of XSD nodes
      * @param updatedNamespaces     already processed namespaces
      */
     private void processNodes(final XDefinition xDef, final Set<String> updatedNamespaces) {
@@ -174,8 +174,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates unique constraints (xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from x-definition pool
-     * @param xdPool    x-definition pool
+     * Creates unique constraints (xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from X-Definition pool
+     * @param xdPool    X-Definition pool
      */
     private void createKeysAndRefs(final XDPool xdPool) {
         for (XMDefinition xDef : xdPool.getXMDefinitions()) {
@@ -184,8 +184,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates unique constraints (xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from x-definition
-     * @param xDef    input x-definition where XSD elements should be inserted
+     * Creates unique constraints (xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from X-Definition
+     * @param xDef    input X-Definition where XSD elements should be inserted
      */
     private void createKeysAndRefs(final XDefinition xDef) {
         if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING_UNIQUE)) {
@@ -199,12 +199,12 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates unique constraints xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from x-definition
+     * Creates unique constraints xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from X-Definition
      *
      * If constraint has no keyref or only unsupported keyref, then xs:unique is created instead of xs:key
      *
-     * @param xDefName      x-definition name
-     * @param systemId      source system id of unique set (empty for unique sets places in root of x-definition)
+     * @param xDefName      X-Definition name
+     * @param systemId      source system id of unique set (empty for unique sets places in root of X-Definition)
      */
     private void createRestrictionConstraints(final String xDefName, final String systemId) {
         final XmlSchemaUniqueConstraintMap.XDefUniqueSetMap uniqueInfoMap = adapterCtx.findXDefUniqueSetMap(systemId)
@@ -214,7 +214,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
             return;
         }
 
-        LOG.info("{}Creating unique constraints for x-definition. xDefName='{}', systemId='{}'",
+        LOG.info("{}Creating unique constraints for X-Definition. xDefName='{}', systemId='{}'",
                 logHeader(POSTPROCESSING, XSD_PP_ADAPTER), xDefName, systemId);
 
         int i = 0;
@@ -306,7 +306,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
                             if (uniqueInfoEntry.getKey().isEmpty() && systemId.isEmpty()) {
                                 XsdNodeFactory.createAnnotation(
-                                        "Unique set was placed in global declaration inside x-definition",
+                                        "Unique set was placed in global declaration inside X-Definition",
                                         adapterCtx
                                 ).ifPresent(identityConstraint::setAnnotation);
                             }

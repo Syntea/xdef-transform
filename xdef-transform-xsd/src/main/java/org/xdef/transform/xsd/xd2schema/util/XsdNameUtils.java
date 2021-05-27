@@ -54,9 +54,9 @@ public class XsdNameUtils {
     private static final Logger LOG = LoggerFactory.getLogger(XsdNameUtils.class);
 
     /**
-     * Parse x-definition reference node name from given x-definition reference position
-     * @param refPos    x-definition reference position
-     * @return x-definition reference node name
+     * Parse X-Definition reference node name from given X-Definition reference position
+     * @param refPos    X-Definition reference position
+     * @return X-Definition reference node name
      */
     public static String getReferenceName(final String refPos) {
         int xdefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
@@ -73,9 +73,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Get x-definition node position without x-definition name
-     * @param nodePos   x-definition node position
-     * @return  position without x-definition name
+     * Get X-Definition node position without X-Definition name
+     * @param nodePos   X-Definition node position
+     * @return  position without X-Definition name
      */
     public static String getXNodePath(final String nodePos) {
         int xdefSystemSeparatorPos = nodePos.indexOf(XDEF_REF_DELIMITER);
@@ -87,10 +87,10 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition node name without target namespace (if using it)
+     * Parse X-Definition node name without target namespace (if using it)
      * @param schema    XSD document
-     * @param name      x-definition node name
-     * @return  x-definition node name
+     * @param name      X-Definition node name
+     * @return  X-Definition node name
      */
     public static String resolveName(final XmlSchema schema, final String name) {
         // Element's name contains target namespace prefix, we can remove this prefix
@@ -105,7 +105,7 @@ public class XsdNameUtils {
      * Resolve XSD attribute node name and schema form
      * @param schema    XSD document
      * @param attr      XSD attribute node
-     * @param xName     x-definition node name
+     * @param xName     X-Definition node name
      */
     public static void resolveAttributeQName(final XmlSchema schema, final XmlSchemaAttribute attr, final String xName) {
         if (attr.isRef()) {
@@ -128,7 +128,7 @@ public class XsdNameUtils {
     /**
      * Resolve XSD element node name and schema form
      * @param schema        XSD document
-     * @param xElem         x-definition element node
+     * @param xElem         X-Definition element node
      * @param elem          XSD element node
      * @param adapterCtx    XSD adapter context
      */
@@ -188,10 +188,10 @@ public class XsdNameUtils {
     }
 
     /**
-     * Check if x-definition node name is not using namespace prefix while XSD document is using target namespace prefix
+     * Check if X-Definition node name is not using namespace prefix while XSD document is using target namespace prefix
      * @param schema    XSD document
-     * @param name      x-definition node name
-     * @return true if x-definition node name is not using namespace prefix while XSD document yes
+     * @param name      X-Definition node name
+     * @return true if X-Definition node name is not using namespace prefix while XSD document yes
      */
     public static boolean isUnqualifiedName(final XmlSchema schema, final String name) {
         return !XsdNamespaceUtils.containsNsPrefix(name)
@@ -200,9 +200,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition node name without prefix
-     * @param nodeName  x-definition node name
-     * @return  x-definition node name
+     * Parse X-Definition node name without prefix
+     * @param nodeName  X-Definition node name
+     * @return  X-Definition node name
      */
     public static String getNodeNameWithoutPrefix(final String nodeName) {
         int nsPos = nodeName.indexOf(NAMESPACE_DELIMITER);
@@ -214,9 +214,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition element node name without x-definition type
-     * @param xElem     x-definition element node
-     * @return  x-definition element node name
+     * Parse X-Definition element node name without X-Definition type
+     * @param xElem     X-Definition element node
+     * @return  X-Definition element node name
      */
     public static String getName(final XElement xElem) {
         int typeSepPos = xElem.getName().indexOf('$');
@@ -228,9 +228,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition unique set variable name
-     * @param varTypeName   x-definition unique set variable type name
-     * @return  x-definition unique set variable name
+     * Parse X-Definition unique set variable name
+     * @param varTypeName   X-Definition unique set variable type name
+     * @return  X-Definition unique set variable name
      */
     public static String getUniqueSetVarName(final String varTypeName) {
         final int pos = varTypeName.lastIndexOf('.');
@@ -250,9 +250,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition unique set variable type
-     * @param varTypeName   x-definition unique set variable type name
-     * @return  x-definition unique set variable type
+     * Parse X-Definition unique set variable type
+     * @param varTypeName   X-Definition unique set variable type name
+     * @return  X-Definition unique set variable type
      */
     public static UniqueConstraint.Type getUniqueSetVarType(final String varTypeName) {
         UniqueConstraint.Type ucType = UniqueConstraint.Type.UNK;
@@ -272,9 +272,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Parse x-definition unique set name
-     * @param varTypeName   x-definition unique set variable type
-     * @return  x-definition unique set name
+     * Parse X-Definition unique set name
+     * @param varTypeName   X-Definition unique set variable type
+     * @return  X-Definition unique set name
      */
     public static String getUniqueSetName(final String varTypeName) {
         final int pos = varTypeName.indexOf('.');
@@ -286,8 +286,8 @@ public class XsdNameUtils {
     }
 
     /**
-     * Creates reference name from given x-definition node
-     * @param xData         x-definition node
+     * Creates reference name from given X-Definition node
+     * @param xData         X-Definition node
      * @param adapterCtx    XSD adapter context
      * @return  reference name
      *          otherwise {@link Optional#empty()}
@@ -345,7 +345,7 @@ public class XsdNameUtils {
 
     /**
      * Creates XML schema name
-     * @param xDef   x-definition
+     * @param xDef   X-Definition
      * @return  XML schema name
      */
     public static String getSchemaName(final XMDefinition xDef) {

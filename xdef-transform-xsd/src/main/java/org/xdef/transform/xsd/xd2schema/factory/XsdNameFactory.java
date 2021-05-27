@@ -41,7 +41,7 @@ public class XsdNameFactory {
     private final Map<String, Map<String, String>> topLevelNameMap = new HashMap<>();
 
     /**
-     * Base name of XSD nodes. Used for pairing and storing x-definition nodes with same name
+     * Base name of XSD nodes. Used for pairing and storing X-Definition nodes with same name
      * which are projected on top level XSD node.
      *
      * Key:     systemId
@@ -56,8 +56,8 @@ public class XsdNameFactory {
 
     /**
      * Finds XSD top level element node name.
-     * @param xElem     x-definition element
-     * @return  name if x-definition element node with given path has been stored
+     * @param xElem     X-Definition element
+     * @return  name if X-Definition element node with given path has been stored
      *          otherwise {@link Optional#empty()} or if {@link Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR} is disabled
      */
     public Optional<String> findTopLevelName(final XElement xElem) {
@@ -70,9 +70,9 @@ public class XsdNameFactory {
 
     /**
      * Finds XSD top level simple-type node name
-     * @param xData     x-definition node (attribute/text)
-     * @param usePath   flag if name should be search by x-definition node path
-     * @return  name if x-definition node has been stored
+     * @param xData     X-Definition node (attribute/text)
+     * @param usePath   flag if name should be search by X-Definition node path
+     * @return  name if X-Definition node has been stored
      *          otherwise {@link Optional#empty()} or if {@link Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR} is disabled
      */
     public Optional<String> findTopLevelName(final XData xData, boolean usePath) {
@@ -97,9 +97,9 @@ public class XsdNameFactory {
     }
 
     /**
-     * Finds XSD top level node name based on x-definition path
-     * @param xNode x-definition node
-     * @return  name if x-definition node with given path has been stored
+     * Finds XSD top level node name based on X-Definition path
+     * @param xNode X-Definition node
+     * @return  name if X-Definition node with given path has been stored
      *          otherwise {@link Optional#empty()}
      */
     private Optional<String> findTopLevelNameByPath(final XNode xNode) {
@@ -121,8 +121,8 @@ public class XsdNameFactory {
      * Creates new top level XSD element node name based on {@code baseName}
      * and current internal state of name storage.
      *
-     * @param xElem         x-definition element node
-     * @param baseName      x-definition element node base name
+     * @param xElem         X-Definition element node
+     * @param baseName      X-Definition element node base name
      * @return new name
      */
     public String generateTopLevelName(final XElement xElem, final String baseName) {
@@ -133,8 +133,8 @@ public class XsdNameFactory {
      * Creates new top level XSD simple type node name based on {@code baseName}
      * and current internal state of name storage.
      *
-     * @param xData         x-definition node
-     * @param baseName      x-definition node base name
+     * @param xData         X-Definition node
+     * @param baseName      X-Definition node base name
      * @return new name
      */
     public String generateTopLevelName(final XData xData, final String baseName) {
@@ -145,8 +145,8 @@ public class XsdNameFactory {
      * Creates new top level XSD node name based on {@code baseName}
      * and current internal state of name storage.
      *
-     * @param xNode         x-definition node
-     * @param baseName      x-definition node base name
+     * @param xNode         X-Definition node
+     * @param baseName      X-Definition node base name
      * @return new name
      */
     private String generateTopLevelName(final XNode xNode, final String baseName) {
@@ -176,8 +176,8 @@ public class XsdNameFactory {
 
     /**
      * Saves XSD simple type node name to internal storage
-     * @param xData     x-definition node
-     * @param baseName  x-definition node base name
+     * @param xData     X-Definition node
+     * @param baseName  X-Definition node base name
      */
     public void addTopSimpleTypeName(final XData xData, final String baseName) {
         if (!adapterCtx.hasEnableFeature(XSD_NAME_COLLISION_DETECTOR) || baseName == null) {
@@ -207,20 +207,20 @@ public class XsdNameFactory {
     }
 
     /**
-     * Get list of x-definition nodes using same base name. If list does not exist, then creates and saves empty one.
+     * Get list of X-Definition nodes using same base name. If list does not exist, then creates and saves empty one.
      * @param mapBaseName   map of nodes using base name
      * @param baseName      required base name
-     * @return list of x-definition nodes
+     * @return list of X-Definition nodes
      */
     private List<XMNode> getOrCreateListNodesInBaseNameMap(final Map<String, List<XMNode>> mapBaseName, final String baseName) {
         return mapBaseName.computeIfAbsent(baseName, key -> new LinkedList<>());
     }
 
     /**
-     * Saves x-definition node base name.
-     * @param xNode         x-definition node
-     * @param nodeBaseName  x-definition node base name
-     * @return list of x-definition nodes using same {@code nodeBaseName}
+     * Saves X-Definition node base name.
+     * @param xNode         X-Definition node
+     * @param nodeBaseName  X-Definition node base name
+     * @return list of X-Definition nodes using same {@code nodeBaseName}
      */
     private List<XMNode> addNodeWithBaseName(final XNode xNode, final String nodeBaseName) {
         final String nodeType = (xNode instanceof XElement) ? "complex" : "simple";
@@ -255,7 +255,7 @@ public class XsdNameFactory {
 
     /**
      * Creates new name of local simple type
-     * @param xData         x-definition node to be converted to XSD simple type node
+     * @param xData         X-Definition node to be converted to XSD simple type node
      * @return new name
      */
     public static Optional<String> createLocalSimpleTypeName(final XData xData) {

@@ -24,7 +24,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_KEY_AND_REF;
 
 /**
- * Model containing information gathered from x-definition uniqueSet.
+ * Model containing information gathered from X-Definition uniqueSet.
  *
  * Stores information about internal variables of uniqueSet.
  * Stores position of ID and REF attributes using uniqueSet.
@@ -116,7 +116,7 @@ public class UniqueConstraint {
 
     /**
      * Add variable of unique constraint
-     * @param xData                 x-definition node of unique constraint's variable
+     * @param xData                 X-Definition node of unique constraint's variable
      * @param adapterCtx            XSD adapter context
      */
     public void addVariable(final XData xData, final XsdAdapterCtx adapterCtx) {

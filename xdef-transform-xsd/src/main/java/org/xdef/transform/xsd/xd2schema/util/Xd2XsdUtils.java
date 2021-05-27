@@ -25,7 +25,7 @@ import static org.xdef.model.XMNode.XMMIXED;
 import static org.xdef.model.XMNode.XMSEQUENCE;
 
 /**
- * Basic utils used in transformation x-definition -> XSD
+ * Basic utils used in transformation X-Definition -> XSD
  */
 public class Xd2XsdUtils {
 
@@ -50,9 +50,9 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Convert x-definition particle kind to string
-     * @param kind  x-definition particle kind
-     * @return name of x-definition particle kind
+     * Convert X-Definition particle kind to string
+     * @param kind  X-Definition particle kind
+     * @return name of X-Definition particle kind
      */
     public static String particleXKindToString(short kind) {
         String result = "unknown";
@@ -97,9 +97,9 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Parse given x-definition pos without attribute at the end
-     * @param xdPos     x-definition position
-     * @return x-definition position without attribute
+     * Parse given X-Definition pos without attribute at the end
+     * @param xdPos     X-Definition position
+     * @return X-Definition position without attribute
      */
     public static String xPathWithoutAttr(final String xdPos) {
         final int paramPos = xdPos.lastIndexOf("/@");
@@ -126,27 +126,27 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Checks if given x-definition element is any type
-     * @param xElem     x-definition element node
-     * @return  true if x-definition element node is any
+     * Checks if given X-Definition element is any type
+     * @param xElem     X-Definition element node
+     * @return  true if X-Definition element node is any
      */
     public static boolean isAnyElement(final XElement xElem) {
         return "$any".equals(xElem.getName());
     }
 
     /**
-     * Checks if given x-definition element contains any node
-     * @param xElem     x-definition element node
-     * @return  true if x-definition element node contains any node
+     * Checks if given X-Definition element contains any node
+     * @param xElem     X-Definition element node
+     * @return  true if X-Definition element node contains any node
      */
     public static boolean containsAnyElement(final XElement xElem) {
         return xElem.getName().endsWith("$any");
     }
 
     /**
-     * Checks if given x-definition element contains mixed node
-     * @param xElem     x-definition element node
-     * @return  true if x-definition element node contains mixed node
+     * Checks if given X-Definition element contains mixed node
+     * @param xElem     X-Definition element node
+     * @return  true if X-Definition element node contains mixed node
      */
     public static boolean containsMixedElement(final XMElement xElem) {
         return xElem.getName().endsWith("$mixed");

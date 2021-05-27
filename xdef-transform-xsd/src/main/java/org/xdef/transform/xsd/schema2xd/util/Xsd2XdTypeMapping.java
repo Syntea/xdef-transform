@@ -15,12 +15,12 @@ import java.util.Optional;
 import static org.xdef.transform.xsd.schema2xd.factory.declaration.IDeclarationTypeFactory.FACET_PATTERN;
 
 /**
- * Definition of transformation XSD data types to x-definition data types
+ * Definition of transformation XSD data types to X-Definition data types
  */
 public class Xsd2XdTypeMapping {
 
     /**
-     * Transformation map of XSD data types to x-definition data type
+     * Transformation map of XSD data types to X-Definition data type
      */
     private static final Map<QName, IDeclarationTypeFactory> defaultQNameMap = new HashMap<>();
 
@@ -60,9 +60,9 @@ public class Xsd2XdTypeMapping {
     }
 
     /**
-     * Converts given XSD qualified name to x-definition data type
+     * Converts given XSD qualified name to X-Definition data type
      * @param xsdType   XSD qualified name
-     * @return  x-definition data type if exists,
+     * @return  X-Definition data type if exists,
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<IDeclarationTypeFactory> findDefaultDataTypeFactory(final QName xsdType) {

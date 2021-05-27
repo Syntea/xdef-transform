@@ -83,7 +83,7 @@
   <xs:simpleType name="tokens_Type">
     <xs:restriction base="xs:string">
       <xs:annotation>
-        <xs:documentation>Original x-definition parser: enum</xs:documentation>
+        <xs:documentation>Original X-Definition parser: enum</xs:documentation>
       </xs:annotation>
       <xs:enumeration value="ab"/>
       <xs:enumeration value="cd"/>
@@ -226,7 +226,7 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:annotation>
-                <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                <xs:documentation>Original X-Definition parser: enum</xs:documentation>
               </xs:annotation>
               <xs:enumeration value="ab"/>
               <xs:enumeration value="cd"/>
@@ -237,7 +237,7 @@
           <xs:simpleType>
             <xs:restriction base="xs:string">
               <xs:annotation>
-                <xs:documentation>Original x-definition parser: enum</xs:documentation>
+                <xs:documentation>Original X-Definition parser: enum</xs:documentation>
               </xs:annotation>
               <xs:enumeration value="ab"/>
               <xs:enumeration value="cd"/>

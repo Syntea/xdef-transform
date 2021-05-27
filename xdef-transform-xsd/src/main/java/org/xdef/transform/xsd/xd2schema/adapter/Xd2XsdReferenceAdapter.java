@@ -38,7 +38,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms all x-definition references into XSD (complex/simple) schema types
+ * Transforms all X-Definition references into XSD (complex/simple) schema types
  */
 public class Xd2XsdReferenceAdapter {
 
@@ -86,7 +86,7 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Storage of XSD document names of already created XSD includes
-     * Used for x-definition without namespace
+     * Used for X-Definition without namespace
      */
     private Set<String> namespaceIncludes;
 
@@ -106,12 +106,12 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Creates following XSD nodes from x-definition nodes:
+     * Creates following XSD nodes from X-Definition nodes:
      *      simpleType      - attribute, text
      *      complexType     - element
      *      group           - mixed
      *      import          - used namespaces in reference of attributes and elements
-     * @param xDef  input x-definition
+     * @param xDef  input X-Definition
      */
     public void createRefsAndImports(XDefinition xDef) {
         simpleTypeReferences = new HashSet<>();
@@ -121,10 +121,10 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Creates following XSD nodes from x-definition nodes:
+     * Creates following XSD nodes from X-Definition nodes:
      *      simpleType      - attribute, text
      *      import          - used namespaces in reference of attributes and elements
-     * @param nodes list of x-definition nodes
+     * @param nodes list of X-Definition nodes
      */
     public void extractRefsAndImports(final List<XNode> nodes) {
         simpleTypeReferences = new HashSet<>();
@@ -155,8 +155,8 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Extracts references and imports from given x-definition
-     * @param xDef  input x-definition
+     * Extracts references and imports from given X-Definition
+     * @param xDef  input X-Definition
      */
     private void extractRefsAndImports(final XDefinition xDef) {
         LOG.info(HEADER_LINE);
@@ -182,8 +182,8 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Transform top-level x-definition element node into XSD node (element, complex-type, simple-type, group)
-     * @param xElem top-level x-definition element to be transformed
+     * Transform top-level X-Definition element node into XSD node (element, complex-type, simple-type, group)
+     * @param xElem top-level X-Definition element to be transformed
      */
     private void transformTopLevelElem(final XMElement xElem) {
         LOG.debug("{}Creating definition of reference.", logHeader(PREPROCESSING, xElem));
@@ -216,8 +216,8 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Extract simple-type references and schema imports from x-definition tree.
-     * @param xNode         root of x-definition tree
+     * Extract simple-type references and schema imports from X-Definition tree.
+     * @param xNode         root of X-Definition tree
      * @param processed     already processed nodes
      * @param parentRef     flag if parent is node using reference
      */
@@ -259,7 +259,7 @@ public class Xd2XsdReferenceAdapter {
                         }
                     } else if (XsdNamespaceUtils.isRefInDifferentSystem(refPos, xElem.getXDPosition())) {
                         addSchemaInclude(refPos);
-                    } // else {} // Reference in same x-definition and same namespace
+                    } // else {} // Reference in same X-Definition and same namespace
 
                     isRef = true;
                 } else {
@@ -320,7 +320,7 @@ public class Xd2XsdReferenceAdapter {
                 break;
             }
             case XNode.XMDEFINITION: {
-                LOG.debug("{}Processing XDefinition node. nodeName='{}'",
+                LOG.debug("{}Processing X-Definition node. nodeName='{}'",
                         logHeader(PREPROCESSING, xNode), xNode.getName());
 
                 final XDefinition def = (XDefinition)xNode;
@@ -335,7 +335,7 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Process simple-type XSD reference.
-     * Insert x-definition node into post processing queue if it is using different namespace.
+     * Insert X-Definition node into post processing queue if it is using different namespace.
      *
      * @param xData attribute/text node using reference
      */
@@ -404,7 +404,7 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Add XSD document include.
-     * @param refPos    reference position of x-definition node
+     * @param refPos    reference position of X-Definition node
      */
     private void addSchemaInclude(final String refPos) {
         final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
@@ -432,9 +432,9 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document import based on x-definition element node.
-     * @param nsUri     x-definition node namespace URI
-     * @param refPos    x-definition reference position
+     * Add XSD document import based on X-Definition element node.
+     * @param nsUri     X-Definition node namespace URI
+     * @param refPos    X-Definition reference position
      */
     private void addSchemaImportFromElem(final String nsUri, final String refPos) {
         if (nsUri == null || !namespaceImports.add(nsUri)) {
@@ -459,9 +459,9 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document import based on attribute/text x-definition node
-     * @param nsPrefix  x-definition node namespace prefix
-     * @param nsUri     x-definition node namespace URI
+     * Add XSD document import based on attribute/text X-Definition node
+     * @param nsPrefix  X-Definition node namespace prefix
+     * @param nsUri     X-Definition node namespace URI
      */
     private void addSchemaImportFromSimpleType(final String nsPrefix, final String nsUri) {
         if (nsUri == null || !namespaceImports.add(nsUri)) {

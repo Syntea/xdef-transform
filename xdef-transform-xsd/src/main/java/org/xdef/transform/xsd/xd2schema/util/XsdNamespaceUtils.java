@@ -51,11 +51,11 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if x-definition node name is using different namespace than given XSD document (target namespace)
-     * @param nodeName          x-definition node name
-     * @param namespaceUri      x-definition node namespace URI
+     * Checks if X-Definition node name is using different namespace than given XSD document (target namespace)
+     * @param nodeName          X-Definition node name
+     * @param namespaceUri      X-Definition node namespace URI
      * @param schema            target XSD document
-     * @return  true is x-definition node is inside different namespace
+     * @return  true is X-Definition node is inside different namespace
      */
     public static boolean isNodeInDifferentNamespace(final String nodeName,
                                                      final String namespaceUri,
@@ -65,7 +65,7 @@ public class XsdNamespaceUtils {
 
     /**
      * Checks if node name is using different namespace prefix than given XSD document (target namespace)
-     * @param xNode     x-definition node
+     * @param xNode     X-Definition node
      * @param schema    target XSD document
      * @return  true if node name is using different namespace prefix
      */
@@ -76,7 +76,7 @@ public class XsdNamespaceUtils {
 
     /**
      * Checks if reference is using different namespace prefix than given XSD document (target namespace prefix)
-     * @param nodeRefPos    x-definition reference node position
+     * @param nodeRefPos    X-Definition reference node position
      * @param schema        target XSD document
      * @return  true if reference is using different namespace prefix
      */
@@ -86,10 +86,10 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if reference is in different x-definition
-     * @param nodeRefPos    x-definition reference node position
-     * @param xdPos         x-definition source node position
-     * @return  true if reference is in different x-definition
+     * Checks if reference is in different X-Definition
+     * @param nodeRefPos    X-Definition reference node position
+     * @param xdPos         X-Definition source node position
+     * @return  true if reference is in different X-Definition
      */
     public static boolean isRefInDifferentSystem(final String nodeRefPos, final String xdPos) {
         final String nodeSystemId = getSystemIdFromXPosRequired(xdPos);
@@ -98,27 +98,27 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if x-definition node name contains prefix
-     * @param name  x-definition node name
-     * @return  true if x-definition node name contains prefix
+     * Checks if X-Definition node name contains prefix
+     * @param name  X-Definition node name
+     * @return  true if X-Definition node name contains prefix
      */
     public static boolean containsNsPrefix(final String name) {
         return name.contains(NAMESPACE_DELIMITER);
     }
 
     /**
-     * Checks if x-definition node name contains reference
-     * @param name  x-definition node name
-     * @return  true if x-definition node name contains reference
+     * Checks if X-Definition node name contains reference
+     * @param name  X-Definition node name
+     * @return  true if X-Definition node name contains reference
      */
     public static boolean containsReference(final String name) {
         return name.contains(XDEF_REF_DELIMITER);
     }
 
     /**
-     * Parse x-definition name (XSD system identifier) from given x-definition node position
-     * @param xPos  x-definition node pos
-     * @return  x-definition name if it is part of name,
+     * Parse X-Definition name (XSD system identifier) from given X-Definition node position
+     * @param xPos  X-Definition node pos
+     * @return  X-Definition name if it is part of name,
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<String> getSystemIdFromXPos(final String xPos) {
@@ -132,20 +132,20 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Parse x-definition name (XSD system identifier) from given x-definition node position
-     * @param xPos  x-definition node pos
-     * @return x-definition name if it is part of name
-     * @throws XsdNamespaceException if x-definition node pos does not contain name of X-definition
+     * Parse X-Definition name (XSD system identifier) from given X-Definition node position
+     * @param xPos  X-Definition node pos
+     * @return X-Definition name if it is part of name
+     * @throws XsdNamespaceException if X-Definition node pos does not contain name of X-definition
      */
     public static String getSystemIdFromXPosRequired(final String xPos) throws XsdNamespaceException {
         return getSystemIdFromXPos(xPos).orElseThrow(() ->
-                new XsdNamespaceException("Given x-Definition position does not contain x-definition name. xPos='{}'",
+                new XsdNamespaceException("Given x-Definition position does not contain X-Definition name. xPos='{}'",
                         xPos));
     }
 
     /**
-     * Parse namespace prefix from given x-definition node name
-     * @param name  x-definition node name
+     * Parse namespace prefix from given X-Definition node name
+     * @param name  X-Definition node name
      * @return  namespace prefix if it is part of name
      *          otherwise {@link Optional#empty()}
      */
@@ -160,8 +160,8 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Parse namespace prefix from given x-definition node name
-     * @param name  x-definition node name
+     * Parse namespace prefix from given X-Definition node name
+     * @param name  X-Definition node name
      * @return namespace prefix if it is part of name
      * @throws XsdNamespaceException if name does not contain namespace prefix
      */
@@ -171,8 +171,8 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Parse namespace prefix from given x-definition reference node position
-     * @param refPos    x-definition reference node position
+     * Parse namespace prefix from given X-Definition reference node position
+     * @param refPos    X-Definition reference node position
      * @return  namespace prefix if it is part of reference node position, otherwise empty string
      */
     public static String getReferenceNamespacePrefix(final String refPos) {
@@ -190,7 +190,7 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if given namespace prefix is default for x-definition
+     * Checks if given namespace prefix is default for X-Definition
      * @param prefix    namespace prefix
      * @return  return true if if given namespace prefix is default
      */
@@ -203,7 +203,7 @@ public class XsdNamespaceUtils {
     /**
      * Checks if node name is using XSD document target namespace
      * @param schema    XSD document
-     * @param name      x-definition node name
+     * @param name      X-Definition node name
      * @return true if node name is using XSD document target namespace
      */
     public static boolean usingTargetNamespace(final XmlSchema schema, final String name) {
@@ -221,8 +221,8 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Determines target namespace of given x-definition
-     * @param xDef  x-definition
+     * Determines target namespace of given X-Definition
+     * @param xDef  X-Definition
      * @return target namespace prefix, target namespace URI
      */
     public static Pair<String, String> getSchemaTargetNamespace(final XDefinition xDef, final XsdAdapterCtx adapterCtx) {
@@ -246,7 +246,7 @@ public class XsdNamespaceUtils {
             }
         }
 
-        // Find target namespace URI based on x-definition namespaces
+        // Find target namespace URI based on X-Definition namespaces
         if (targetNamespacePrefix != null) {
             for (Map.Entry<String, String> entry : xDef._namespaces.entrySet()) {
                 if (targetNamespacePrefix.equals(entry.getKey())) {
@@ -282,8 +282,8 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Creates namespace URI based on x-definition name
-     * @param name  x-definition name
+     * Creates namespace URI based on X-Definition name
+     * @param name  X-Definition name
      * @return  namespace URI
      */
     public static String createNsUriFromXDefName(final String name) {
@@ -314,8 +314,8 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Determines x-definition node namespace URI of given x-definition node based on XSD adapter context
-     * @param xData         x-definition node
+     * Determines X-Definition node namespace URI of given X-Definition node based on XSD adapter context
+     * @param xData         X-Definition node
      * @param adapterCtx    XSD adapter context
      * @param phase         transformation algorithm phase (just for logging purposes)
      * @return namespace URI

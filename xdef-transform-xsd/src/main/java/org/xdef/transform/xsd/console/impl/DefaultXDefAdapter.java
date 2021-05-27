@@ -70,7 +70,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
             LOG.info("Compilation of XDPool done, elapsed {} ms", watch.getTime());
         } catch (Exception ex) {
-            throw new FormattedRuntimeException(ex, "Error occurs while compile input x-definition(s), elapsed {} ms",
+            throw new FormattedRuntimeException(ex, "Error occurs while compile input X-Definition(s), elapsed {} ms",
                     watch.getTime());
         } finally {
             watch.stop();

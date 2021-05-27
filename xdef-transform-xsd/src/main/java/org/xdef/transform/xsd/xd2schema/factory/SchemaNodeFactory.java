@@ -20,7 +20,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REF
 
 
 /**
- * Factory which is creating schema nodes, which pairs up x-definition nodes with XSD nodes
+ * Factory which is creating schema nodes, which pairs up X-Definition nodes with XSD nodes
  */
 public class SchemaNodeFactory {
 
@@ -30,7 +30,7 @@ public class SchemaNodeFactory {
      * Creates schema node and reference schema node based on element node
      * Creates binding between schema element node and reference definition schema node
      *
-     * @param xElem         x-definition element node
+     * @param xElem         X-Definition element node
      * @param xsdElem       XSD element node
      * @param refSystemId   reference node system identifier
      * @param refNodePos    reference node x-position
@@ -50,10 +50,10 @@ public class SchemaNodeFactory {
      * Creates schema node and reference definition schema node based on element node which is using different namespace
      * Creates binding between schema element node and reference definition schema node
      *
-     * @param xElem         x-definition element node
+     * @param xElem         X-Definition element node
      * @param xsdElem       XSD element node
-     * @param systemId      x-definition element node system identifier
-     * @param nodePath      x-definition element node path
+     * @param systemId      X-Definition element node system identifier
+     * @param nodePath      X-Definition element node path
      * @param refSystemId   reference node system identifier
      * @param refNodePos    reference node x-position
      * @param refNodePath   reference node path
@@ -70,10 +70,10 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node and reference schema node based on x-definition element and XSD complex content extension
+     * Creates schema node and reference schema node based on X-Definition element and XSD complex content extension
      * Creates binding between schema complex node and reference definition schema node
      *
-     * @param xElem             x-definition element node
+     * @param xElem             X-Definition element node
      * @param xsdComplexExt     XSD complex content extension
      * @param refSystemId       reference node system identifier
      * @param refNodePos        reference node x-position
@@ -92,7 +92,7 @@ public class SchemaNodeFactory {
     /**
      * Creates schema node based on element node
      * @param xsdElem   XSD element node
-     * @param xElem     x-definition element node
+     * @param xElem     X-Definition element node
      * @return schema node
      */
     public static SchemaNode createElementNode(final XmlSchemaElement xsdElem, final XElement xElem) {
@@ -102,7 +102,7 @@ public class SchemaNodeFactory {
     /**
      * Creates schema node based on attribute node
      * @param xsdAttr       XSD attribute node
-     * @param xDataAttr     x-definition attribute node
+     * @param xDataAttr     X-Definition attribute node
      * @return schema node
      */
     public static SchemaNode createAttributeNode(final XmlSchemaAttribute xsdAttr, final XData xDataAttr) {
@@ -110,8 +110,8 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on x-definition element node and XSD group reference
-     * @param xElem         x-definition element node
+     * Creates schema node based on X-Definition element node and XSD group reference
+     * @param xElem         X-Definition element node
      * @param xsdGroupRef   XSD group reference node
      * @param nodeRef       reference schema node
      * @param adapterCtx    XSD adapter context
@@ -124,8 +124,8 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on x-definition element node and XSD complex content extension
-     * @param xElem             x-definition element node
+     * Creates schema node based on X-Definition element node and XSD complex content extension
+     * @param xElem             X-Definition element node
      * @param xsdComplexExt     XSD complex content extension node
      * @return created schema node
      */
@@ -134,8 +134,8 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on x-definition element node and XSD group reference
-     * @param xElem             x-definition element node
+     * Creates schema node based on X-Definition element node and XSD group reference
+     * @param xElem             X-Definition element node
      * @param xsdGroupRef       XSD group reference node
      * @return created schema node
      */

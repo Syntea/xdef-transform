@@ -19,7 +19,7 @@ import static org.xdef.transform.xsd.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE
 public class XdNamespaceUtils {
 
     /**
-     * Checks if given namespace prefix is default for x-definition
+     * Checks if given namespace prefix is default for X-Definition
      * @param prefix    namespace prefix
      * @return  return true if if given namespace prefix is default
      */
@@ -37,7 +37,7 @@ public class XdNamespaceUtils {
      *
      * @param schemaCollection      XSD document collection
      * @param refQName              reference qualified name
-     * @param xdAdapterCtx          x-definition adapter context
+     * @param xdAdapterCtx          X-Definition adapter context
      * @param simple                flag, if only reference should be XSD simple type or XSD attribute node
      * @return  XML schema name if found
      *          otherwise {@link Optional#empty()}

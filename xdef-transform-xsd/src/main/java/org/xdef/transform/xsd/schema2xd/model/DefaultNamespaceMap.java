@@ -48,7 +48,7 @@ public class DefaultNamespaceMap extends HashMap<String, String> implements Name
             return false;
         }
 
-        LOG.info("{}Add x-definition namespace. xDefinitionName='{}', nsPrefix='{}', nsUri='{}'",
+        LOG.info("{}Add X-Definition namespace. xDefinitionName='{}', nsPrefix='{}', nsUri='{}'",
                 logHeader(PREPROCESSING, XD_ADAPTER_CTX), xDefName, nsPrefix, nsUri);
 
         put(nsUri, nsPrefix);

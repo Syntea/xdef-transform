@@ -93,8 +93,8 @@ public class XsdNodeFactory {
 
     /**
      * Creates empty XSD element node with occurrence
-     * @param xElem         x-definition element node
-     * @param topLevel      flag if x-definition node is placed on top level
+     * @param xElem         X-Definition element node
+     * @param topLevel      flag if X-Definition node is placed on top level
      * @return <xs:element/>
      */
     public XmlSchemaElement createEmptyElement(final XElement xElem, boolean topLevel) {
@@ -118,8 +118,8 @@ public class XsdNodeFactory {
 
     /**
      * Creates empty XSD attribute node with use
-     * @param xData         x-definition attribute node
-     * @param topLevel      flag if x-definition node is placed on top level
+     * @param xData         X-Definition attribute node
+     * @param topLevel      flag if X-Definition node is placed on top level
      * @return <xs:attribute/>
      */
     public XmlSchemaAttribute createEmptyAttribute(final XData xData, boolean topLevel) {
@@ -138,7 +138,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates empty XSD complex-type node
-     * @param topLevel          flag if x-definition node is placed on top level
+     * @param topLevel          flag if X-Definition node is placed on top level
      * @return <xs:complexType/>
      */
     public XmlSchemaComplexType createEmptyComplexType(boolean topLevel) {
@@ -149,7 +149,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates empty XSD simple-type node
-     * @param topLevel          flag if x-definition node is placed on top level
+     * @param topLevel          flag if X-Definition node is placed on top level
      * @return <xs:simpleType/>
      */
     public XmlSchemaSimpleType createEmptySimpleType(boolean topLevel) {
@@ -160,7 +160,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD any node with occurrence
-     * @param xElem             x-definition element node
+     * @param xElem             X-Definition element node
      * @return <xs:any/>
      */
     public XmlSchemaAny createAny(final XElement xElem) {
@@ -176,7 +176,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD simple-type node on top level of XSD document
-     * @param xData             x-definition attribute/text node
+     * @param xData             X-Definition attribute/text node
      * @param refTypeName       reference type name
      */
     public void createSimpleTypeTop(final XData xData, final String refTypeName) {
@@ -189,7 +189,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD simple-type node (attribute)
-     * @param xData             x-definition attribute/text node
+     * @param xData             X-Definition attribute/text node
      * @param nodeName          simple-type name
      * @return <xs:simpleType>...</xs:simpleType>
      */
@@ -205,7 +205,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD anonymous simple-type node
-     * @param xData             x-definition attribute/text node
+     * @param xData             X-Definition attribute/text node
      * @param nodeName          simple-type name
      * @return <xs:simpleType>...</xs:simpleType>
      */
@@ -219,7 +219,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD simple content node
-     * @param xDataText         x-definition text node
+     * @param xDataText         X-Definition text node
      * @return  if reference and parser are unknown, then {@link Optional#empty()}
      *          else <xs:simpleContent><xs:extension base="...">...</xs:extension></xs:simpleContent>
      */
@@ -319,7 +319,7 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD group particle node with occurrence
-     * @param xNode             x-definition group node
+     * @param xNode             X-Definition group node
      * @return based on {@code xNode}
      *          <xs:sequence/>
      *          <xs:choice/>
@@ -524,9 +524,9 @@ public class XsdNodeFactory {
 
     /**
      * Creates XSD simple content node
-     * @param xData             x-definition attribute/text node
+     * @param xData             X-Definition attribute/text node
      * @param nodeName          node name (required for <xs:union/> node)
-     * @return  if x-definition node has known parser, then based on parser
+     * @return  if X-Definition node has known parser, then based on parser
      *              <xs:restriction base="...">...</xs:restriction>
      *              <xs:list itemType="...">...</xs:list>
      *              <xs:union memberTypes="...">...</xs:union>
