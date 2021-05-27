@@ -6,29 +6,29 @@ import org.xdef.transform.xsd.msg.XSD;
 import java.util.Objects;
 
 /**
- * Definition of XSD document import.
+ * Definition of XML Schema document import.
  *
- * Source data model for creating XSD xs:import node.
+ * Source data model for creating XML Schema xs:import node.
  */
 public class XsdSchemaImportLocation {
 
     /**
-     * XSD document namespace URI
+     * XML Schema document namespace URI
      */
     private final String namespaceUri;
 
     /**
-     * XSD document file name
+     * XML Schema document file name
      */
     private final String fileName;
 
     /**
-     * XSD document file extension
+     * XML Schema document file extension
      */
     private final String fileExt = ".xsd";
 
     /**
-     * XSD document path
+     * XML Schema document path
      */
     private String path;
 
@@ -50,9 +50,9 @@ public class XsdSchemaImportLocation {
     }
 
     /**
-     * Creates XSD import path based on internal variable state
-     * @param schemaName    XSD document name which will be used if fileName is not set
-     * @return XSD document import path
+     * Creates XML Schema import path based on internal variable state
+     * @param schemaName    XML Schema document name which will be used if fileName is not set
+     * @return XML Schema document import path
      */
     public String buildLocation(final String schemaName) {
         final StringBuilder sb = new StringBuilder();

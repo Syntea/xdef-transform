@@ -41,7 +41,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.POSTPROCESSIN
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_PP_ADAPTER;
 
 /**
- * Makes post processing transformation on created XSD documents
+ * Makes post processing transformation on created XML Schema documents
  */
 public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
@@ -112,8 +112,8 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Creates XSD nodes which are originally located in different X-Definition namespace
-     * @param xDef                  X-Definition source of XSD nodes
+     * Creates XML Schema nodes which are originally located in different X-Definition namespace
+     * @param xDef                  X-Definition source of XML Schema nodes
      * @param updatedNamespaces     already processed namespaces
      */
     private void processNodes(final XDefinition xDef, final Set<String> updatedNamespaces) {
@@ -131,7 +131,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Updates XSD references which are breaking XSD document rules
+     * Updates XML Schema references which are breaking XML Schema document rules
      */
     private void processReferences() {
         if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING_REFS)) {
@@ -142,7 +142,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Updates XSD attributes and elements QNames of schemas created by post processing
+     * Updates XML Schema attributes and elements QNames of schemas created by post processing
      * @param updatedNamespaces namespace to be processed
      */
     private void processQNames(final Set<String> updatedNamespaces) {
@@ -185,7 +185,7 @@ public class Xd2XsdPostProcessingAdapter extends AbstractXd2XsdAdapter {
 
     /**
      * Creates unique constraints (xs:unique xs:key, xs:keyref) nodes based on gathered uniqueSet data from X-Definition
-     * @param xDef    input X-Definition where XSD elements should be inserted
+     * @param xDef    input X-Definition where XML Schema elements should be inserted
      */
     private void createKeysAndRefs(final XDefinition xDef) {
         if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.POSTPROCESSING_UNIQUE)) {

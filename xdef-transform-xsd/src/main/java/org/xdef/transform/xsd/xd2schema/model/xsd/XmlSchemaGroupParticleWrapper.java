@@ -5,26 +5,26 @@ import org.apache.ws.commons.schema.utils.XmlSchemaObjectBase;
 import java.util.List;
 
 /**
- * XML schema group particle wrapper
+ * XML Schema group particle wrapper
  *
  * @param <T>
  */
 public interface XmlSchemaGroupParticleWrapper<T extends XmlSchemaObjectBase> {
 
     /**
-     * @return particle XML schema items
+     * @return particle XML Schema items
      */
     List<T> getItems();
 
     /**
-     * Add XML schema item into particle
-     * @param item      XML schema item
+     * Add XML Schema item into particle
+     * @param item      XML Schema item
      */
     void addItem(final XmlSchemaObjectBase item);
 
     /**
-     * Add XML schema items into particle
-     * @param items     list of XML schema items
+     * Add XML Schema items into particle
+     * @param items     list of XML Schema items
      */
     void addItems(final List<XmlSchemaObjectBase> items);
 

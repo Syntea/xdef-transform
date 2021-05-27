@@ -36,7 +36,7 @@ public class XmlValidator {
             validator.validate(xmlDataSource);
             return true;
         } catch (SAXException | IOException ex) {
-            throw new RuntimeException("Error occurs while validating XML schema", ex);
+            throw new RuntimeException("Error occurs while validating XML Schema", ex);
         }
     }
 }

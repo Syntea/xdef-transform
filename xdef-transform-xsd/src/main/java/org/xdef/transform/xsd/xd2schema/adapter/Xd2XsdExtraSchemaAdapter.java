@@ -61,8 +61,8 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Transform given X-Definition nodes {@code allNodesToResolve} into XSD nodes and then insert them
-     * into related XSD documents
+     * Transform given X-Definition nodes {@code allNodesToResolve} into XML Schema nodes and then insert them
+     * into related XML Schema documents
      *
      * @param nodesToBeResolved     nodes to be transformed
      * @return All namespaces which have been updated
@@ -146,7 +146,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
     }
 
     /**
-     * Internal class for transformation of given X-Definition nodes into related XSD document
+     * Internal class for transformation of given X-Definition nodes into related XML Schema document
      */
     static class SchemaAdapter extends AbstractXd2XsdAdapter {
 
@@ -156,7 +156,7 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         private final XDefinition sourceXDefinition;
 
         /**
-         * Output XSD document
+         * Output XML Schema document
          */
         private XmlSchema schema = null;
 
@@ -165,18 +165,18 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         }
 
         /**
-         * Creates or updates XSD document and then inserts into it given nodes
+         * Creates or updates XML Schema document and then inserts into it given nodes
          * @param namespaceCtx              X-definition namespace context
          * @param nodesInSchemaToResolve    Nodes to be created
-         * @param targetNsUri               XSD document target namespace URI
-         * @param importLocation            XSD document location
+         * @param targetNsUri               XML Schema document target namespace URI
+         * @param importLocation            XML Schema document location
          */
         protected void createOrUpdateSchema(final NamespaceMap namespaceCtx,
                                             final List<XNode> nodesInSchemaToResolve,
                                             final String targetNsUri,
                                             final XsdSchemaImportLocation importLocation) {
             LOG.info(HEADER_LINE);
-            LOG.info("{}Post-processing XSD document. targetNamespaceUri='{}'",
+            LOG.info("{}Post-processing XML Schema document. targetNamespaceUri='{}'",
                     logHeader(XSD_XDEF_EXTRA_ADAPTER), targetNsUri);
             LOG.info(HEADER_LINE);
 
@@ -194,12 +194,12 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         }
 
         /**
-         * Creates or find XSD document. Then initialize XSD document
+         * Creates or find XML Schema document. Then initialize XML Schema document
          *
          * @param namespaceCtx          namespace context map
          * @param targetNsUri           target namespace URI
          * @param importLocation        schema import location
-         * @return  instance of xml schema
+         * @return  instance of XML Schema
          */
         private String getOrCreateXmlSchema(final NamespaceMap namespaceCtx,
                                             final String targetNsUri,
@@ -218,12 +218,12 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
         }
 
         /**
-         * Creates or find XSD document
+         * Creates or find XML Schema document
          * If schema already exists, return value is reference to already existing schema.
          *
          * @param targetNsUri   target namespace Uri
-         * @param schemaName    XSD document name
-         * @return instance of xml schema
+         * @param schemaName    XML Schema document name
+         * @return instance of XML Schema
          */
         private XmlSchema getOrCreateXmlSchema(final String targetNsUri, final String schemaName) {
             return OptionalExt.of(adapterCtx.findSchemaOpt(schemaName, POSTPROCESSING))
@@ -233,21 +233,21 @@ public class Xd2XsdExtraSchemaAdapter extends AbstractXd2XsdAdapter {
                         adapterCtx.addSchemaName(schemaName);
                         final XmlSchema xmlSchema = new XmlSchema(targetNsUri, schemaName, adapterCtx.getXmlSchemaCollection());
 
-                        LOG.info("{}Initialize new XSD document. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
+                        LOG.info("{}Initialize new XML Schema document. schemaName='{}'", logHeader(PREPROCESSING, schemaName), schemaName);
 
                         return xmlSchema;
                     });
         }
 
         /**
-         * Initializes XSD document namespace
+         * Initializes XML Schema document namespace
          *
          * If schema namespace context already exist, then merge it with {@code namespaceCtx)
          *
-         * @param schemaName        XSD document name
+         * @param schemaName        XML Schema document name
          * @param namespaceCtx      current X-Definition namespace context
-         * @param targetNsUri       XSD document target namespace URI
-         * @param importLocation    XSD document location
+         * @param targetNsUri       XML Schema document target namespace URI
+         * @param importLocation    XML Schema document location
          * @return
          */
         private void initSchemaNamespace(final String schemaName,

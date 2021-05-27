@@ -70,19 +70,19 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XSD_
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ELEM_FACTORY;
 
 /**
- * Basic factory for creating XSD nodes
+ * Basic factory for creating XML Schema nodes
  */
 public class XsdNodeFactory {
 
     private static final Logger LOG = LoggerFactory.getLogger(XsdNodeFactory.class);
 
     /**
-     * Output XSD document
+     * Output XML Schema document
      */
     private final XmlSchema schema;
 
     /**
-     * XSD adapter context
+     * XML Schema adapter context
      */
     private final XsdAdapterCtx adapterCtx;
 
@@ -92,7 +92,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD element node with occurrence
+     * Creates empty XML Schema element node with occurrence
      * @param xElem         X-Definition element node
      * @param topLevel      flag if X-Definition node is placed on top level
      * @return <xs:element/>
@@ -117,7 +117,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD attribute node with use
+     * Creates empty XML Schema attribute node with use
      * @param xData         X-Definition attribute node
      * @param topLevel      flag if X-Definition node is placed on top level
      * @return <xs:attribute/>
@@ -137,7 +137,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD complex-type node
+     * Creates empty XML Schema complex-type node
      * @param topLevel          flag if X-Definition node is placed on top level
      * @return <xs:complexType/>
      */
@@ -148,7 +148,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD simple-type node
+     * Creates empty XML Schema simple-type node
      * @param topLevel          flag if X-Definition node is placed on top level
      * @return <xs:simpleType/>
      */
@@ -159,7 +159,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD any node with occurrence
+     * Creates XML Schema any node with occurrence
      * @param xElem             X-Definition element node
      * @return <xs:any/>
      */
@@ -175,7 +175,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD simple-type node on top level of XSD document
+     * Creates XML Schema simple-type node on top level of XML Schema document
      * @param xData             X-Definition attribute/text node
      * @param refTypeName       reference type name
      */
@@ -188,7 +188,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD simple-type node (attribute)
+     * Creates XML Schema simple-type node (attribute)
      * @param xData             X-Definition attribute/text node
      * @param nodeName          simple-type name
      * @return <xs:simpleType>...</xs:simpleType>
@@ -204,7 +204,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD anonymous simple-type node
+     * Creates XML Schema anonymous simple-type node
      * @param xData             X-Definition attribute/text node
      * @param nodeName          simple-type name
      * @return <xs:simpleType>...</xs:simpleType>
@@ -218,7 +218,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD simple content node
+     * Creates XML Schema simple content node
      * @param xDataText         X-Definition text node
      * @return  if reference and parser are unknown, then {@link Optional#empty()}
      *          else <xs:simpleContent><xs:extension base="...">...</xs:extension></xs:simpleContent>
@@ -318,7 +318,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD group particle node with occurrence
+     * Creates XML Schema group particle node with occurrence
      * @param xNode             X-Definition group node
      * @return based on {@code xNode}
      *          <xs:sequence/>
@@ -362,7 +362,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD group node
+     * Creates empty XML Schema group node
      * @param name          group name
      * @return <xs:group name="{@code name}"/>
      */
@@ -375,7 +375,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD group reference node
+     * Creates XML Schema group reference node
      * @param qName         reference QName
      * @return <xs:group ref="{@code qName}"/>
      */
@@ -388,7 +388,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD complex type node with complex extension on top level of XSD document
+     * Creates XML Schema complex type node with complex extension on top level of XML Schema document
      * @param complexTypeName       complex type name
      * @param extQName              complex extension QName
      * @return  <xs:complexType name="{@code complexTypeName}">
@@ -407,7 +407,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD complex content node with extension
+     * Creates XML Schema complex content node with extension
      * @param qName             complex extension QName
      * @return  <xs:complexContent>
      *              <xs:extension base="{@code qName}"></xs:extension>
@@ -419,7 +419,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD complex type node with simple content on top level of XSD document
+     * Creates XML Schema complex type node with simple content on top level of XML Schema document
      * @param complexTypeName       complex type name
      * @param schemaContent         simple content
      * @return  <xs:complexType name="{@code simpleTypeName}">
@@ -438,7 +438,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD complex type node with simple extension on top level of XSD document
+     * Creates XML Schema complex type node with simple extension on top level of XML Schema document
      * @param complexTypeName       complex type name
      * @param extQName              simple extension QName
      * @return  <xs:complexType name="{@code simpleTypeName}">
@@ -458,7 +458,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD complex content node
+     * Creates XML Schema complex content node
      * @param content       schema content
      * @return  <xs:complexContent>{@code content}</xs:complexContent>
      */
@@ -471,7 +471,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD simple content node
+     * Creates XML Schema simple content node
      * @param content       schema content
      * @return  <xs:simpleContent>{@code content}</xs:simpleContent>
      */
@@ -484,7 +484,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD complex content extension node
+     * Creates empty XML Schema complex content extension node
      * @param baseType      context extension base
      * @return <xs:extension base="{@code baseType}"/>
      */
@@ -497,7 +497,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD simple content extension node
+     * Creates empty XML Schema simple content extension node
      * @param baseType      simple extension base
      * @return <xs:extension base="{@code baseType}"/>
      */
@@ -510,7 +510,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates empty XSD simple content restriction node
+     * Creates empty XML Schema simple content restriction node
      * @param baseType      simple restriction base
      * @return <xs:restriction base="{@code baseType}"/>
      */
@@ -523,7 +523,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD simple content node
+     * Creates XML Schema simple content node
      * @param xData             X-Definition attribute/text node
      * @param nodeName          node name (required for <xs:union/> node)
      * @return  if X-Definition node has known parser, then based on parser
@@ -548,8 +548,8 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD document import node
-     * @param schema        output XSD document
+     * Creates XML Schema document import node
+     * @param schema        output XML Schema document
      * @param nsUri         import namespace URI
      * @param location      import schema location
      */
@@ -560,8 +560,8 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD document include node
-     * @param schema        output XSD document
+     * Creates XML Schema document include node
+     * @param schema        output XML Schema document
      * @param location      include schema location
      */
     public void createSchemaInclude(final XmlSchema schema, final String location) {
@@ -570,9 +570,9 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD annotation node with single documentation node
+     * Creates XML Schema annotation node with single documentation node
      * @param annotationValue   annotation value
-     * @param adapterCtx        XSD adapter context
+     * @param adapterCtx        XML Schema adapter context
      * @return  <xs:annotation><xs:documentation>{@code annotationValue}</xs:documentation></xs:annotation>
      *          if feature {@link Xd2XsdFeature.XSD_ANNOTATION} is disabled, then {@link Optional#empty()}
      */
@@ -588,9 +588,9 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD annotation node with multiple documentation nodes
+     * Creates XML Schema annotation node with multiple documentation nodes
      * @param annotationValues  list of annotation values
-     * @param adapterCtx        XSD adapter context
+     * @param adapterCtx        XML Schema adapter context
      * @return  <xs:annotation>
      *              <xs:documentation>{@code annotationValue[0]}</xs:documentation>
      *              <xs:documentation>{@code annotationValue[1]}</xs:documentation>
@@ -615,7 +615,7 @@ public class XsdNodeFactory {
     }
 
     /**
-     * Creates XSD documentation node
+     * Creates XML Schema documentation node
      * @param docValue      documentation value
      * @return  <xs:documentation>{@code docValue}</xs:documentation>
      *          if {@code docValue} is null or blank, then Optional.empty()
@@ -638,7 +638,7 @@ public class XsdNodeFactory {
             annotationItem.setMarkup(rootElement.getChildNodes());
         } catch (ParserConfigurationException ex) {
             adapterCtx.getReportWriter().warning(XSD.XSD035, ex.getMessage());
-            LOG.warn(StringFormatter.format("{}Error occurs while creating XSD documentation node: ",
+            LOG.warn(StringFormatter.format("{}Error occurs while creating XML Schema documentation node: ",
                     logHeader(TRANSFORMATION)),
                     ex);
         }

@@ -20,7 +20,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REF
 
 
 /**
- * Factory which is creating schema nodes, which pairs up X-Definition nodes with XSD nodes
+ * Factory which is creating schema nodes, which pairs up X-Definition nodes with XML Schema nodes
  */
 public class SchemaNodeFactory {
 
@@ -31,11 +31,11 @@ public class SchemaNodeFactory {
      * Creates binding between schema element node and reference definition schema node
      *
      * @param xElem         X-Definition element node
-     * @param xsdElem       XSD element node
+     * @param xsdElem       XML Schema element node
      * @param refSystemId   reference node system identifier
      * @param refNodePos    reference node x-position
      * @param refNodePath   reference node path
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      */
     public static void createElemRefAndDef(final XElement xElem, final XmlSchemaElement xsdElem,
                                            final String refSystemId, final String refNodePos, final String refNodePath,
@@ -51,13 +51,13 @@ public class SchemaNodeFactory {
      * Creates binding between schema element node and reference definition schema node
      *
      * @param xElem         X-Definition element node
-     * @param xsdElem       XSD element node
+     * @param xsdElem       XML Schema element node
      * @param systemId      X-Definition element node system identifier
      * @param nodePath      X-Definition element node path
      * @param refSystemId   reference node system identifier
      * @param refNodePos    reference node x-position
      * @param refNodePath   reference node path
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      */
     public static void createElemRefAndDefDiffNamespace(final XElement xElem, final XmlSchemaElement xsdElem,
                                                         final String systemId, String nodePath,
@@ -70,15 +70,15 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node and reference schema node based on X-Definition element and XSD complex content extension
+     * Creates schema node and reference schema node based on X-Definition element and XML Schema complex content extension
      * Creates binding between schema complex node and reference definition schema node
      *
      * @param xElem             X-Definition element node
-     * @param xsdComplexExt     XSD complex content extension
+     * @param xsdComplexExt     XML Schema complex content extension
      * @param refSystemId       reference node system identifier
      * @param refNodePos        reference node x-position
      * @param refNodePath       reference node path
-     * @param adapterCtx        XSD adapter context
+     * @param adapterCtx        XML Schema adapter context
      */
     public static void createComplexExtRefAndDef(final XElement xElem, final XmlSchemaComplexContentExtension xsdComplexExt,
                                            final String refSystemId, final String refNodePos, final String refNodePath,
@@ -91,7 +91,7 @@ public class SchemaNodeFactory {
 
     /**
      * Creates schema node based on element node
-     * @param xsdElem   XSD element node
+     * @param xsdElem   XML Schema element node
      * @param xElem     X-Definition element node
      * @return schema node
      */
@@ -101,7 +101,7 @@ public class SchemaNodeFactory {
 
     /**
      * Creates schema node based on attribute node
-     * @param xsdAttr       XSD attribute node
+     * @param xsdAttr       XML Schema attribute node
      * @param xDataAttr     X-Definition attribute node
      * @return schema node
      */
@@ -110,11 +110,11 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on X-Definition element node and XSD group reference
+     * Creates schema node based on X-Definition element node and XML Schema group reference
      * @param xElem         X-Definition element node
-     * @param xsdGroupRef   XSD group reference node
+     * @param xsdGroupRef   XML Schema group reference node
      * @param nodeRef       reference schema node
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      */
     public static void createGroupRefNode(final XElement xElem, final XmlSchemaGroupRef xsdGroupRef,
                                           final SchemaNode nodeRef, final XsdAdapterCtx adapterCtx) {
@@ -124,9 +124,9 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on X-Definition element node and XSD complex content extension
+     * Creates schema node based on X-Definition element node and XML Schema complex content extension
      * @param xElem             X-Definition element node
-     * @param xsdComplexExt     XSD complex content extension node
+     * @param xsdComplexExt     XML Schema complex content extension node
      * @return created schema node
      */
     private static SchemaNode createComplexExtNode(final XElement xElem, final XmlSchemaComplexContentExtension xsdComplexExt) {
@@ -134,9 +134,9 @@ public class SchemaNodeFactory {
     }
 
     /**
-     * Creates schema node based on X-Definition element node and XSD group reference
+     * Creates schema node based on X-Definition element node and XML Schema group reference
      * @param xElem             X-Definition element node
-     * @param xsdGroupRef       XSD group reference node
+     * @param xsdGroupRef       XML Schema group reference node
      * @return created schema node
      */
     private static SchemaNode createGroupRefNode(final XElement xElem, final XmlSchemaGroupRef xsdGroupRef) {
@@ -148,7 +148,7 @@ public class SchemaNodeFactory {
      * @param systemId      definition system identified
      * @param nodePos       definition x-position
      * @param nodePath      definition path
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      * @return schema node
      */
     private static SchemaNode createDefNode(final String systemId, final String nodePos, final String nodePath, final XsdAdapterCtx adapterCtx) {

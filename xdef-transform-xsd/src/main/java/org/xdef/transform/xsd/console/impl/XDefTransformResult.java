@@ -14,15 +14,15 @@ import java.util.Map;
 public class XDefTransformResult {
 
     /**
-     * Created XML schema collection
+     * Created XML Schema collection
      */
     private XmlSchemaCollection xmlSchemaCollection;
 
     /**
      * Transformed X-definition(s)
      *
-     * Key: XML schema name
-     * Right: Path to output XML schema file
+     * Key: XML Schema name
+     * Right: Path to output XML Schema file
      */
     private final Map<String, Path> outputSchemaMap = new HashMap<>();
 
@@ -37,7 +37,7 @@ public class XDefTransformResult {
 
     public void addOutputSchema(String schemaName, Path xsdPath) {
         outputSchemaMap.computeIfPresent(schemaName, (key, val) -> {
-            throw new FormattedRuntimeException("Output XML schema already exist for given name. " +
+            throw new FormattedRuntimeException("Output XML Schema already exist for given name. " +
                     "schemaName='{}', currXsdPath='{}', newXsdPath='{}'",
                     key, val.toAbsolutePath(), xsdPath.toAbsolutePath());
         });

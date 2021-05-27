@@ -67,9 +67,9 @@ public class XdNameUtils {
     }
 
     /**
-     * Parses XSD document name from XSD document location
-     * @param schemaLocation    XSD document location
-     * @return XSD document name
+     * Parses XML Schema document name from XML Schema document location
+     * @param schemaLocation    XML Schema document location
+     * @return XML Schema document name
      */
     public static String getSchemaName(final String schemaLocation) {
         Matcher matcher = XSD_NAME_PATTERN_2.matcher(schemaLocation);

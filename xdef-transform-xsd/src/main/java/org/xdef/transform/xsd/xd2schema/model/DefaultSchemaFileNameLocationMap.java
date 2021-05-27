@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Key: system name (XML schema output file name)
+ * Key: system name (XML Schema output file name)
  * Value: schema location
  */
 public class DefaultSchemaFileNameLocationMap extends HashMap<String, XsdSchemaImportLocation> implements SchemaFileNameLocationMap {

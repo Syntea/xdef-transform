@@ -60,7 +60,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     private final Map<String, List<Object>> facetMultipleValues = new HashMap<>();
 
     /**
-     * Flag of X-Definition declaration builder, if first XSD facet has been converted
+     * Flag of X-Definition declaration builder, if first XML Schema facet has been converted
      */
     private boolean builderFirstFacet;
 
@@ -184,8 +184,8 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Parse given XSD facet nodes into internal state
-     * @param facets    XSD facet nodes to be transformed
+     * Parse given XML Schema facet nodes into internal state
+     * @param facets    XML Schema facet nodes to be transformed
      */
     private void parseFacets(final List<XmlSchemaFacet> facets, final ReportWriter reportWriter) {
         reset();
@@ -244,7 +244,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
                             logHeader(TRANSFORMATION, typeName), facet.getValue());
                 } else {
                     reportWriter.warning(XSD.XSD216, facet.getClass().getSimpleName());
-                    LOG.warn("{}Declaration - Unsupported XSD facet! clazz='{}'",
+                    LOG.warn("{}Declaration - Unsupported XML Schema facet! clazz='{}'",
                             logHeader(TRANSFORMATION, typeName), facet.getClass().getSimpleName());
                 }
             }
@@ -305,7 +305,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Custom implementation of converting XSD facet into X-Definition declaration.
+     * Custom implementation of converting XML Schema facet into X-Definition declaration.
      * Called before {@link #defaultBuildFacets}
      * @param sb string builder where should be custom string appended
      */
@@ -327,7 +327,7 @@ public abstract class AbstractDeclarationTypeFactory implements IDeclarationType
     }
 
     /**
-     * Default implementation of transforming XSD facets to X-Definition declaration
+     * Default implementation of transforming XML Schema facets to X-Definition declaration
      * @param sb
      */
     protected void defaultBuildFacets(final StringBuilder sb) {

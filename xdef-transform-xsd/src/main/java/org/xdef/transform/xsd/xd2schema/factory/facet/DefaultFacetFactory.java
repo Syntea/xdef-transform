@@ -142,8 +142,8 @@ public class DefaultFacetFactory extends AbstractXsdFacetFactory {
     }
 
     /**
-     * Set given X-Definition value into XSD facet
-     * @param facet     XSD facet
+     * Set given X-Definition value into XML Schema facet
+     * @param facet     XML Schema facet
      * @param xdValue   X-Definition value
      */
     protected void setValue(final XmlSchemaFacet facet, final XDValue xdValue) {

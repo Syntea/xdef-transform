@@ -70,7 +70,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         try {
             res = getFile(_outputFilesRoot.getAbsolutePath(), fileName, ".xsd");
         } catch (FileNotFoundException ex) {
-            assertTrue(false, "Output XSD file is not generated, fileName: " + fileName);
+            assertTrue(false, "Output XML Schema file is not generated, fileName: " + fileName);
         }
 
         return res;
@@ -135,7 +135,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         XmlSchema[] refSchemasAll = refSchemaCollection.getXmlSchemas();
         XmlSchema[] outputSchemasAll = outputSchemaCollection.getXmlSchemas();
 
-        // TODO: Fix multiple XSD validation - How to properly filter circle loaded XSD schemas
+        // TODO: Fix multiple XML Schema validation - How to properly filter circle loaded XML Schemas
         int realRefSchemas = 0;
         boolean xsdRootImported = false;
         for (XmlSchema refSchema : refSchemasAll) {
@@ -254,7 +254,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         props.setProperty(XDConstants.XDPROPERTY_WARNINGS, XDConstants.XDPROPERTYVALUE_WARNINGS_FALSE);
 //        props.setProperty(XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT, XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE);
 
-        // Validate valid XML file against XSD schema
+        // Validate valid XML file against XML Schema
         if (validTestingData != null) {
             for (String testingFile : validTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -266,7 +266,7 @@ public class TestXd2Xsd extends TesterXdSchema {
             }
         }
 
-        // Validate invalid XML file against XSD schema
+        // Validate invalid XML file against XML Schema
         if (invalidTestingData != null) {
             for (String testingFile : invalidTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -282,7 +282,7 @@ public class TestXd2Xsd extends TesterXdSchema {
         File outputXsdFile = getOutputSchemaFile(fileName);
         File refXsdFile = validateRef ? getRefSchemaFile(path, fileName) : null;
 
-        // Validate valid XML file against XSD schema
+        // Validate valid XML file against XML Schema
         if (validTestingData != null) {
             for (String testingFile : validTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -295,7 +295,7 @@ public class TestXd2Xsd extends TesterXdSchema {
             }
         }
 
-        // Validate invalid XML file against XSD schema
+        // Validate invalid XML file against XML Schema
         if (invalidTestingData != null) {
             for (String testingFile : invalidTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -358,11 +358,11 @@ public class TestXd2Xsd extends TesterXdSchema {
             xb.setSource(defFiles);
             final XDPool inputXD = xb.compileXD();
 
-            // Convert XD -> XSD Schema
+            // Convert XD -> XML Schema
             XmlSchemaCollection outputXmlSchemaCollection = adapter.createSchemas(inputXD);
             int expectedShemaCount = inputXD.getXMDefinitions().length;
 
-            // Compare output XSD schemas to XSD references
+            // Compare output XML Schemas to XML Schema references
             if (validateAgainstRefXsd) {
                 validateSchemas(path, fileName, getRefXsd(path, fileName), outputXmlSchemaCollection, adapter.getSchemaNames(), expectedShemaCount);
             } else {
@@ -371,7 +371,7 @@ public class TestXd2Xsd extends TesterXdSchema {
 
             validateXmlAgainstXDef(path, fileName, validTestingData, invalidTestingData);
 
-            // Validate XML files against output XSD schemas and reference XSD schemas
+            // Validate XML files against output XML Schemas and reference XML Schemas
             if ((validTestingData != null && !validTestingData.isEmpty()) || (invalidTestingData != null && !invalidTestingData.isEmpty())) {
                 validateXmlAgainstXsd(path, fileName, validTestingData, invalidTestingData, validateAgainstRefXsd, invalidXsd);
             }

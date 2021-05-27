@@ -28,7 +28,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDPOOL_ADAPTER;
 
 /**
- * Transformation of given X-Definition pool to collection of XSD documents
+ * Transformation of given X-Definition pool to collection of XML Schema documents
  */
 public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2SchemaAdapter<XmlSchemaCollection> {
 
@@ -120,10 +120,10 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
     }
 
     /**
-     * Initializes all XSD documents based on source X-Definition from X-Definition pool
+     * Initializes all XML Schema documents based on source X-Definition from X-Definition pool
      */
     private void initXsdSchemas() {
-        LOG.info("{}Initialize XSD documents ...", logHeader(INITIALIZATION, XSD_XDPOOL_ADAPTER));
+        LOG.info("{}Initialize XML Schema documents ...", logHeader(INITIALIZATION, XSD_XDPOOL_ADAPTER));
 
         XsdSchemaFactory schemaFactory = new XsdSchemaFactory(adapterCtx);
         for (XMDefinition xDef : xdPool.getXMDefinitions()) {

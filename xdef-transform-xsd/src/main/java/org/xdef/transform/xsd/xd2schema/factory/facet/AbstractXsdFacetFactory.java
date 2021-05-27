@@ -47,7 +47,7 @@ public abstract class AbstractXsdFacetFactory implements IXsdFacetFactory {
     protected final Logger LOG = LoggerFactory.getLogger(getClass());
 
     /**
-     * XSD adapter context
+     * XML Schema adapter context
      */
     protected XsdAdapterCtx adapterCtx;
 

@@ -30,7 +30,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATIO
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_XDEF_ADAPTER;
 
 /**
- * Transformation of given X-Definition or X-Definition pool to collection of XSD documents
+ * Transformation of given X-Definition or X-Definition pool to collection of XML Schema documents
  */
 public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2SchemaAdapter<XmlSchemaCollection> {
 
@@ -61,7 +61,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
 
         this.xDefinition = (XDefinition)xDef;
 
-        // Output XSD document
+        // Output XML Schema document
         final XmlSchema schema;
         if (adapterCtx == null) {
             adapterCtx = new XsdAdapterCtx(features, reportWriter);
@@ -92,7 +92,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
     }
 
     /**
-     * Transform X-Definition tree to XSD document via treeAdapter
+     * Transform X-Definition tree to XML Schema document via treeAdapter
      * @param treeAdapter   transformation algorithm
      */
     private void transformXdef(final Xd2XsdTreeAdapter treeAdapter) {
@@ -112,12 +112,12 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
     }
 
     /**
-     * Creates and initialize XSD document
+     * Creates and initialize XML Schema document
      */
     private XmlSchema createXsdSchema() {
         Pair<String, String> targetNamespace = XsdNamespaceUtils.getSchemaTargetNamespace(xDefinition, adapterCtx);
 
-        LOG.info("{}Creating XSD document. systemName='{}', targetNsPrefix='{}', targetNsUri='{}'",
+        LOG.info("{}Creating XML Schema document. systemName='{}', targetNsPrefix='{}', targetNsUri='{}'",
                 logHeader(INITIALIZATION, xDefinition),
                 xDefinition.getName(),
                 targetNamespace.getKey(),

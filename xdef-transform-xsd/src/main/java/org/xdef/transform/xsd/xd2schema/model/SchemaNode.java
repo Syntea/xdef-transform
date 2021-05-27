@@ -29,14 +29,14 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
- * Couples X-Definition nodes with XSD nodes. Saves binding between element references.
+ * Couples X-Definition nodes with XML Schema nodes. Saves binding between element references.
  * Nodes are created in transformation phase and used for advanced post-processing.
  *
  * Supported types of X-Definition nodes:
  *      element ({@link XElement})
  *      attribute ({@link org.xdef.impl.XData}, kind {@link XNode.XMATTRIBUTE})
  *
- * Supported types of XSD nodes:
+ * Supported types of XML Schema nodes:
  *      element ({@link XmlSchemaElement})
  *      attribute ({@link XmlSchemaAttribute})
  *      complex-type ({@link XmlSchemaComplexType})
@@ -58,7 +58,7 @@ public class SchemaNode {
     private XMNode xdNode;
 
     /**
-     * XSD document node
+     * XML Schema document node
      */
     private XmlSchemaObjectBase xsdNode;
 
@@ -91,8 +91,8 @@ public class SchemaNode {
     }
 
     /**
-     * Sets XSD node and updates X-Definition position
-     * @param xsdNode   XSD node
+     * Sets XML Schema node and updates X-Definition position
+     * @param xsdNode   XML Schema node
      */
     public void setXsdNode(XmlSchemaObjectBase xsdNode) {
         this.xsdNode = xsdNode;
@@ -148,7 +148,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if XSD node is element
+     * @return true if XML Schema node is element
      */
     public boolean isXsdElem() {
         return (xsdNode instanceof XmlSchemaElement);
@@ -156,7 +156,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if XSD node is attribute
+     * @return true if XML Schema node is attribute
      */
     public boolean isXsdAttr() {
         return (xsdNode instanceof XmlSchemaAttribute);
@@ -164,7 +164,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if XSD node is complex type
+     * @return true if XML Schema node is complex type
      */
     public boolean isXsdComplexType() {
         return (xsdNode instanceof XmlSchemaComplexType);
@@ -172,7 +172,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if XSD node is complex content extension
+     * @return true if XML Schema node is complex content extension
      */
     public boolean isXsdComplexExt() {
         return (xsdNode instanceof XmlSchemaComplexContentExtension);
@@ -180,7 +180,7 @@ public class SchemaNode {
 
     /**
      *
-     * @return true if XSD node is group
+     * @return true if XML Schema node is group
      */
     public boolean isXsdGroup() {
         return (xsdNode instanceof XmlSchemaGroup);
@@ -306,7 +306,7 @@ public class SchemaNode {
 
     /**
      * Get X-Definition reference node position for post processing
-     * @param systemId          XSD document name
+     * @param systemId          XML Schema document name
      * @param xDefNodePos       XDefinition node position
      * @return X-Definition node position in X-Definition
      */

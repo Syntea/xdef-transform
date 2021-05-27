@@ -32,18 +32,18 @@ public class Xd2XsdUtils {
     static private final Pattern ciPattern = Pattern.compile("[a-zA-Z]");
 
     /**
-     * Add XSD document type node to top level of given XSD document
-     * @param schema        XSD document
-     * @param schemaType    XSD document type node
+     * Add XML Schema document type node to top level of given XML Schema document
+     * @param schema        XML Schema document
+     * @param schemaType    XML Schema document type node
      */
     public static void addSchemaTypeNode2TopLevel(final XmlSchema schema, final XmlSchemaType schemaType) {
         schema.getItems().add(schemaType);
     }
 
     /**
-     * Removes node from given XSD document
-     * @param schema        XSD document
-     * @param xmlObj        XSD node
+     * Removes node from given XML Schema document
+     * @param schema        XML Schema document
+     * @param xmlObj        XML Schema node
      */
     public static void removeNode(final XmlSchema schema, final XmlSchemaObject xmlObj) {
         schema.getItems().remove(xmlObj);
@@ -153,9 +153,9 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Calculates total occurrence of member nodes inside XSD all node
-     * @param groupParticleAll  XSD all node
-     * @param adapterCtx        XSD adapter context
+     * Calculates total occurrence of member nodes inside XML Schema all node
+     * @param groupParticleAll  XML Schema all node
+     * @param adapterCtx        XML Schema adapter context
      * @return total occurrence of nodes
      */
     public static Pair<Long, Long> calculateGroupAllMembersOccurrence(final XmlSchemaAll groupParticleAll,
@@ -166,9 +166,9 @@ public class Xd2XsdUtils {
     }
 
     /**
-     * Calculates total occurrence of member nodes inside XSD choice node
-     * @param groupParticleChoice   XSD choice node
-     * @param adapterCtx            XSD adapter context
+     * Calculates total occurrence of member nodes inside XML Schema choice node
+     * @param groupParticleChoice   XML Schema choice node
+     * @param adapterCtx            XML Schema adapter context
      * @return total occurrence of nodes
      */
     public static Pair<Long, Long> calculateGroupChoiceMembersOccurrence(final XmlSchemaChoice groupParticleChoice,

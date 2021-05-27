@@ -39,7 +39,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Creates multiple types of XSD simple content node
+ * Creates multiple types of XML Schema simple content node
  */
 public class XsdSimpleContentFactory {
 
@@ -61,8 +61,8 @@ public class XsdSimpleContentFactory {
     private XDNamedValue[] parameters = null;
 
     /**
-     * @param xsdFactory    XSD element factory
-     * @param adapterCtx    XSD adapter context
+     * @param xsdFactory    XML Schema element factory
+     * @param adapterCtx    XML Schema adapter context
      * @param xData         source X-Definition node
      */
     public XsdSimpleContentFactory(XsdNodeFactory xsdFactory, XsdAdapterCtx adapterCtx, XData xData) {
@@ -77,7 +77,7 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Create XSD simple content node
+     * Create XML Schema simple content node
      * @param nodeName  node name (required for <xs:union/> node)
      * @param isAttr    flag if X-Definition node is attribute
      * @return based on X-Definition node parser
@@ -139,7 +139,7 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type string restriction node without any facet
+     * Creates XML Schema simple type string restriction node without any facet
      * @return <xs:restriction base="xs:string"/>
      */
     public XmlSchemaSimpleTypeRestriction createDefaultRestriction() {
@@ -150,9 +150,9 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type restriction node with facet based on input parameters
-     * @param qName             XSD restriction base
-     * @param facetBuilder      XSD restriction facet builder
+     * Creates XML Schema simple type restriction node with facet based on input parameters
+     * @param qName             XML Schema restriction base
+     * @param facetBuilder      XML Schema restriction facet builder
      * @param parameters        source X-Definition parameters for facets building
      * @return <xs:restriction base="{@code qName}">...</xs:restriction>
      */
@@ -171,9 +171,9 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type list node and restriction node with facets
-     * @param qName             XSD list item type and XSD restriction base
-     * @param facetBuilder      XSD restriction facet builder
+     * Creates XML Schema simple type list node and restriction node with facets
+     * @param qName             XML Schema list item type and XML Schema restriction base
+     * @param facetBuilder      XML Schema restriction facet builder
      * @return  <xs:list itemType="{@code qName}">...</xs:list> if restriction has no facets
      *          <xs:restriction>...</xs:restriction> otherwise
      */
@@ -186,8 +186,8 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type list node
-     * @param qName     XSD list item type
+     * Creates XML Schema simple type list node
+     * @param qName     XML Schema list item type
      * @return <xs:list itemType="{@code qName}">...</xs:list>
      */
     private XmlSchemaSimpleTypeList simpleTypeList(final QName qName) {
@@ -214,8 +214,8 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type union node and restriction node with facets optionally
-     * @param facetBuilder      XSD restriction facet builder
+     * Creates XML Schema simple type union node and restriction node with facets optionally
+     * @param facetBuilder      XML Schema restriction facet builder
      * @param nodeName          source X-Definition node name
      * @return  <xs:union memberTypes="...">...</xs:union> if restriction has no facets
      *          <xs:restriction><xs:union memberTypes="...">...</xs:union>...</xs:restriction> otherwise
@@ -229,7 +229,7 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD simple type union node
+     * Creates XML Schema simple type union node
      * @param nodeName      source X-Definition node name
      * @return <xs:union memberTypes="...">...</xs:union>
      */
@@ -312,9 +312,9 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Wrap xs:list or xs:union node to xs:simpleType if input XSD restriction node has any facet
-     * @param restriction   XSD restriction node
-     * @param content       XSD list or union node
+     * Wrap xs:list or xs:union node to xs:simpleType if input XML Schema restriction node has any facet
+     * @param restriction   XML Schema restriction node
+     * @param content       XML Schema list or union node
      * @return  {@code content} if {@code restriction} has no facet
      *          {@code restriction} containing <xs:simpleType>{@code content}</xs:simpleType>
      */
@@ -332,11 +332,11 @@ public class XsdSimpleContentFactory {
     }
 
     /**
-     * Creates XSD facet nodes based on input {@code parameters} by {@code facetBuilder}
-     * @param qName             XSD restriction base
-     * @param facetBuilder      XSD restriction facet builder
+     * Creates XML Schema facet nodes based on input {@code parameters} by {@code facetBuilder}
+     * @param qName             XML Schema restriction base
+     * @param facetBuilder      XML Schema restriction facet builder
      * @param parameters        source X-Definition parameters for facets building
-     * @return created XML schema facets
+     * @return created XML Schema facets
      */
     private List<XmlSchemaFacet> buildFacets(final QName qName, final IXsdFacetFactory facetBuilder, final XDNamedValue[] parameters) {
         if (qName != null && ("double".equals(qName.getLocalPart()) || "float".equals(qName.getLocalPart()))) {

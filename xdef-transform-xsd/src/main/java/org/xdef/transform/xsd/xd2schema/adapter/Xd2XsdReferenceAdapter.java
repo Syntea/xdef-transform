@@ -38,24 +38,24 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms all X-Definition references into XSD (complex/simple) schema types
+ * Transforms all X-Definition references into XML Schema (complex/simple) schema types
  */
 public class Xd2XsdReferenceAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(Xd2XsdReferenceAdapter.class);
 
     /**
-     * Output XSD document
+     * Output XML Schema document
      */
     private final XmlSchema schema;
 
     /**
-     * Output XSD document name
+     * Output XML Schema document name
      */
     private final String schemaName;
 
     /**
-     * XSD node factory
+     * XML Schema node factory
      */
     private final XsdNodeFactory xsdFactory;
 
@@ -65,7 +65,7 @@ public class Xd2XsdReferenceAdapter {
     private final Xd2XsdTreeAdapter treeAdapter;
 
     /**
-     * XSD adapter context
+     * XML Schema adapter context
      */
     private final XsdAdapterCtx adapterCtx;
 
@@ -75,17 +75,17 @@ public class Xd2XsdReferenceAdapter {
     private boolean isPostProcessingPhase = false;
 
     /**
-     * Storage of names of already created XSD simple types references
+     * Storage of names of already created XML Schema simple types references
      */
     private Set<String> simpleTypeReferences;
 
     /**
-     * Storage of namespace URI of already created XSD imports
+     * Storage of namespace URI of already created XML Schema imports
      */
     private Set<String> namespaceImports;
 
     /**
-     * Storage of XSD document names of already created XSD includes
+     * Storage of XML Schema document names of already created XML Schema includes
      * Used for X-Definition without namespace
      */
     private Set<String> namespaceIncludes;
@@ -106,7 +106,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Creates following XSD nodes from X-Definition nodes:
+     * Creates following XML Schema nodes from X-Definition nodes:
      *      simpleType      - attribute, text
      *      complexType     - element
      *      group           - mixed
@@ -121,7 +121,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Creates following XSD nodes from X-Definition nodes:
+     * Creates following XML Schema nodes from X-Definition nodes:
      *      simpleType      - attribute, text
      *      import          - used namespaces in reference of attributes and elements
      * @param nodes list of X-Definition nodes
@@ -182,7 +182,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Transform top-level X-Definition element node into XSD node (element, complex-type, simple-type, group)
+     * Transform top-level X-Definition element node into XML Schema node (element, complex-type, simple-type, group)
      * @param xElem top-level X-Definition element to be transformed
      */
     private void transformTopLevelElem(final XMElement xElem) {
@@ -334,7 +334,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Process simple-type XSD reference.
+     * Process simple-type XML Schema reference.
      * Insert X-Definition node into post processing queue if it is using different namespace.
      *
      * @param xData attribute/text node using reference
@@ -403,7 +403,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document include.
+     * Add XML Schema document include.
      * @param refPos    reference position of X-Definition node
      */
     private void addSchemaInclude(final String refPos) {
@@ -432,7 +432,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document import based on X-Definition element node.
+     * Add XML Schema document import based on X-Definition element node.
      * @param nsUri     X-Definition node namespace URI
      * @param refPos    X-Definition reference position
      */
@@ -459,7 +459,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document import based on attribute/text X-Definition node
+     * Add XML Schema document import based on attribute/text X-Definition node
      * @param nsPrefix  X-Definition node namespace prefix
      * @param nsUri     X-Definition node namespace URI
      */
@@ -496,7 +496,7 @@ public class Xd2XsdReferenceAdapter {
     }
 
     /**
-     * Add XSD document import of post processed schema
+     * Add XML Schema document import of post processed schema
      * @param nsPrefix  schema namespace prefix
      * @param nsUri     schema namespace URI
      */

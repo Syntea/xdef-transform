@@ -6,9 +6,9 @@ public interface XDefToXsdOptionsConst {
     // output directory
     String OUTPUT_DIR = "outputDir";
 
-    // output XML schema file name prefix
+    // output XML Schema file name prefix
     String OUTPUT_FILE_PREFIX = "schemaPrefix";
-    // output XML schema file extension
+    // output XML Schema file extension
     String OUTPUT_EXT = "schemaExt";
 
     // root name of X-Definition

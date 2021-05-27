@@ -13,15 +13,15 @@ public class XDefToXsdOptions {
         input.setRequired(true);
         options.addOption(input);
 
-        Option outputDir = new Option("o", XDefToXsdOptionsConst.OUTPUT_DIR, true, "output directory path, where XML schema(s) will be saved");
+        Option outputDir = new Option("o", XDefToXsdOptionsConst.OUTPUT_DIR, true, "output directory path, where XML Schema(s) will be saved");
         outputDir.setRequired(true);
         options.addOption(outputDir);
 
-        Option schemaPrefix = new Option("sp", XDefToXsdOptionsConst.OUTPUT_FILE_PREFIX, true, "prefix of XML schema output file(s).\nDefault: ''");
+        Option schemaPrefix = new Option("sp", XDefToXsdOptionsConst.OUTPUT_FILE_PREFIX, true, "prefix of XML Schema output file(s).\nDefault: ''");
         schemaPrefix.setRequired(false);
         options.addOption(schemaPrefix);
 
-        Option schemaFileExt = new Option("se", XDefToXsdOptionsConst.OUTPUT_EXT, true, "extension of XML schema output file(s).\nDefault: '.xsd'");
+        Option schemaFileExt = new Option("se", XDefToXsdOptionsConst.OUTPUT_EXT, true, "extension of XML Schema output file(s).\nDefault: '.xsd'");
         schemaFileExt.setRequired(false);
         options.addOption(schemaFileExt);
 

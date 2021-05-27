@@ -38,14 +38,14 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_ADA
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdLogGroup.XSD_REFERENCE;
 
 /**
- * Basic XSD context for transformation X-Definition to XSD document
+ * Basic XML Schema context for transformation X-Definition to XML Schema document
  */
 public class XsdAdapterCtx {
 
     private static final Logger LOG = LoggerFactory.getLogger(XsdAdapterCtx.class);
 
     /**
-     * Names of created XSD documents
+     * Names of created XML Schema documents
      */
     private Set<String> schemaNames = null;
 
@@ -60,7 +60,7 @@ public class XsdAdapterCtx {
     private SchemaNamespaceLocationMap extraSchemaLocationsCtx = null;
 
     /**
-     * Collection of created XSD documents
+     * Collection of created XML Schema documents
      */
     private XmlSchemaCollection xmlSchemaCollection = null;
 
@@ -104,7 +104,7 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Initializes XSD adapter context
+     * Initializes XML Schema adapter context
      */
     public void init() {
         schemaNames = new HashSet<>();
@@ -147,7 +147,7 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add XSD document name to name set
+     * Add XML Schema document name to name set
      * @param name  X-Definition name
      */
     public void addSchemaName(final String name) throws SRuntimeException {
@@ -158,9 +158,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add XSD document location into map
-     * @param nsUri             XSD document namespace URI
-     * @param importLocation    XSD document location definition
+     * Add XML Schema document location into map
+     * @param nsUri             XML Schema document namespace URI
+     * @param importLocation    XML Schema document location definition
      */
     public void addSchemaLocation(final String nsUri, final XsdSchemaImportLocation importLocation) {
         schemaLocationsCtx.addSchemaLocation(nsUri, importLocation);
@@ -168,7 +168,7 @@ public class XsdAdapterCtx {
 
     /**
      * Check if schema with given namespace URI exists
-     * @param nsUri     XSD document namespace URI
+     * @param nsUri     XML Schema document namespace URI
      * @return true if schema exists
      */
     public boolean existsSchemaLocation(final String nsUri, final String xsdName) {
@@ -176,9 +176,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document location if exists by given namespace URI
-     * @param nsUri     XSD document namespace URI
-     * @return  XSD document location if exists,
+     * Finds XML Schema document location if exists by given namespace URI
+     * @param nsUri     XML Schema document namespace URI
+     * @return  XML Schema document location if exists,
      *          otherwise {@link Optional#empty()}
      */
     public Optional<XsdSchemaImportLocation> findSchemaLocation(final String nsUri, final String xsdName) {
@@ -186,9 +186,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document locations if exists by given namespace URI
-     * @param nsUri     XSD document namespace URI
-     * @return  XSD document location if exists,
+     * Finds XML Schema document locations if exists by given namespace URI
+     * @param nsUri     XML Schema document namespace URI
+     * @return  XML Schema document location if exists,
      *          otherwise {@link Collections#emptyList()}
      */
     public List<XsdSchemaImportLocation> findSchemaLocations(final String nsUri) {
@@ -196,9 +196,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document location if exists by given namespace URI
-     * @param nsUri     XSD document namespace URI
-     * @return  XSD document location if exists,
+     * Finds XML Schema document location if exists by given namespace URI
+     * @param nsUri     XML Schema document namespace URI
+     * @return  XML Schema document location if exists,
      *          otherwise {@link Optional#empty()}
      */
     public Optional<XsdSchemaImportLocation> findPostProcessingSchemaLocation(final String nsUri,
@@ -207,9 +207,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document location if exists by given namespace URI
-     * @param nsUri     XSD document namespace URI
-     * @return  XSD document location if exists,
+     * Finds XML Schema document location if exists by given namespace URI
+     * @param nsUri     XML Schema document namespace URI
+     * @return  XML Schema document location if exists,
      *          otherwise {@link Collections#emptyList()}
      */
     public List<XsdSchemaImportLocation> findPostProcessingSchemaLocations(final String nsUri) {
@@ -217,27 +217,27 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add XSD document into extra map. Internally creates document location.
-     * @param nsPrefix          XSD document namespace prefix
-     * @param nsUri             XSD document namespace URI
+     * Add XML Schema document into extra map. Internally creates document location.
+     * @param nsPrefix          XML Schema document namespace prefix
+     * @param nsUri             XML Schema document namespace URI
      */
     public XsdSchemaImportLocation addExtraSchemaLocation(final String nsPrefix, final String nsUri) {
         return extraSchemaLocationsCtx.addSchemaLocation(nsPrefix, nsUri);
     }
 
     /**
-     * Add XSD document into extra map. Internally creates document location.
-     * @param nsUri             XSD document namespace URI
-     * @param importLocation    XSD document location definition
+     * Add XML Schema document into extra map. Internally creates document location.
+     * @param nsUri             XML Schema document namespace URI
+     * @param importLocation    XML Schema document location definition
      */
     public void addExtraSchemaLocation(final String nsUri, final XsdSchemaImportLocation importLocation) {
         extraSchemaLocationsCtx.addSchemaLocation(nsUri, importLocation);
     }
 
     /**
-     * Check if XSD document with given namespace URI should be created in post-processing
-     * @param nsUri     XSD document namespace URI
-     * @return true if XSD document should be created in post-processing
+     * Check if XML Schema document with given namespace URI should be created in post-processing
+     * @param nsUri     XML Schema document namespace URI
+     * @return true if XML Schema document should be created in post-processing
      */
     public boolean isPostProcessingNamespace(final String nsUri) {
         return extraSchemaLocationsCtx.containsSchemaFileLocationMap(nsUri);
@@ -245,7 +245,7 @@ public class XsdAdapterCtx {
 
     /**
      * Mark X-Definition node to be converted in post-processing phase
-     * @param nsUri     XSD document namespace URI
+     * @param nsUri     XML Schema document namespace URI
      * @param xNode     X-definition node
      */
     public void addNodeToPostProcessing(final String nsUri, final XNode xNode) {
@@ -259,13 +259,13 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document by given system identifier.
+     * Finds XML Schema document by given system identifier.
      *
-     * Throws exception if {@code shouldExists} value is true and XSD document does not exist
-     * @param systemId      XSD document system identifier
+     * Throws exception if {@code shouldExists} value is true and XML Schema document does not exist
+     * @param systemId      XML Schema document system identifier
      * @param phase         phase of transforming algorithm (just for logging purposes)
-     * @return  XSD document if exists
-     * @throws SRuntimeException if XSD document does not exist
+     * @return  XML Schema document if exists
+     * @throws SRuntimeException if XML Schema document does not exist
      */
     public XmlSchema findSchemaReq(final String systemId, final AlgPhase phase) throws SRuntimeException {
         XmlSchema[] schemas = xmlSchemaCollection.getXmlSchema(systemId);
@@ -284,13 +284,13 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document by given system identifier.
+     * Finds XML Schema document by given system identifier.
      *
-     * Throws exception if {@code shouldExists} value is true and XSD document does not exist
-     * @param systemId      XSD document system identifier
+     * Throws exception if {@code shouldExists} value is true and XML Schema document does not exist
+     * @param systemId      XML Schema document system identifier
      * @param phase         phase of transforming algorithm (just for logging purposes)
-     * @return  XSD document if exists
-     *          {@link Optional#empty()} if XSD document does not exist
+     * @return  XML Schema document if exists
+     *          {@link Optional#empty()} if XML Schema document does not exist
      */
     public Optional<XmlSchema> findSchemaOpt(final String systemId, final AlgPhase phase) {
         XmlSchema[] schemas = xmlSchemaCollection.getXmlSchema(systemId);
@@ -308,12 +308,12 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document name by given namespace URI
-     * @param nsUri         XSD document namespace URI
+     * Finds XML Schema document name by given namespace URI
+     * @param nsUri         XML Schema document namespace URI
      * @param shouldExists  flag, it non-existing schema should throw exception
      * @param phase         phase of transforming algorithm (just for logging purposes)
-     * @return  XSD document name if XSD document exists
-     *          null if XSD document does not exist and {@code shouldExists} value is false
+     * @return  XML Schema document name if XML Schema document exists
+     *          null if XML Schema document does not exist and {@code shouldExists} value is false
      */
     public Set<String> findSchemaNamesByNamespace(final String nsUri, boolean shouldExists, final AlgPhase phase) {
         LOG.debug("{}Finding schema names by namespace. nsUri='{}', shouldExists={}",
@@ -337,12 +337,12 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document name by given namespace URI
-     * @param nsUri         XSD document namespace URI
+     * Finds XML Schema document name by given namespace URI
+     * @param nsUri         XML Schema document namespace URI
      * @param shouldExists  flag, it non-existing schema should throw exception
      * @param phase         phase of transforming algorithm (just for logging purposes)
-     * @return  XSD document name if XSD document exists
-     *          null if XSD document does not exist and {@code shouldExists} value is false
+     * @return  XML Schema document name if XML Schema document exists
+     *          null if XML Schema document does not exist and {@code shouldExists} value is false
      */
     public boolean hasSchemaNameWithNamespaceAndName(final String nsUri,
                                                      final String schemaName,
@@ -357,7 +357,7 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by namespace of input {@code node}
+     * Add new or update already existing schema node into XML Schema document defined by namespace of input {@code node}
      * @param node  schema node to be added
      * @return  schema node defined by {@code node} if no node exists with same node path
      *          otherwise already existing node with same node path merged with {@code node}
@@ -370,9 +370,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by {@code systemId}
+     * Add new or update already existing schema node into XML Schema document defined by {@code systemId}
      * @param node      schema node to be added
-     * @param systemId  XSD document identifier
+     * @param systemId  XML Schema document identifier
      * @return  schema node defined by {@code node} if no node exists with same node path
      *          otherwise already existing node with same node path merged with {@code node}
      */
@@ -383,8 +383,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add new or update already existing schema node into XSD document defined by {@code systemId} and {@code nodePath}
-     * @param systemId  XSD document identifier
+     * Add new or update already existing schema node into XML Schema document defined by {@code systemId} and {@code nodePath}
+     * @param systemId  XML Schema document identifier
      * @param nodePath  X-Definition node path
      * @param node      schema node to be added
      * @return  schema node defined by {@code node} if no node exists with same node path
@@ -439,9 +439,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Updates XSD node of schema node defined by X-Definition node {@code xNode}
+     * Updates XML Schema node of schema node defined by X-Definition node {@code xNode}
      * @param xNode         X-Definition node of schema node
-     * @param newXsdNode    new XSD document node
+     * @param newXsdNode    new XML Schema document node
      */
     public void updateNode(final XMNode xNode, final XmlSchemaNamed newXsdNode) {
         final String xPos = xNode.getXDPosition();
@@ -465,8 +465,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds all created schema nodes in XSD document
-     * @param systemId  XSD document identifier
+     * Finds all created schema nodes in XML Schema document
+     * @param systemId  XML Schema document identifier
      * @return  map of schema nodes
      */
     public XmlSchemaNodeMap.SchemaNodeMap findOrCreateSchemaNodeMap(final String systemId) {
@@ -477,7 +477,7 @@ public class XsdAdapterCtx {
 
     /**
      * Finds schema node defined by {@code systemId} and {@code nodePath}
-     * @param systemId  XSD document identifier
+     * @param systemId  XML Schema document identifier
      * @param nodePath  X-Definition path
      * @return  schema node if exists,
      *          otherwise {@link Optional#empty()}
@@ -498,8 +498,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Deletes created schema node defined by XSD document identifier and node path
-     * @param systemId      XSD document identifier
+     * Deletes created schema node defined by XML Schema document identifier and node path
+     * @param systemId      XML Schema document identifier
      * @param nodePath      X-Definition node path
      */
     private void removeNode(final String systemId, final String nodePath) {
@@ -512,9 +512,9 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Finds XSD document root node's names by XSD document identifier
-     * @param systemId      XSD document identifier
-     * @return  XSD document root node's names if exist,
+     * Finds XML Schema document root node's names by XML Schema document identifier
+     * @param systemId      XML Schema document identifier
+     * @return  XML Schema document root node's names if exist,
      *          otherwise empty Set
      */
     public Set<String> findSchemaRootNodeNames(final String systemId) {
@@ -522,8 +522,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Add XSD document root node name
-     * @param systemId      XSD document identifier
+     * Add XML Schema document root node name
+     * @param systemId      XML Schema document identifier
      * @param nodeName      X-Definition name
      */
     public void addRootNodeName(final String systemId, final String nodeName) {
@@ -543,7 +543,7 @@ public class XsdAdapterCtx {
     /**
      * Creates and saves unique constraint based on input parameters if does not already exist
      * @param name      unique constraint name
-     * @param systemId  XSD document identifier (can be nullable)
+     * @param systemId  XML Schema document identifier (can be nullable)
      * @param path      unique constraint path
      * @return Created or found unique constraint
      */
@@ -627,7 +627,7 @@ public class XsdAdapterCtx {
      * Finds unique constrain in tree of unique constraints.
      * Iterates through tree, starting at {@code uniquestSetPath} path and going to root of XML tree
      * @param uniqueInfoName        unique constraint name
-     * @param systemId              XSD document identifier
+     * @param systemId              XML Schema document identifier
      * @param uniquestSetPath       unique constraint path
      * @return  unique constraint if exists inside given map,
      *          otherwise {@link Optional#empty()}
@@ -657,8 +657,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Get all created unique constraints created in XSD document
-     * @param systemId  XSD document identifier
+     * Get all created unique constraints created in XML Schema document
+     * @param systemId  XML Schema document identifier
      * @return  unique constraints
      */
     public Optional<XmlSchemaUniqueConstraintMap.XDefUniqueSetMap> findXDefUniqueSetMap(final String systemId) {
@@ -666,8 +666,8 @@ public class XsdAdapterCtx {
     }
 
     /**
-     * Create or get unique constraints map in given XSD document
-     * @param systemId  XSD document identifier
+     * Create or get unique constraints map in given XML Schema document
+     * @param systemId  XML Schema document identifier
      * @return  unique constraints map
      */
     private XmlSchemaUniqueConstraintMap.XDefUniqueSetMap getOrCreateXDefUniqueSetMap(final String systemId) {

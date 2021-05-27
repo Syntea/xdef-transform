@@ -4,22 +4,22 @@ import org.xdef.XDPool;
 import org.xdef.model.XMDefinition;
 
 /**
- * Transforms single X-Definition to XSD schema
+ * Transforms single X-Definition to XML Schema
  * @param <T> type of returned schema
  */
 public interface XDef2SchemaAdapter<T> {
 
     /**
-     * Transforms given X-Definition pool to XSD schema
+     * Transforms given X-Definition pool to XML Schema
      * @param xdPool    source X-Definition pool
-     * @return  XSD schema
+     * @return  XML Schema
      */
     T createSchema(final XDPool xdPool);
 
     /**
-     * Transforms given X-Definition to XSD schema
+     * Transforms given X-Definition to XML Schema
      * @param xDef  source X-Definition
-     * @return  XSD schema
+     * @return  XML Schema
      */
     T createSchema(final XMDefinition xDef);
 

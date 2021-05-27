@@ -48,7 +48,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms XSD schema to X-Definition or x-definiton pool
+ * Transforms XML Schema to X-Definition or x-definiton pool
  */
 public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd2XDefAdapter<XmlSchema> {
 
@@ -63,7 +63,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     public String createXDefinition(final XmlSchema rootSchema, final String xDefName) {
         if (rootSchema == null) {
             reportWriter.error(XSD.XSD002);
-            LOG.error("{}Input XSD document is not set!", logHeader(INITIALIZATION, xDefName));
+            LOG.error("{}Input XML Schema document is not set!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -77,7 +77,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
 
         if (schemas == null || schemas.length <= 0) {
             reportWriter.error(XSD.XSD200);
-            LOG.error("{}Input XSD document collection is empty!", logHeader(INITIALIZATION, xDefName));
+            LOG.error("{}Input XML Schema document collection is empty!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -92,7 +92,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
 
         if (schemasToBeProcessed.isEmpty()) {
             reportWriter.error(XSD.XSD201);
-            LOG.error("{}No XSD document to be processed found!", logHeader(INITIALIZATION, xDefName));
+            LOG.error("{}No XML Schema document to be processed found!", logHeader(INITIALIZATION, xDefName));
             return "";
         }
 
@@ -104,7 +104,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
             LOG.info("{}Creating X-Definition collection ...", logHeader(TRANSFORMATION, XD_ADAPTER));
             xdRootElem = elementFactory.createPool();
 
-            // First transform root XSD document
+            // First transform root XML Schema document
             xdRootElem.appendChild(createXDef(xDefName, rootSchema, true));
 
             for (XmlSchema schema : schemasToBeProcessed) {
@@ -124,21 +124,21 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Transforms given XSD node tree into X-Definition node tree
+     * Transforms given XML Schema node tree into X-Definition node tree
      *
      * Output will be saved in {@code xdDefRootElem}
      *
-     * @param treeAdapter       XSD to X-Definition adapter to be used
+     * @param treeAdapter       XML Schema to X-Definition adapter to be used
      * @param xdDefRootElem     X-Definition root node
      * @param xDefName          X-Definition name
-     * @param schema            input XSD document to be transformed
+     * @param schema            input XML Schema document to be transformed
      */
     private void transformXsdTree(final Xsd2XdTreeAdapter treeAdapter,
                                   final Element xdDefRootElem,
                                   final String xDefName,
                                   final XmlSchema schema) {
         LOG.info(HEADER_LINE);
-        LOG.info("{}Transformation of XSD tree", logHeader(TRANSFORMATION, xDefName));
+        LOG.info("{}Transformation of XML Schema tree", logHeader(TRANSFORMATION, xDefName));
         LOG.info(HEADER_LINE);
 
         final Map<QName, XmlSchemaType> schemaTypeMap = schema.getSchemaTypes();
@@ -164,11 +164,11 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Initializes XSD document's name
-     * @param schemas       XSD documents
-     * @param rootSchema    XSD root document
+     * Initializes XML Schema document's name
+     * @param schemas       XML Schema documents
+     * @param rootSchema    XML Schema root document
      * @param xDefName      output X-Definition name
-     * @return XSD document name per XSD document
+     * @return XML Schema document name per XML Schema document
      */
     private Map<XmlSchema, String> initializeSchemaNames(final List<XmlSchema> schemas,
                                                          final XmlSchema rootSchema,
@@ -194,10 +194,10 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Initializes XSD document name
-     * @param schema            XSD document to be initialized
-     * @param schemaLocation    XSD document location
-     * @param schemaFileNames   map of XSD document names
+     * Initializes XML Schema document name
+     * @param schema            XML Schema document to be initialized
+     * @param schemaLocation    XML Schema document location
+     * @param schemaFileNames   map of XML Schema document names
      */
     private void initializeSchemaName(final XmlSchema schema,
                                       final String schemaLocation,
@@ -219,11 +219,11 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Gather basic data from input XSD documents and initializes XSD documents
-     * @param schemas       XSD documents
-     * @param rootSchema    XSD root document
+     * Gather basic data from input XML Schema documents and initializes XML Schema documents
+     * @param schemas       XML Schema documents
+     * @param rootSchema    XML Schema root document
      * @param xDefName      output X-Definition name
-     * @return Collection of input XML schemas
+     * @return Collection of input XML Schemas
      */
     private List<XmlSchema> initializeSchemas(final List<XmlSchema> schemas,
                                               final XmlSchema rootSchema,
@@ -234,10 +234,10 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
 
         final Map<XmlSchema, String> schemaFileNameMap = initializeSchemaNames(schemas, rootSchema, xDefName);
         /**
-         * Key:     serialized XML schema content
+         * Key:     serialized XML Schema content
          * Value:
-         *      Left:   XML schema file name
-         *      Right:  XML schema
+         *      Left:   XML Schema file name
+         *      Right:  XML Schema
          */
         final Map<String, Pair<String, XmlSchema>> xmlSchemaContent = new HashMap<>();
         final List<XmlSchema> schemasToBeProcessed = new LinkedList<>();
@@ -285,7 +285,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
                 adapterCtx.addXmlSchemaFileName(schema, schemaFileName);
             } catch (UnsupportedEncodingException e) {
                 reportWriter.error(XSD.XSD202, schemaFileName);
-                LOG.error("{}Unsuccessful loading of XSD document. schemaFileName='{}'",
+                LOG.error("{}Unsuccessful loading of XML Schema document. schemaFileName='{}'",
                         logHeader(PREPROCESSING, XD_ADAPTER), schemaFileName);
             }
         });
@@ -300,8 +300,8 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Initializes XSD documents used namespaces
-     * @param schemaToBeProcessed   XSD documents to be initialized
+     * Initializes XML Schema documents used namespaces
+     * @param schemaToBeProcessed   XML Schema documents to be initialized
      */
     private void initializeNamespaces(final List<XmlSchema> schemaToBeProcessed) {
         LOG.info(HEADER_LINE);
@@ -329,9 +329,9 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Gets target namespace info of given XSD document
-     * @param schema    XSD document
-     * @return  target namespace info(prefix, URI) if XSD document is using target namespace
+     * Gets target namespace info of given XML Schema document
+     * @param schema    XML Schema document
+     * @return  target namespace info(prefix, URI) if XML Schema document is using target namespace
      *          otherwise {@link Optional#empty()}
      */
     private Optional<Namespace> getTargetNamespace(final XmlSchema schema) {
@@ -365,9 +365,9 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
     }
 
     /**
-     * Creates XML node structure of X-Definition from given XSD document
-     * @param schemaName    XSD document name (output X-Definition name)
-     * @param schema        input XSD document
+     * Creates XML node structure of X-Definition from given XML Schema document
+     * @param schemaName    XML Schema document name (output X-Definition name)
+     * @param schema        input XML Schema document
      * @param pool          flag, if X-Definition is part of X-Definition pool
      * @return root node of X-Definition
      */

@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Base class for all adapters transforming X-Definition to XSD document
+ * Base class for all adapters transforming X-Definition to XML Schema document
  */
 public abstract class AbstractXd2XsdAdapter {
 

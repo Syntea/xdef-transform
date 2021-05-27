@@ -6,7 +6,7 @@ import org.apache.ws.commons.schema.XmlSchemaAttribute;
 import java.util.List;
 
 /**
- * List of pairs [variable name / xml schema attribute name, xml schema attribute]
+ * List of pairs [variable name / XML Schema attribute name, XML Schema attribute]
  *
  * @author smid
  * @since 2021-05-21

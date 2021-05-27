@@ -88,7 +88,7 @@ public class XsdNameUtils {
 
     /**
      * Parse X-Definition node name without target namespace (if using it)
-     * @param schema    XSD document
+     * @param schema    XML Schema document
      * @param name      X-Definition node name
      * @return  X-Definition node name
      */
@@ -102,9 +102,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Resolve XSD attribute node name and schema form
-     * @param schema    XSD document
-     * @param attr      XSD attribute node
+     * Resolve XML Schema attribute node name and schema form
+     * @param schema    XML Schema document
+     * @param attr      XML Schema attribute node
      * @param xName     X-Definition node name
      */
     public static void resolveAttributeQName(final XmlSchema schema, final XmlSchemaAttribute attr, final String xName) {
@@ -126,11 +126,11 @@ public class XsdNameUtils {
     }
 
     /**
-     * Resolve XSD element node name and schema form
-     * @param schema        XSD document
+     * Resolve XML Schema element node name and schema form
+     * @param schema        XML Schema document
      * @param xElem         X-Definition element node
-     * @param elem          XSD element node
-     * @param adapterCtx    XSD adapter context
+     * @param elem          XML Schema element node
+     * @param adapterCtx    XML Schema adapter context
      */
     public static void resolveElementQName(final XmlSchema schema, final XElement xElem, final XmlSchemaElement elem, final XsdAdapterCtx adapterCtx) {
         if (elem.isRef()) {
@@ -160,9 +160,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Resolve XSD attribute node type
-     * @param schema        XSD document
-     * @param xsdAttr       XSD attribute node
+     * Resolve XML Schema attribute node type
+     * @param schema        XML Schema document
+     * @param xsdAttr       XML Schema attribute node
      */
     public static void resolveAttributeSchemaTypeQName(final XmlSchema schema, final XmlSchemaAttribute xsdAttr) {
         if (XmlSchemaForm.QUALIFIED.equals(schema.getAttributeFormDefault())) {
@@ -174,9 +174,9 @@ public class XsdNameUtils {
     }
 
     /**
-     * Resolve XSD element node type
-     * @param schema        XSD document
-     * @param xsdElem       XSD attribute node
+     * Resolve XML Schema element node type
+     * @param schema        XML Schema document
+     * @param xsdElem       XML Schema attribute node
      */
     public static void resolveElementSchemaTypeQName(final XmlSchema schema, final XmlSchemaElement xsdElem) {
         if (XmlSchemaForm.QUALIFIED.equals(schema.getElementFormDefault())) {
@@ -188,10 +188,10 @@ public class XsdNameUtils {
     }
 
     /**
-     * Check if X-Definition node name is not using namespace prefix while XSD document is using target namespace prefix
-     * @param schema    XSD document
+     * Check if X-Definition node name is not using namespace prefix while XML Schema document is using target namespace prefix
+     * @param schema    XML Schema document
      * @param name      X-Definition node name
-     * @return true if X-Definition node name is not using namespace prefix while XSD document yes
+     * @return true if X-Definition node name is not using namespace prefix while XML Schema document yes
      */
     public static boolean isUnqualifiedName(final XmlSchema schema, final String name) {
         return !XsdNamespaceUtils.containsNsPrefix(name)
@@ -288,7 +288,7 @@ public class XsdNameUtils {
     /**
      * Creates reference name from given X-Definition node
      * @param xData         X-Definition node
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      * @return  reference name
      *          otherwise {@link Optional#empty()}
      */
@@ -344,13 +344,13 @@ public class XsdNameUtils {
     }
 
     /**
-     * Creates XML schema name
+     * Creates XML Schema name
      * @param xDef   X-Definition
-     * @return  XML schema name
+     * @return  XML Schema name
      */
     public static String getSchemaName(final XMDefinition xDef) {
         if (xDef.getName() == null || xDef.getName().isEmpty()) {
-            LOG.warn("{}Initialize XSD document - X-definition name is blank.", logHeader(INITIALIZATION, xDef));
+            LOG.warn("{}Initialize XML Schema document - X-definition name is blank.", logHeader(INITIALIZATION, xDef));
             return "blank_name";
         }
 

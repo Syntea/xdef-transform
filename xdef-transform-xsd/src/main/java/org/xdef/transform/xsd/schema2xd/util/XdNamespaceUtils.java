@@ -35,11 +35,11 @@ public class XdNamespaceUtils {
      * If multiple schemas using target namespace equals to reference namespace URI have been found,
      * then we try to find proper schema name by searching node by reference qualified name in particular schema.
      *
-     * @param schemaCollection      XSD document collection
+     * @param schemaCollection      XML Schema document collection
      * @param refQName              reference qualified name
      * @param xdAdapterCtx          X-Definition adapter context
-     * @param simple                flag, if only reference should be XSD simple type or XSD attribute node
-     * @return  XML schema name if found
+     * @param simple                flag, if only reference should be XML Schema simple type or XML Schema attribute node
+     * @return  XML Schema name if found
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<String> findReferenceSchemaName(final XmlSchemaCollection schemaCollection,

@@ -24,7 +24,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.INITIALIZATION;
 
 /**
- * Creates and initialize XSD document
+ * Creates and initialize XML Schema document
  */
 public class XsdSchemaFactory {
 
@@ -37,22 +37,22 @@ public class XsdSchemaFactory {
     }
 
     /**
-     * Creates and initialize XSD document
+     * Creates and initialize XML Schema document
      * @param xDef              source X-Definition
      * @param targetNamespace   target namespace (prefix, URI) of input X-Definition
-     * @return empty initialized XSD document
+     * @return empty initialized XML Schema document
      */
     public XmlSchema createXsdSchema(final XDefinition xDef, Pair<String, String> targetNamespace) {
-        LOG.info("{}Initialize XSD document.", logHeader(INITIALIZATION, xDef));
+        LOG.info("{}Initialize XML Schema document.", logHeader(INITIALIZATION, xDef));
 
         if (targetNamespace != null) {
-            LOG.info("{}Creating XSD document. systemName='{}', targetNamespacePrefix='{}', targetNamespaceUri='{}'",
+            LOG.info("{}Creating XML Schema document. systemName='{}', targetNamespacePrefix='{}', targetNamespaceUri='{}'",
                     logHeader(INITIALIZATION, xDef),
                     xDef.getName(),
                     targetNamespace.getKey(),
                     targetNamespace.getValue());
         } else {
-            LOG.info("{}Creating XSD document. systemName='{}'", logHeader(INITIALIZATION, xDef), xDef.getName());
+            LOG.info("{}Creating XML Schema document. systemName='{}'", logHeader(INITIALIZATION, xDef), xDef.getName());
             targetNamespace = Pair.of(null, null);
         }
 
@@ -67,10 +67,10 @@ public class XsdSchemaFactory {
     }
 
     /**
-     * Initialize XSD document namespace context
-     * @param xmlSchema         XSD document to be initialized
+     * Initialize XML Schema document namespace context
+     * @param xmlSchema         XML Schema document to be initialized
      * @param xDef              source X-Definition
-     * @param targetNamespace   XSD document target namespace (prefix, URI)
+     * @param targetNamespace   XML Schema document target namespace (prefix, URI)
      */
     private void initSchemaNamespace(final XmlSchema xmlSchema,
                                      final XDefinition xDef,
@@ -85,7 +85,7 @@ public class XsdSchemaFactory {
         }
 
         NamespaceMap namespaceCtx = new NamespaceMap();
-        // Default XSD namespace with prefix xs
+        // Default XML Schema namespace with prefix xs
         namespaceCtx.add(XML_SCHEMA_DEFAULT_NAMESPACE_PREFIX, XML_SCHEMA_DEFAULT_NAMESPACE_URI);
 
         if (targetNsPrefix != null && targetNsUri != null) {
@@ -113,10 +113,10 @@ public class XsdSchemaFactory {
     }
 
     /**
-     * Sets attributeFormDefault and elementFormDefault to XSD document
-     * @param xmlSchema         XSD document to be initialized
+     * Sets attributeFormDefault and elementFormDefault to XML Schema document
+     * @param xmlSchema         XML Schema document to be initialized
      * @param xDef              source X-Definition
-     * @param targetNamespace   XSD document target namespace (prefix, URI)
+     * @param targetNamespace   XML Schema document target namespace (prefix, URI)
      */
     private void initSchemaFormDefault(final XmlSchema xmlSchema,
                                        final XDefinition xDef,
@@ -132,7 +132,7 @@ public class XsdSchemaFactory {
     }
 
     /**
-     * Determines default element schema form for XSD document
+     * Determines default element schema form for XML Schema document
      * @param xDef              input X-Definition
      * @param targetNsPrefix    X-Definition target namespace prefix
      * @return schema form
@@ -167,7 +167,7 @@ public class XsdSchemaFactory {
     }
 
     /**
-     * Determines default attribute schema form for XSD document
+     * Determines default attribute schema form for XML Schema document
      * @param xDef              input X-Definition
      * @param targetNsPrefix    X-Definition target namespace prefix
      * @return schema form

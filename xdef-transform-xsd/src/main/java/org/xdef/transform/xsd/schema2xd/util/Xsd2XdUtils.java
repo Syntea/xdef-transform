@@ -14,25 +14,27 @@ import static org.xdef.transform.xsd.schema2xd.definition.Xsd2XdFeature.XD_TEXT_
 
 
 /**
- * Basic utils used in transformation XSD -> X-Definition
+ * Basic utils used in transformation XML Schema -> X-Definition
  */
 public class Xsd2XdUtils {
 
     /**
-     * Finds XSD complex/simple schema type node in given schema by qualified name
-     * @param schema    XSD document
-     * @param qName     XSD qualified name to be searched
-     * @return XSD complex/simple schema type node if exists in given schema, otherwise {@link Optional#empty()}
+     * Finds XML Schema complex/simple schema type node in given schema by qualified name
+     * @param schema    XML Schema document
+     * @param qName     XML Schema qualified name to be searched
+     * @return  XML Schema complex/simple schema type node if exists in given schema
+     *          otherwise {@link Optional#empty()}
      */
     public static Optional<XmlSchemaType> findSchemaTypeByQName(final XmlSchema schema, final QName qName) {
         return Optional.ofNullable(schema.getSchemaTypes()).map(schemaTypeMap -> schemaTypeMap.get(qName));
     }
 
     /**
-     * Finds XSD group node in given schema by qualified name
-     * @param schema    XSD document
-     * @param qName     XSD qualified name to be searched
-     * @return XSD group node if exists in given schema, otherwise {@link Optional#empty()}
+     * Finds XML Schema group node in given schema by qualified name
+     * @param schema    XML Schema document
+     * @param qName     XML Schema qualified name to be searched
+     * @return  XML Schema group node if exists in given schema
+     *          otherwise {@link Optional#empty()}
      */
     public static Optional<XmlSchemaGroup> findGroupByQName(final XmlSchema schema, final QName qName) {
         return Optional.ofNullable(schema.getGroups()).map(groups -> groups.get(qName));

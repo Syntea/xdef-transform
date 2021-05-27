@@ -49,7 +49,7 @@ public class TestXsd2Xd extends TesterXdSchema {
         try {
             res = getFile(_inputFilesRoot.getAbsolutePath() + "\\" + fileName, fileName, ".xsd");
         } catch (FileNotFoundException ex) {
-            assertTrue(false, "Input XSD file not found, fileName: " + fileName);
+            assertTrue(false, "Input XML Schema file not found, fileName: " + fileName);
         }
 
         return res;
@@ -181,7 +181,7 @@ public class TestXsd2Xd extends TesterXdSchema {
     private void validateXmlAgainstXsd(final String fileName, List<String> validTestingData, List<String> invalidTestingData) throws FileNotFoundException {
         File inputXsdFile = getInputSchemaFile(fileName);
 
-        // Validate valid XML file against XSD schema
+        // Validate valid XML file against XML Schema
         if (validTestingData != null) {
             for (String testingFile : validTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -191,7 +191,7 @@ public class TestXsd2Xd extends TesterXdSchema {
             }
         }
 
-        // Validate invalid XML file against XSD schema
+        // Validate invalid XML file against XML Schema
         if (invalidTestingData != null) {
             for (String testingFile : invalidTestingData) {
                 File xmlDataFile = getXmlDataFile(fileName, testingFile);
@@ -234,7 +234,7 @@ public class TestXsd2Xd extends TesterXdSchema {
         try {
             DefaultXsd2XDefAdapter adapter = createXsdAdapter(additionalFeatures);
 
-            // Convert XSD -> XD Schema
+            // Convert XML Schema -> XD Schema
             XmlSchema inputXmlSchema = compileXsd(fileName);
             String outputXDefinition = adapter.createXDefinition(inputXmlSchema, fileName);
 
@@ -245,7 +245,7 @@ public class TestXsd2Xd extends TesterXdSchema {
                 writeOutputXDefinition(fileName, outputXDefinition);
             }
 
-            // Validate XML files against input XSD schema
+            // Validate XML files against input XML Schema
             validateXmlAgainstXsd(fileName, validTestingData, invalidTestingData);
 
             validateXmlAgainstXDef(fileName, validTestingData, invalidTestingData, validateAgainstRef);

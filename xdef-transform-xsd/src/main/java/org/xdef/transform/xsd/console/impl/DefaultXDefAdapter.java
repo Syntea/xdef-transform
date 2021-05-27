@@ -81,7 +81,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
     @Override
     public XDefTransformResult transform(XDPool xdPool) {
-        LOG.info("Transforming XDPool to XML schema ... ");
+        LOG.info("Transforming XDPool to XML Schema ... ");
         StopWatch watch = StopWatch.createStarted();
 
         final XDefTransformResult transformResult = new XDefTransformResult();
@@ -92,7 +92,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
             final ReportWriter repWriter = new ArrayReporter();
             adapter.setReportWriter(repWriter);
 
-            // Convert XD -> XSD Schema
+            // Convert XD -> XML Schema
             final XmlSchemaCollection outputXmlSchemaCollection = adapter.createSchemas(xdPool);
             outputRootSchema = writeOutputSchemas(outputXmlSchemaCollection, adapter.getSchemaNames(), transformResult);
 
@@ -108,7 +108,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
         if (config.hasTestingData()) {
             outputRootSchema.orElseThrow(() ->
-                    new RuntimeException("Validation is required but no output XML schema is set"));
+                    new RuntimeException("Validation is required but no output XML Schema is set"));
 
             validateXmlData(outputRootSchema.get().getRight());
         }
@@ -160,7 +160,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
         for (String schemaName : schemaNames) {
             final XmlSchema[] outputSchemas = outputSchemaCollection.getXmlSchema(schemaName);
             try {
-                // Output XSD
+                // Output XML Schema
                 for (int i = 0; i < outputSchemas.length; i++) {
                     String outFileName = schemaName;
 
@@ -190,7 +190,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
                     transformResult.addOutputSchema(schemaName, Paths.get(outFileName));
                 }
             } catch (IOException ex) {
-                throw new FormattedRuntimeException(ex, "Error occurs while creating XML schema file." +
+                throw new FormattedRuntimeException(ex, "Error occurs while creating XML Schema file." +
                         " xmlSchemaName='{}'", schemaName);
             }
         }
@@ -199,7 +199,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
     }
 
     private void validateXmlData(final Path outputRootSchema) {
-        LOG.info("Validating testing data against output XML schema ... ");
+        LOG.info("Validating testing data against output XML Schema ... ");
         StopWatch watch = StopWatch.createStarted();
 
         final StreamSource outputRootSchemaFile = new StreamSource(outputRootSchema.toFile());
@@ -217,7 +217,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
         }
 
         watch.stop();
-        LOG.info("Testing data validation against output XML schema done, elapsed {} ms.", watch.getTime());
+        LOG.info("Testing data validation against output XML Schema done, elapsed {} ms.", watch.getTime());
     }
 
     private void validateXmlAgainstXsd(final File xmlDataFile, final StreamSource outputRootSchema, boolean expectedResult) {

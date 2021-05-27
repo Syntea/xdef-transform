@@ -61,10 +61,10 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Add attribute based on input XSD attribute to given X-Definition node
+     * Add attribute based on input XML Schema attribute to given X-Definition node
      * @param el                X-Definition node
-     * @param xsdAttr           XSD attribute node
-     * @param xDefName          XSD document name
+     * @param xsdAttr           XML Schema attribute node
+     * @param xDefName          XML Schema document name
      */
     public void addAttr(final Element el, final XmlSchemaAttribute xsdAttr, final String xDefName) {
         LOG.debug("{}Add attribute. qName='{}'", logHeader(TRANSFORMATION, el), xsdAttr.getQName());
@@ -134,7 +134,7 @@ public class XdAttributeFactory {
     /**
      * Add X-Definition occurrence attribute into given X-Definition element node
      * @param xdNode        X-Definition node
-     * @param xsdNode       XSD document node containing occurrence info
+     * @param xsdNode       XML Schema document node containing occurrence info
      */
     public void addOccurrence(final Element xdNode, final XmlSchemaParticle xsdNode) {
         if (xsdNode.getMaxOccurs() == 1 && xsdNode.getMinOccurs() == 1) {
@@ -183,7 +183,7 @@ public class XdAttributeFactory {
     /**
      * Add X-Definition nillable attribute into given X-Definition element node
      * @param el        X-Definition element node
-     * @param xsdElem   XSD element node
+     * @param xsdElem   XML Schema element node
      */
     public void addAttrNillable(final Element el, final XmlSchemaElement xsdElem) {
         if (xsdElem.isNillable()) {
@@ -192,8 +192,8 @@ public class XdAttributeFactory {
     }
 
     /**
-     * Creates X-Definition attribute based on given XSD attribute node
-     * @param xsdAttr   XSD attribute node
+     * Creates X-Definition attribute based on given XML Schema attribute node
+     * @param xsdAttr   XML Schema attribute node
      * @return X-Definition attribute
      */
     private String createAttribute(final XmlSchemaAttribute xsdAttr) {

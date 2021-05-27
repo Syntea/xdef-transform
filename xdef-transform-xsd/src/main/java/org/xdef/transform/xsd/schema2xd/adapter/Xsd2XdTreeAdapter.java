@@ -55,7 +55,7 @@ import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.TRANSFORMATION;
 
 /**
- * Transforms XSD tree node structure to X-Definition tree node structure
+ * Transforms XML Schema tree node structure to X-Definition tree node structure
  */
 public class Xsd2XdTreeAdapter {
 
@@ -101,11 +101,11 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Gathers names of all XSD top level element nodes
+     * Gathers names of all XML Schema top level element nodes
      * @return concatenate names in required format of X-Definition
      */
     public String loadXsdRootElementNames() {
-        LOG.info("{}Loading root elements of XSD", logHeader(PREPROCESSING, xDefName));
+        LOG.info("{}Loading root elements of XML Schema", logHeader(PREPROCESSING, xDefName));
 
         String targetNsPrefix = NAMESPACE_PREFIX_EMPTY;
         final Optional<Namespace> targetNamespaceOpt = adapterCtx.findTargetNamespace(xDefName);
@@ -127,8 +127,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Transforms XSD node tree into X-Definition node tree.
-     * @param xsdNode       XSD document node
+     * Transforms XML Schema node tree into X-Definition node tree.
+     * @param xsdNode       XML Schema document node
      * @param parentNode    parent X-Definition node
      */
     public void convertTree(final XmlSchemaObjectBase xsdNode, final Element parentNode) {
@@ -157,8 +157,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition element node based od XSD element node
-     * @param xsdElementNode    XSD element node
+     * Creates X-Definition element node based od XML Schema element node
+     * @param xsdElementNode    XML Schema element node
      * @param parentNode        parent X-Definition node
      */
     private void createElement(final XmlSchemaElement xsdElementNode, final Element parentNode) {
@@ -221,9 +221,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition element node based od XSD complex schema type node
-     * This transformation is always used only for top level XSD nodes
-     * @param xsdComplexNode    XSD top level complex schema type node
+     * Creates X-Definition element node based od XML Schema complex schema type node
+     * This transformation is always used only for top level XML Schema nodes
+     * @param xsdComplexNode    XML Schema top level complex schema type node
      * @param parentNode        parent X-Definition node
      */
     private void createTopNonRootElement(final XmlSchemaComplexType xsdComplexNode, final Element parentNode) {
@@ -235,9 +235,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition element node based od XSD complex schema type node
+     * Creates X-Definition element node based od XML Schema complex schema type node
      * @param xdElem            X-Definition node, which will be filled
-     * @param xsdComplexNode    XSD complex schema type node
+     * @param xsdComplexNode    XML Schema complex schema type node
      */
     private void createElementFromComplex(final Element xdElem, final XmlSchemaComplexType xsdComplexNode) {
         addAttrsToElem(xdElem, xsdComplexNode.getAttributes());
@@ -298,11 +298,11 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition particle node based od XSD particle node
+     * Creates X-Definition particle node based od XML Schema particle node
      *
      * Possible created output nodes: xd:sequence, xd:choice, xd:mixed
      *
-     * @param xsdParticleNode   XSD group particle node
+     * @param xsdParticleNode   XML Schema group particle node
      * @param parentNode        X-Definition node, which will be filled
      * @param mixed             flag, if attribute xd:text should be created
      */
@@ -373,8 +373,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition group of elements (xd:mixed) node based od XSD group node
-     * @param xsdGroupNode      XSD group node
+     * Creates X-Definition group of elements (xd:mixed) node based od XML Schema group node
+     * @param xsdGroupNode      XML Schema group node
      * @param parentNode        X-Definition node, which will be filled
      */
     private void createElementGroup(final XmlSchemaGroup xsdGroupNode, final Element parentNode) {
@@ -389,8 +389,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition group reference (xd:mixed) node based od XSD group reference node
-     * @param xsdGroupRefNode       XSD group reference node
+     * Creates X-Definition group reference (xd:mixed) node based od XML Schema group reference node
+     * @param xsdGroupRefNode       XML Schema group reference node
      * @param parentNode            X-Definition node, which will be filled
      */
     private void createElementGroupRef(final XmlSchemaGroupRef xsdGroupRefNode, final Element parentNode) {
@@ -420,8 +420,8 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Creates X-Definition any node based od XSD any node
-     * @param xsdAnyNode        XSD any node
+     * Creates X-Definition any node based od XML Schema any node
+     * @param xsdAnyNode        XML Schema any node
      * @param parentNode        X-Definition node, which will be filled
      */
     private void createAny(final XmlSchemaAny xsdAnyNode, final Element parentNode) {
@@ -433,9 +433,9 @@ public class Xsd2XdTreeAdapter {
     }
 
     /**
-     * Transform and add given XSD attributes {@code xsdAttrs} to X-Definition element node.
+     * Transform and add given XML Schema attributes {@code xsdAttrs} to X-Definition element node.
      * @param xdElem        X-Definition element node
-     * @param xsdAttrs      XSD attribute nodes
+     * @param xsdAttrs      XML Schema attribute nodes
      */
     private void addAttrsToElem(final Element xdElem, final @Nullable List<XmlSchemaAttributeOrGroupRef> xsdAttrs) {
         if (xsdAttrs != null) {
@@ -451,7 +451,7 @@ public class Xsd2XdTreeAdapter {
      * Creates X-Definition attribute defining reference
      * @param baseType      reference qualified name
      * @param xdNode        X-Definition element node
-     * @param simple        flag, if reference is originally pointing to simple schema type in XSD document
+     * @param simple        flag, if reference is originally pointing to simple schema type in XML Schema document
      * @return  true if reference attribute has been successfully created
      *          false otherwise
      */

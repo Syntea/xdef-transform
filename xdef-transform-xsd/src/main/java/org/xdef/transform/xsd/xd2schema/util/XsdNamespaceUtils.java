@@ -38,7 +38,7 @@ public class XsdNamespaceUtils {
      * @param namespaceMap  namespace storage
      * @param nsPrefix      namespace prefix
      * @param nsUri         namespace URI
-     * @param systemId      XSD document identifier (just for logging purposes)
+     * @param systemId      XML Schema document identifier (just for logging purposes)
      * @param phase         transformation algorithm phase (just for logging purposes)
      */
     public static void addNamespaceToCtx(final NamespaceMap namespaceMap,
@@ -51,10 +51,10 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if X-Definition node name is using different namespace than given XSD document (target namespace)
+     * Checks if X-Definition node name is using different namespace than given XML Schema document (target namespace)
      * @param nodeName          X-Definition node name
      * @param namespaceUri      X-Definition node namespace URI
-     * @param schema            target XSD document
+     * @param schema            target XML Schema document
      * @return  true is X-Definition node is inside different namespace
      */
     public static boolean isNodeInDifferentNamespace(final String nodeName,
@@ -64,9 +64,9 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if node name is using different namespace prefix than given XSD document (target namespace)
+     * Checks if node name is using different namespace prefix than given XML Schema document (target namespace)
      * @param xNode     X-Definition node
-     * @param schema    target XSD document
+     * @param schema    target XML Schema document
      * @return  true if node name is using different namespace prefix
      */
     public static boolean isNodeInDifferentNamespacePrefix(final XMNode xNode, final XmlSchema schema) {
@@ -75,9 +75,9 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if reference is using different namespace prefix than given XSD document (target namespace prefix)
+     * Checks if reference is using different namespace prefix than given XML Schema document (target namespace prefix)
      * @param nodeRefPos    X-Definition reference node position
-     * @param schema        target XSD document
+     * @param schema        target XML Schema document
      * @return  true if reference is using different namespace prefix
      */
     public static boolean isRefInDifferentNamespacePrefix(final String nodeRefPos, final XmlSchema schema) {
@@ -116,7 +116,7 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Parse X-Definition name (XSD system identifier) from given X-Definition node position
+     * Parse X-Definition name (XML Schema system identifier) from given X-Definition node position
      * @param xPos  X-Definition node pos
      * @return  X-Definition name if it is part of name,
      *          otherwise {@link Optional#empty()}
@@ -132,7 +132,7 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Parse X-Definition name (XSD system identifier) from given X-Definition node position
+     * Parse X-Definition name (XML Schema system identifier) from given X-Definition node position
      * @param xPos  X-Definition node pos
      * @return X-Definition name if it is part of name
      * @throws XsdNamespaceException if X-Definition node pos does not contain name of X-definition
@@ -201,10 +201,10 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Checks if node name is using XSD document target namespace
-     * @param schema    XSD document
+     * Checks if node name is using XML Schema document target namespace
+     * @param schema    XML Schema document
      * @param name      X-Definition node name
-     * @return true if node name is using XSD document target namespace
+     * @return true if node name is using XML Schema document target namespace
      */
     public static boolean usingTargetNamespace(final XmlSchema schema, final String name) {
         return schema.getSchemaNamespacePrefix() != null
@@ -291,17 +291,17 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Creates XSD document name based on namespace prefix
+     * Creates XML Schema document name based on namespace prefix
      * @param nsPrefix  namespace prefix
-     * @return  XML schema name
+     * @return  XML Schema name
      */
     public static String createExtraSchemaNameFromNsPrefix(final String nsPrefix) {
         return "external_" + nsPrefix;
     }
 
     /**
-     * Parse namespace prefix from XSD document name
-     * @param schemaName    XSD document name
+     * Parse namespace prefix from XML Schema document name
+     * @param schemaName    XML Schema document name
      * @return namespace prefix
      */
     public static String getNsPrefixFromExtraSchemaName(final String schemaName) {
@@ -314,9 +314,9 @@ public class XsdNamespaceUtils {
     }
 
     /**
-     * Determines X-Definition node namespace URI of given X-Definition node based on XSD adapter context
+     * Determines X-Definition node namespace URI of given X-Definition node based on XML Schema adapter context
      * @param xData         X-Definition node
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      * @param phase         transformation algorithm phase (just for logging purposes)
      * @return namespace URI
      */

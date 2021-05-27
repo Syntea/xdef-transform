@@ -14,46 +14,46 @@ import java.util.Set;
 public interface SchemaNamespaceLocationMap {
 
     /**
-     * Add XSD document location into map
-     * @param nsUri             XML schema document namespace URI
-     * @param importLocation    XML schema document location definition
+     * Add XML Schema document location into map
+     * @param nsUri             XML Schema document namespace URI
+     * @param importLocation    XML Schema document location definition
      */
     XsdSchemaImportLocation addSchemaLocation(final String nsUri, final XsdSchemaImportLocation importLocation);
 
     /**
-     * Add XSD document into map. Document location is created internally.
-     * @param nsPrefix          XML schema document namespace prefix
-     * @param nsUri             XML schema document namespace URI
+     * Add XML Schema document into map. Document location is created internally.
+     * @param nsPrefix          XML Schema document namespace prefix
+     * @param nsUri             XML Schema document namespace URI
      */
     XsdSchemaImportLocation addSchemaLocation(final String nsPrefix, final String nsUri);
 
     /**
-     * Finds XSD document location if exists by given namespace URI
-     * @param nsUri             XML schema document namespace URI
-     * @return  XML schema document location if exists
+     * Finds XML Schema document location if exists by given namespace URI
+     * @param nsUri             XML Schema document namespace URI
+     * @return  XML Schema document location if exists
      *          otherwise {@link Optional#empty()}
      */
     Optional<XsdSchemaImportLocation> findSchemaImport(final String nsUri, final String schemaName);
 
     /**
-     * Finds XSD document locations by given namespace URI
-     * @param nsUri             XML schema document namespace URI
-     * @return  XML schema document location if exists
+     * Finds XML Schema document locations by given namespace URI
+     * @param nsUri             XML Schema document namespace URI
+     * @return  XML Schema document location if exists
      *          otherwise empty list
      */
     List<XsdSchemaImportLocation> findSchemaImports(final String nsUri);
 
     /**
-     * Finds XML schema location map
-     * @param nsUri             XML schema namespace URI
-     * @return  XML schema location map if exists
+     * Finds XML Schema location map
+     * @param nsUri             XML Schema namespace URI
+     * @return  XML Schema location map if exists
      *          otherwise {@link Optional#empty()}
      */
     Optional<SchemaFileNameLocationMap> findSchemaFileLocationMap(final String nsUri);
 
     /**
      * Returns true if map contains location map for given namespace URI
-     * @param nsUri             XML schema namespace URI
+     * @param nsUri             XML Schema namespace URI
      */
     boolean containsSchemaFileLocationMap(final String nsUri);
 

@@ -91,8 +91,8 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates X-Definition element node based on XSD element node
-     * @param xsdElem       XSD element node
+     * Creates X-Definition element node based on XML Schema element node
+     * @param xsdElem       XML Schema element node
      * @param xDefName      X-definition name
      * @return X-Definition element node
      */
@@ -130,8 +130,8 @@ public class XdNodeFactory {
     }
 
     /**
-     * Creates empty X-Definition element node based on XSD complex type node
-     * @param xsdComplex        XSD complex type node
+     * Creates empty X-Definition element node based on XML Schema complex type node
+     * @param xsdComplex        XML Schema complex type node
      * @param xDefName          X-definition name
      * @return X-Definition element node
      */

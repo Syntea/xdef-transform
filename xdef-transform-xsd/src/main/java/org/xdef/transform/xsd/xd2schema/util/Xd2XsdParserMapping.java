@@ -49,19 +49,19 @@ import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_P
 import static org.xdef.transform.xsd.xd2schema.definition.Xd2XsdDefinitions.XD_PARSER_REGEX;
 
 /**
- * Definition of transformation X-Definition data types to XSD data types
+ * Definition of transformation X-Definition data types to XML Schema data types
  */
 public class Xd2XsdParserMapping {
 
     private static final Logger LOG = LoggerFactory.getLogger(Xd2XsdParserMapping.class);
 
     /**
-     * Transformation map of X-Definition data types to XSD QNames using XSD default facet factory
+     * Transformation map of X-Definition data types to XML Schema QNames using XML Schema default facet factory
      */
     private static final Map<String, QName> defaultQNameMap = new HashMap<>();
 
     /**
-     * Transformation map of X-Definition parsers to XSD QNames and custom implementation of XSD facet factory
+     * Transformation map of X-Definition parsers to XML Schema QNames and custom implementation of XML Schema facet factory
      * Some X-Definition types requires specific way how to create simpleType and restrictions
      */
     private static final Map<String, Pair<QName, IXsdFacetFactory>> customFacetMap = new HashMap<>();
@@ -130,9 +130,9 @@ public class Xd2XsdParserMapping {
     }
 
     /**
-     * Converts X-Definition parser name to XSD qualified name
+     * Converts X-Definition parser name to XML Schema qualified name
      * @param parserName    X-Definition parser name
-     * @return  XSD QName if mapping exists,
+     * @return  XML Schema QName if mapping exists,
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<QName> findDefaultParserQName(final String parserName, final XsdAdapterCtx adapterCtx) {
@@ -149,9 +149,9 @@ public class Xd2XsdParserMapping {
     }
 
     /**
-     * Finds XSD qualified name and XSD facet factory for specific X-Definition parser
+     * Finds XML Schema qualified name and XML Schema facet factory for specific X-Definition parser
      * @param parserName    X-Definition parser name
-     * @return  XSD data type with XSD facets factory if transformation exists
+     * @return  XML Schema data type with XML Schema facets factory if transformation exists
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<Pair<QName, IXsdFacetFactory>> findCustomFacetFactory(
@@ -181,10 +181,10 @@ public class Xd2XsdParserMapping {
     }
 
     /**
-     * Converts given X-Definition parser name to XSD qualified name
+     * Converts given X-Definition parser name to XML Schema qualified name
      * @param parserName    X-Definition parser name
-     * @param adapterCtx    XSD adapter context
-     * @return  XSD QName with default facet factory if conversion of X-Definition parser name to XSD QName exists
+     * @param adapterCtx    XML Schema adapter context
+     * @return  XML Schema QName with default facet factory if conversion of X-Definition parser name to XML Schema QName exists
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<Pair<QName, IXsdFacetFactory>> findDefaultFacetFactory(
@@ -194,11 +194,11 @@ public class Xd2XsdParserMapping {
     }
 
     /**
-     * Get QName for X-Definition parser which can be transformed by default XSD facet factory
+     * Get QName for X-Definition parser which can be transformed by default XML Schema facet factory
      * @param xData         X-Definition node
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      * @param hasNoFacets   check if parser contains any facet
-     * @return  XSD QName if transformation without facets exists
+     * @return  XML Schema QName if transformation without facets exists
      *          otherwise {@link Optional#empty()}
      */
     public static Optional<QName> findDefaultParserQName(final XData xData,
@@ -225,9 +225,9 @@ public class Xd2XsdParserMapping {
     }
 
     /**
-     * Determine XSD list's qualified names by its values (given by X-Definition {@code parameters})
+     * Determine XML Schema list's qualified names by its values (given by X-Definition {@code parameters})
      * @param parameters    X-Definition parser parameters
-     * @param adapterCtx    XSD adapter context
+     * @param adapterCtx    XML Schema adapter context
      * @return  if all parameters are using same known parser, then its QName
      *          if parameters are using different known parser, then string QName
      *          if parameters are using unknown parser, then exception will be raised

@@ -1,7 +1,7 @@
 package org.xdef.transform.xsd.xd2schema.definition;
 
 /**
- * Definitions of constant used in X-Definition -> XSD transform algorithm
+ * Definitions of constant used in X-Definition -> XML Schema transform algorithm
  */
 public interface Xd2XsdDefinitions {
 
@@ -17,7 +17,7 @@ public interface Xd2XsdDefinitions {
     String XD_PARSER_REGEX = "regex";
 
     /**
-     * XSD document facets
+     * XML Schema document facets
      */
     String XSD_FACET_ENUMERATION = "enumeration";
     String XSD_FACET_FRACTION_DIGITS = "fractionDigits";

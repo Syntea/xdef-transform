@@ -45,7 +45,7 @@ public class XdDeclarationBuilder implements Cloneable {
     private XdDeclarationFactory xdDeclarationFactory;
 
     /**
-     * XSD schema type node to be transformed
+     * XML Schema type node to be transformed
      */
     XmlSchemaSimpleType simpleType;
 
@@ -78,9 +78,9 @@ public class XdDeclarationBuilder implements Cloneable {
 
     /**
      * Initialize X-Definition declaration builder with default values
-     * @param schema                    input XML schema
+     * @param schema                    input XML Schema
      * @param xdDeclarationFactory      X-Definition declaration factory
-     * @return X-Definition declaration builder for give XML schema
+     * @return X-Definition declaration builder for give XML Schema
      */
     XdDeclarationBuilder init(XmlSchema schema, XdDeclarationFactory xdDeclarationFactory, ReportWriter reportWriter) {
         this.schema = schema;
@@ -90,8 +90,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Sets XSD schema type
-     * @param simpleType XSD schema type
+     * Sets XML Schema type
+     * @param simpleType XML Schema type
      * @return current instance
      */
     public XdDeclarationBuilder setSimpleType(XmlSchemaSimpleType simpleType) {
@@ -191,8 +191,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition root declaration based on internal state and input XSD restriction node
-     * @param simpleTypeRestriction     XSD restriction node
+     * Creates X-Definition root declaration based on internal state and input XML Schema restriction node
+     * @param simpleTypeRestriction     XML Schema restriction node
      * @return X-Definition declaration
      */
     private String createTop(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction) {
@@ -236,8 +236,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition declaration content based on internal state and input XSD schema simple content node
-     * @param simpleTypeContent     XSD schema simple content node
+     * Creates X-Definition declaration content based on internal state and input XML Schema simple content node
+     * @param simpleTypeContent     XML Schema simple content node
      * @return X-Definition declaration content
      */
     private String createDeclaration(final XmlSchemaSimpleTypeContent simpleTypeContent) {
@@ -249,9 +249,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition declaration of X-Definition list/union based on internal state and input XSD union/list node
-     * @param simpleTypeContent     XSD union/list node
-     * @param extraFacets           additional list of XSD facet nodes, which should be applied
+     * Creates X-Definition declaration of X-Definition list/union based on internal state and input XML Schema union/list node
+     * @param simpleTypeContent     XML Schema union/list node
+     * @param extraFacets           additional list of XML Schema facet nodes, which should be applied
      * @return X-Definition declaration
      */
     private String createSetDeclaration(final XmlSchemaSimpleTypeContent simpleTypeContent, final List<XmlSchemaFacet> extraFacets) {
@@ -267,8 +267,8 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition declaration/declaration content based on internal state and input XSD restriction node
-     * @param simpleTypeRestriction     XSD restriction node
+     * Creates X-Definition declaration/declaration content based on internal state and input XML Schema restriction node
+     * @param simpleTypeRestriction     XML Schema restriction node
      * @return X-Definition declaration/declaration content
      */
     private String createDeclaration(final XmlSchemaSimpleTypeRestriction simpleTypeRestriction) {
@@ -297,9 +297,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition declaration/declaration content based on internal state and input XSD union node
-     * @param simpleTypeUnion       XSD union node
-     * @param extraFacets           additional list of XSD facet nodes, which should be applied
+     * Creates X-Definition declaration/declaration content based on internal state and input XML Schema union node
+     * @param simpleTypeUnion       XML Schema union node
+     * @param extraFacets           additional list of XML Schema facet nodes, which should be applied
      * @return X-Definition declaration/declaration content
      */
     private String create(final XmlSchemaSimpleTypeUnion simpleTypeUnion, final List<XmlSchemaFacet> extraFacets) {
@@ -354,7 +354,7 @@ public class XdDeclarationBuilder implements Cloneable {
 
                 if (xdDeclarationFactory == null) {
                     reportWriter.warning(XSD.XSD208);
-                    LOG.warn("{}Unknown XSD union base type!", logHeader(TRANSFORMATION, simpleTypeUnion));
+                    LOG.warn("{}Unknown XML Schema union base type!", logHeader(TRANSFORMATION, simpleTypeUnion));
                     return null;
                 }
 
@@ -369,9 +369,9 @@ public class XdDeclarationBuilder implements Cloneable {
     }
 
     /**
-     * Creates X-Definition declaration/declaration content based on internal state and input XSD list node
-     * @param simpleTypeList        XSD list node
-     * @param extraFacets           additional list of XSD facet nodes, which should be applied
+     * Creates X-Definition declaration/declaration content based on internal state and input XML Schema list node
+     * @param simpleTypeList        XML Schema list node
+     * @param extraFacets           additional list of XML Schema facet nodes, which should be applied
      * @return X-Definition declaration/declaration content
      */
     private String create(final XmlSchemaSimpleTypeList simpleTypeList, final List<XmlSchemaFacet> extraFacets) {

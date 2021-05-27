@@ -14,7 +14,7 @@ public interface SchemaFileNameLocationMap {
 
     /**
      * Finds schema location based on schema name
-     * @param schemaFileName        XML schema file name
+     * @param schemaFileName        XML Schema file name
      * @return  schema location if found
      *          otherwise {@link Optional#empty()}
      */
@@ -22,18 +22,18 @@ public interface SchemaFileNameLocationMap {
 
     /**
      * Inserts schema location
-     * @param schemaFileName            XML schema file name
-     * @param schemaImportLocation      XML schema import location
+     * @param schemaFileName            XML Schema file name
+     * @param schemaImportLocation      XML Schema import location
      */
     void addSchema(String schemaFileName, XsdSchemaImportLocation schemaImportLocation);
 
     /**
-     * @return  XML schema file names
+     * @return  XML Schema file names
      */
     Set<String> getSchemaFileNames();
 
     /**
-     * @return  XML schema file locations
+     * @return  XML Schema file locations
      */
     Collection<XsdSchemaImportLocation> getSchemaLocations();
 

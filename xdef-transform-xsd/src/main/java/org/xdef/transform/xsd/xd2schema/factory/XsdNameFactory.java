@@ -32,7 +32,7 @@ public class XsdNameFactory {
     final private XsdAdapterCtx adapterCtx;
 
     /**
-     * Real used names of XSD nodes. Used for finding real names of created XSD nodes.
+     * Real used names of XML Schema nodes. Used for finding real names of created XML Schema nodes.
      *
      * Key:     systemId
      * Value:   Key:    xDefPosition
@@ -41,8 +41,8 @@ public class XsdNameFactory {
     private final Map<String, Map<String, String>> topLevelNameMap = new HashMap<>();
 
     /**
-     * Base name of XSD nodes. Used for pairing and storing X-Definition nodes with same name
-     * which are projected on top level XSD node.
+     * Base name of XML Schema nodes. Used for pairing and storing X-Definition nodes with same name
+     * which are projected on top level XML Schema node.
      *
      * Key:     systemId
      * Value:   Key:    org.xdef.transform.xsd base name
@@ -55,7 +55,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Finds XSD top level element node name.
+     * Finds XML Schema top level element node name.
      * @param xElem     X-Definition element
      * @return  name if X-Definition element node with given path has been stored
      *          otherwise {@link Optional#empty()} or if {@link Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR} is disabled
@@ -69,7 +69,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Finds XSD top level simple-type node name
+     * Finds XML Schema top level simple-type node name
      * @param xData     X-Definition node (attribute/text)
      * @param usePath   flag if name should be search by X-Definition node path
      * @return  name if X-Definition node has been stored
@@ -97,7 +97,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Finds XSD top level node name based on X-Definition path
+     * Finds XML Schema top level node name based on X-Definition path
      * @param xNode X-Definition node
      * @return  name if X-Definition node with given path has been stored
      *          otherwise {@link Optional#empty()}
@@ -118,7 +118,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD element node name based on {@code baseName}
+     * Creates new top level XML Schema element node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xElem         X-Definition element node
@@ -130,7 +130,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD simple type node name based on {@code baseName}
+     * Creates new top level XML Schema simple type node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xData         X-Definition node
@@ -142,7 +142,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Creates new top level XSD node name based on {@code baseName}
+     * Creates new top level XML Schema node name based on {@code baseName}
      * and current internal state of name storage.
      *
      * @param xNode         X-Definition node
@@ -175,7 +175,7 @@ public class XsdNameFactory {
     }
 
     /**
-     * Saves XSD simple type node name to internal storage
+     * Saves XML Schema simple type node name to internal storage
      * @param xData     X-Definition node
      * @param baseName  X-Definition node base name
      */
@@ -190,7 +190,7 @@ public class XsdNameFactory {
 
     /**
      * Get name storage map. If map does not exist, then creates and saves empty one.
-     * @param systemId  XSD system identified
+     * @param systemId  XML Schema system identified
      * @return name storage map
      */
     private Map<String, String> getOrCreateTopLevelNameMap(final String systemId) {
@@ -199,7 +199,7 @@ public class XsdNameFactory {
 
     /**
      * Get base name storage map. If map does not exist, then creates and saves empty one.
-     * @param systemId  XSD system identified
+     * @param systemId  XML Schema system identified
      * @return base name storage map
      */
     private Map<String, List<XMNode>> getOrCreateTopLevelBaseNameMap(final String systemId) {
@@ -255,7 +255,7 @@ public class XsdNameFactory {
 
     /**
      * Creates new name of local simple type
-     * @param xData         X-Definition node to be converted to XSD simple type node
+     * @param xData         X-Definition node to be converted to XML Schema simple type node
      * @return new name
      */
     public static Optional<String> createLocalSimpleTypeName(final XData xData) {

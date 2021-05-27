@@ -3,13 +3,13 @@ package org.xdef.transform.xsd.xd2schema.definition;
 import java.util.EnumSet;
 
 /**
- * Features of X-Definition -> XSD transform algorithm
+ * Features of X-Definition -> XML Schema transform algorithm
  */
 public enum Xd2XsdFeature {
 
-    XSD_ANNOTATION,                     // Output XSD document will contain additional annotations
-    XSD_DECIMAL_ANY_SEPARATOR,          // Output XSD document will convert dec parser to string regular pattern if decimal separator is not dot
-    XSD_ALL_UNBOUNDED,                  // Output XSD document will contain only unbounded xs:choice element, if source of the element is xd:mixed
+    XSD_ANNOTATION,                     // Output XML Schema document will contain additional annotations
+    XSD_DECIMAL_ANY_SEPARATOR,          // Output XML Schema document will convert dec parser to string regular pattern if decimal separator is not dot
+    XSD_ALL_UNBOUNDED,                  // Output XML Schema document will contain only unbounded xs:choice element, if source of the element is xd:mixed
     XSD_NAME_COLLISION_DETECTOR,        // Generate new name if collision of names has been found on top-level of schema
     XSD_SKIP_DELETE_TOP_LEVEL_ELEMENTS, // Do not delete top level elements if X-Definition has no root element defined
 

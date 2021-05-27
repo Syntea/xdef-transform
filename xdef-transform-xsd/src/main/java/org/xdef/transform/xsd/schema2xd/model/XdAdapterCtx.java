@@ -22,7 +22,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.definition.AlgPhase.PREPROCESSING;
 
 /**
- * Basic X-Definition context for transformation XSD document to X-Definition
+ * Basic X-Definition context for transformation XML Schema document to X-Definition
  */
 public class XdAdapterCtx {
 
@@ -55,9 +55,9 @@ public class XdAdapterCtx {
     private Map<String, Set<String>> xDefTargetNamespaces;
 
     /**
-     * Input XSD document file names
-     * Key:     XML schema
-     * Value:   XML schema file name
+     * Input XML Schema document file names
+     * Key:     XML Schema
+     * Value:   XML Schema file name
      */
     private Map<XmlSchema, String> xsdNames;
 
@@ -162,9 +162,9 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Add XSD document name to context
-     * @param schema            XSD document
-     * @param schemaFileName    XSD file name
+     * Add XML Schema document name to context
+     * @param schema            XML Schema document
+     * @param schemaFileName    XML Schema file name
      */
     public void addXmlSchemaFileName(final XmlSchema schema, final String schemaFileName) {
         LOG.info("{}Add X-Definition. name='{}'", logHeader(PREPROCESSING, XD_ADAPTER_CTX), schemaFileName);
@@ -172,13 +172,13 @@ public class XdAdapterCtx {
     }
 
     /**
-     * Finds XSD document name by given XSD document
-     * @param schema        XSD document
-     * @return XSD document name if exists
+     * Finds XML Schema document name by given XML Schema document
+     * @param schema        XML Schema document
+     * @return XML Schema document name if exists
      */
     public String findXmlSchemaFileName(final XmlSchema schema) {
         return Optional.ofNullable(xsdNames.get(schema))
-                .orElseThrow(() -> new XdAdapterCtxException("Required XML schema file not found."));
+                .orElseThrow(() -> new XdAdapterCtxException("Required XML Schema file not found."));
     }
 
     /**

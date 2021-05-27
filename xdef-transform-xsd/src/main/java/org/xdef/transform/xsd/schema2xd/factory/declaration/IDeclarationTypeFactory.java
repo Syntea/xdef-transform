@@ -6,7 +6,7 @@ import org.xdef.sys.ReportWriter;
 import java.util.List;
 
 /**
- * Transform XSD restrictions/facets into X-Definition declaration type
+ * Transform XML Schema restrictions/facets into X-Definition declaration type
  */
 public interface IDeclarationTypeFactory {
 
@@ -51,8 +51,8 @@ public interface IDeclarationTypeFactory {
     String getDataType();
 
     /**
-     * Creates X-Definition declaration type restrictions based on given XSD facets
-     * @param facets        list of XSD facets
+     * Creates X-Definition declaration type restrictions based on given XML Schema facets
+     * @param facets        list of XML Schema facets
      * @param reportWriter  output report writer
      * @return X-Definition restriction
      */
@@ -60,7 +60,7 @@ public interface IDeclarationTypeFactory {
 
     /**
      * Creates X-Definition declaration type restrictions from given facets string
-     * @param facets    list of XSD facets
+     * @param facets    list of XML Schema facets
      * @param reportWriter  output report writer
      * @return X-Definition restriction
      */

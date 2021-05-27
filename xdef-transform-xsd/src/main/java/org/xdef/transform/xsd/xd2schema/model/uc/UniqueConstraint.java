@@ -48,7 +48,7 @@ public class UniqueConstraint {
     private final String name;
 
     /**
-     * XML schema document name, where uniqueSet should be placed
+     * XML Schema document name, where uniqueSet should be placed
      */
     private final String systemId;
 
@@ -82,7 +82,7 @@ public class UniqueConstraint {
     }
 
     /**
-     * @return XML schema document name
+     * @return XML Schema document name
      */
     public String getSystemId() {
         return systemId;
@@ -117,7 +117,7 @@ public class UniqueConstraint {
     /**
      * Add variable of unique constraint
      * @param xData                 X-Definition node of unique constraint's variable
-     * @param adapterCtx            XSD adapter context
+     * @param adapterCtx            XML Schema adapter context
      */
     public void addVariable(final XData xData, final XsdAdapterCtx adapterCtx) {
         final String parserName = xData.getParserName();
@@ -154,7 +154,7 @@ public class UniqueConstraint {
      * Base type (key, ref) is determines based on {@code type}
      *
      * @param varName   variable name
-     * @param xsdAttr   XSD attribute node
+     * @param xsdAttr   XML Schema attribute node
      * @param varPath   variable path
      * @param type      variable type
      */
