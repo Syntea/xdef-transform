@@ -6,7 +6,7 @@ import org.xdef.transform.xsd.console.XDefToXsdOptionsConst;
 
 public class XDefToXsdOptions {
 
-    public final static Options cli() {
+    public static Options cli() {
         Options options = new Options();
 
         Option input = new Option("i", XDefToXsdOptionsConst.INPUT_DIR, true, "input directory path containing x-definition file(s)");
@@ -62,7 +62,7 @@ public class XDefToXsdOptions {
         return options;
     }
 
-    public final static Options features() {
+    public static Options features() {
         Options options = new Options();
 
         addFeatureOption(XDefToXsdOptionsConst.F_XSD_ANNOTATION, "annotation", options);

@@ -13,7 +13,7 @@ public interface CommandLineProcessor {
     /**
      * Verifies the directory and file paths specified by the command line
      * @param cmd       parsed command line
-     * @throws RuntimeException
+     * @throws RuntimeException any of input path does not exist
      */
     void validatePaths(final CommandLine cmd) throws RuntimeException;
 
@@ -21,8 +21,8 @@ public interface CommandLineProcessor {
      * Parses input command line
      * @param options   Options to be found in command line arguments
      * @param args      Raw command line arguments
-     * @throws RuntimeException
-     * @return
+     * @throws RuntimeException error occurs while parsing command line arguments
+     * @return  parsed command line
      */
     CommandLine parse(final Options options, String... args) throws MissingOptionException, RuntimeException;
 

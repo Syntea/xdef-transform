@@ -130,12 +130,10 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
         LOG.debug("Directory: " + (directory + "*.(x)def"));
 
-        final File[] defFiles = SUtils.getFileGroup(
+        return SUtils.getFileGroup(
                 directory + "*.xdef",
                 directory + "*.def"
         );
-
-        return defFiles;
     }
 
     private XdPool2XsdAdapter createXdPoolAdapter() {

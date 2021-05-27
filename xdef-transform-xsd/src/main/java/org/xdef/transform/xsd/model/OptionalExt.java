@@ -26,10 +26,7 @@ public class OptionalExt<T> {
     }
 
     public OptionalExt<T> ifPresent(final Consumer<? super T> consumer) {
-        if (optional.isPresent()) {
-            consumer.accept(optional.get());
-        }
-
+        optional.ifPresent(consumer);
         return this;
     }
 
@@ -40,7 +37,7 @@ public class OptionalExt<T> {
     }
 
     public T orElseGet(Supplier<? extends T> other) {
-        return optional.isPresent() ? optional.get() : other.get();
+        return optional.orElseGet(other);
     }
 
     @FunctionalInterface

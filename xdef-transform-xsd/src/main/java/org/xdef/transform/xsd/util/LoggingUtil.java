@@ -67,11 +67,11 @@ public class LoggingUtil {
         final StringBuilder sb = new StringBuilder();
 
         if (groupName != null && !StringUtils.isBlank(groupName)) {
-            sb.append("[" + groupName + "]");
+            sb.append("[").append(groupName).append("]");
         }
 
         if (nodeInfo != null && !StringUtils.isBlank(nodeInfo)) {
-            sb.append("[" + nodeInfo + "]");
+            sb.append("[").append(nodeInfo).append("]");
         }
 
         if (sb.length() > 0) {
@@ -79,7 +79,7 @@ public class LoggingUtil {
         }
 
         if (phase != null) {
-            sb.append(phase.getVal() + ": ");
+            sb.append(phase.getVal()).append(": ");
         }
 
         return sb.toString();
@@ -128,8 +128,8 @@ public class LoggingUtil {
             int pos = -1;
             try {
                 pos = node.getXDPosition().substring(0, node.getXDPosition().length() - nodeName.length() - 1).lastIndexOf('/');
-            } catch (Exception ex) {
-
+            } catch (Exception ignored) {
+                // NOOP
             } finally {
                 if (pos != -1) {
                     nodeName = node.getXDPosition().substring(pos + 1, node.getXDPosition().lastIndexOf('/'));

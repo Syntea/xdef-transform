@@ -9,8 +9,7 @@ package org.xdef.transform.xsd.util;
 public interface LoggingGroup {
 
     /**
-     * Returns group name
-     * @return
+     * @return  logging group name
      */
     String getName();
 

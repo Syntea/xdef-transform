@@ -11,14 +11,14 @@ public interface XDefAdapter {
 
     /**
      * Transforms X-definition(s) to XML schema
-     * @return
+     * @return result of transformation
      */
     XDefTransformResult transform();
 
     /**
-     *
-     * @param xdPool
-     * @return
+     * Transforms X-definition pool to XML schema
+     * @param xdPool    input X-Definition pool
+     * @return result of transformation
      */
     XDefTransformResult transform(XDPool xdPool);
 

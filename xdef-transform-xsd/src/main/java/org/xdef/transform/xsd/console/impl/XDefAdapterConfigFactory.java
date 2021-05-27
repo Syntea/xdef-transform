@@ -65,7 +65,7 @@ public class XDefAdapterConfigFactory {
         }
 
         CommandLineParser featureParser = new DefaultParser();
-        CommandLine cmd = null;
+        CommandLine cmd;
 
         for (int i = 0; i < features.length; i++) {
             if (features[i].length() < 3) {

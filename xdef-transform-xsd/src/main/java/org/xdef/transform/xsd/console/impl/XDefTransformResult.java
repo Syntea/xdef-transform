@@ -24,7 +24,7 @@ public class XDefTransformResult {
      * Key: XML schema name
      * Right: Path to output XML schema file
      */
-    private Map<String, Path> outputSchemaMap = new HashMap<>();
+    private final Map<String, Path> outputSchemaMap = new HashMap<>();
 
     public XmlSchemaCollection getXmlSchemaCollection() {
         return xmlSchemaCollection;

@@ -1,6 +1,5 @@
 package org.xdef.transform.xsd.util;
 
-import jdk.nashorn.internal.runtime.regexp.joni.exception.InternalException;
 import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
@@ -15,26 +14,26 @@ import java.io.IOException;
  */
 public class XmlValidator {
 
-    private Source xmlSource;
-    private Source schemaSource;
+    private final Source xmlDataSource;
+    private final Source xmlSchemaSource;
 
-    public XmlValidator(Source xmlSource, Source schemaSource) {
-        this.xmlSource = xmlSource;
-        this.schemaSource = schemaSource;
+    public XmlValidator(Source xmlDataSource, Source xmlSchemaSource) {
+        this.xmlDataSource = xmlDataSource;
+        this.xmlSchemaSource = xmlSchemaSource;
     }
 
     public boolean validate() {
-        if (xmlSource == null || schemaSource == null) {
-            throw new InternalException("xml == null || schema == null");
+        if (xmlDataSource == null || xmlSchemaSource == null) {
+            throw new IllegalStateException("xmlDataSource == null || xmlSchemaSource == null");
         }
 
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
         try {
-            Schema schema = schemaFactory.newSchema(schemaSource);
+            Schema schema = schemaFactory.newSchema(xmlSchemaSource);
 
             Validator validator = schema.newValidator();
-            validator.validate(xmlSource);
+            validator.validate(xmlDataSource);
             return true;
         } catch (SAXException | IOException ex) {
             throw new RuntimeException("Error occurs while validating XML schema", ex);

@@ -9,26 +9,22 @@ package org.xdef.transform.xsd.model;
 public interface Namespace {
 
     /**
-     * Returns namespace prefix
-     * @return
+     * @return  namespace prefix
      */
     String getPrefix();
 
     /**
-     * Return namespace uri
-     * @return
+     * @return  namespace uri
      */
     String getUri();
 
     /**
-     * Returns true if prefix is empty
-     * @return
+     * @return  true if prefix is empty
      */
     boolean isEmptyPrefix();
 
     /**
-     * Return true if uri is empty
-     * @return
+     * @return  true if uri is empty
      */
     boolean isEmptyUri();
 
