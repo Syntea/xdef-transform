@@ -10,9 +10,9 @@ import org.xdef.transform.xsd.console.impl.DefaultCommandLineProcessor;
 import org.xdef.transform.xsd.console.impl.DefaultXDefAdapter;
 import org.xdef.transform.xsd.console.impl.XDefAdapterConfig;
 import org.xdef.transform.xsd.console.impl.XDefAdapterConfigFactory;
-import org.xdef.transform.xsd.console.impl.XDefToXsdOptions;
+import org.xdef.transform.xsd.console.impl.XDefToSchemaOptions;
 
-public class XDefToXsdApp {
+public class XDefToSchemaApp {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultCommandLineProcessor.class);
 
@@ -20,7 +20,7 @@ public class XDefToXsdApp {
         Options cmdOptions = null;
 
         try {
-            cmdOptions = XDefToXsdOptions.cli();
+            cmdOptions = XDefToSchemaOptions.cli();
 
             final DefaultCommandLineProcessor defaultCommandLineProcessor = new DefaultCommandLineProcessor();
             final CommandLine commandLine = defaultCommandLineProcessor.parse(cmdOptions, args);

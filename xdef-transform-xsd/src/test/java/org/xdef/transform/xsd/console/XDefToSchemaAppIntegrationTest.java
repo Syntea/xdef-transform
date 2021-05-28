@@ -8,12 +8,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-class XDefToXsdAppIntegrationTest {
+class XDefToSchemaAppIntegrationTest {
 
     @Test
     @ExpectSystemExitWithStatus(1)
     public void help() {
-        XDefToXsdApp.main();
+        XDefToSchemaApp.main();
     }
 
     @Test
@@ -27,7 +27,7 @@ class XDefToXsdAppIntegrationTest {
             Files.createDirectories(outputDir);
         }
 
-        XDefToXsdApp.main(new String[]{
+        XDefToSchemaApp.main(new String[]{
                 "-i", TestResourceUtil.getDirResourceAbsolutePath("xd2schema/input/xdef-basic/t000"),
                 "-o", outputDir.toAbsolutePath().toString()
         });

@@ -9,7 +9,7 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.transform.xsd.console.CommandLineProcessor;
-import org.xdef.transform.xsd.console.XDefToXsdOptionsConst;
+import org.xdef.transform.xsd.console.XDefToSchemaOptionsConst;
 import org.xdef.transform.xsd.error.FormattedRuntimeException;
 
 import java.nio.file.Files;
@@ -27,7 +27,7 @@ public class DefaultCommandLineProcessor implements CommandLineProcessor {
     public void validatePaths(final CommandLine cmd) throws RuntimeException {
         LOG.info("Validating command line specified paths ...");
 
-        Path path = Paths.get(cmd.getOptionValue(XDefToXsdOptionsConst.INPUT_DIR));
+        Path path = Paths.get(cmd.getOptionValue(XDefToSchemaOptionsConst.INPUT_DIR));
 
         if (!Files.isDirectory(path)) {
             throw new FormattedRuntimeException("Input directory '{}' does not exist!", path);
@@ -35,15 +35,15 @@ public class DefaultCommandLineProcessor implements CommandLineProcessor {
 
         LOG.debug("Input directory: '{}'", path.toAbsolutePath());
 
-        path = Paths.get(cmd.getOptionValue(XDefToXsdOptionsConst.OUTPUT_DIR));
+        path = Paths.get(cmd.getOptionValue(XDefToSchemaOptionsConst.OUTPUT_DIR));
         if (!Files.isDirectory(path)) {
             throw new FormattedRuntimeException("Output directory '{}' does not exist!", path);
         }
 
         LOG.debug("Output directory: '{}'", path.toAbsolutePath());
 
-        if (cmd.hasOption(XDefToXsdOptionsConst.VALIDATE_POSITIVE_CASE)) {
-            for (String positiveCaseDataFile : cmd.getOptionValues(XDefToXsdOptionsConst.VALIDATE_POSITIVE_CASE)) {
+        if (cmd.hasOption(XDefToSchemaOptionsConst.VALIDATE_POSITIVE_CASE)) {
+            for (String positiveCaseDataFile : cmd.getOptionValues(XDefToSchemaOptionsConst.VALIDATE_POSITIVE_CASE)) {
                 path = Paths.get(positiveCaseDataFile);
                 if (!Files.isRegularFile(path)) {
                     throw new FormattedRuntimeException("Input testing (positive) data file '{}' does not exist!", path);
@@ -51,8 +51,8 @@ public class DefaultCommandLineProcessor implements CommandLineProcessor {
             }
         }
 
-        if (cmd.hasOption(XDefToXsdOptionsConst.VALIDATE_NEGATIVE_CASE)) {
-            for (String negativeCaseDataFile : cmd.getOptionValues(XDefToXsdOptionsConst.VALIDATE_NEGATIVE_CASE)) {
+        if (cmd.hasOption(XDefToSchemaOptionsConst.VALIDATE_NEGATIVE_CASE)) {
+            for (String negativeCaseDataFile : cmd.getOptionValues(XDefToSchemaOptionsConst.VALIDATE_NEGATIVE_CASE)) {
                 path = Paths.get(negativeCaseDataFile);
                 if (!Files.isRegularFile(path)) {
                     throw new FormattedRuntimeException("Input testing (negative) data file '{}' does not exist!", path);

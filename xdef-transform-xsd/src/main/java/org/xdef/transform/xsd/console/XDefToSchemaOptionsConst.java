@@ -1,6 +1,6 @@
 package org.xdef.transform.xsd.console;
 
-public interface XDefToXsdOptionsConst {
+public interface XDefToSchemaOptionsConst {
     // Input directory containing X-Definition file(s)
     String INPUT_DIR = "inputDir";
     // output directory
