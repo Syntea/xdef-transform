@@ -42,7 +42,12 @@ public class XDefToXsdApp {
         if (cmdOptions == null) {
             LOG.error("Application command line options are not initialized.");
         } else {
-            new HelpFormatter().printHelp("X-definition to XML Schema conversion", cmdOptions);
+            new HelpFormatter().printHelp(
+                    "xdef-transform-xsd",
+                    "X-Definition to XML Schema transformation",
+                    cmdOptions,
+                    "",
+                    true);
         }
 
         System.exit(1);
