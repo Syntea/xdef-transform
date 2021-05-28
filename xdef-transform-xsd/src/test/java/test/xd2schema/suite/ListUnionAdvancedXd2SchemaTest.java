@@ -15,8 +15,8 @@ public class ListUnionAdvancedXd2SchemaTest extends AbstractXd2SchemaTransformSu
 
     @Test
     public void listUnion_1() {
-        initCaseDirs(SUITE_NAME, "schemaTypeTest");
-        convertXd2SchemaNoRef(
+        initTestCaseDirs(SUITE_NAME, "schemaTypeTest");
+        transformXd2SchemaNoRef(
                 "schemaTypeTest",
                 Collections.singletonList("schemaTypeTest_valid_1"),
                 Collections.singletonList("schemaTypeTest_invalid_1"));
@@ -24,8 +24,8 @@ public class ListUnionAdvancedXd2SchemaTest extends AbstractXd2SchemaTransformSu
 
     @Test
     public void listUnion_2() {
-        initCaseDirs(SUITE_NAME, "schemaTypeTest2");
-        convertXd2SchemaNoRef(
+        initTestCaseDirs(SUITE_NAME, "schemaTypeTest2");
+        transformXd2SchemaNoRef(
                 "schemaTypeTest2",
                 Collections.singletonList("schemaTypeTest2_valid_1"),
                 null);
@@ -33,8 +33,8 @@ public class ListUnionAdvancedXd2SchemaTest extends AbstractXd2SchemaTransformSu
 
     @Test
     public void listUnion_3() {
-        initCaseDirs(SUITE_NAME, "schemaTypeTest3");
-        convertXd2SchemaNoRef(
+        initTestCaseDirs(SUITE_NAME, "schemaTypeTest3");
+        transformXd2SchemaNoRef(
                 "schemaTypeTest3",
                 Collections.singletonList("schemaTypeTest3_valid_1"),
                 null);

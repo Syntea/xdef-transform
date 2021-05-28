@@ -4,14 +4,10 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xdef.XDConstants;
-import org.xdef.XDDocument;
-import org.xdef.sys.ArrayReporter;
 import org.xdef.transform.xsd.util.StringFormatter;
-import org.xdef.util.XValidate;
+import org.xdef.transform.xsd.util.XmlValidator;
 import test.resource.TransformInputResourceUtil;
 import test.resource.TransformOutputResourceUtil;
-import test.xdutils.XmlValidator;
 
 import javax.annotation.Nullable;
 import javax.xml.transform.stream.StreamSource;
@@ -20,45 +16,42 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.xdef.transform.xsd.def.NamespaceConst.XML_SCHEMA_DEFAULT_NAMESPACE_URI;
+import static test.resource.ResourceConst.XML_SCHEMA_FILE_EXT;
+import static test.validator.ValidatorSetting.LOG_OUTPUT_ENABLED;
+import static test.validator.ValidatorSetting.PRINT_XML_VALIDATION_ERRORS;
+import static test.validator.ValidatorSetting.VALIDATE_XML_AGAINST_REF_FILE;
+import static test.validator.ValidatorSetting.WRITE_OUTPUT_INTO_FILE;
 
 /**
  * @author smid
  * @since 2021-05-28
  */
-public class Xd2SchemaValidator {
+public class XmlSchemaValidator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Xd2SchemaValidator.class);
-
-    static protected boolean LOG_OUTPUT_ENABLED = false;
-    static protected boolean WRITE_OUTPUT_INTO_FILE = true;
-    static protected boolean VALIDATE_XML_AGAINST_REF_FILE = true;
-    static protected boolean PRINT_XML_VALIDATION_ERRORS = true;
+    private static final Logger LOG = LoggerFactory.getLogger(XmlSchemaValidator.class);
 
     private final TransformInputResourceUtil inputResourceUtil;
     private final TransformOutputResourceUtil outputResourceUtil;
 
-    public Xd2SchemaValidator(TransformInputResourceUtil inputResourceUtil, TransformOutputResourceUtil outputResourceUtil) {
+    public XmlSchemaValidator(TransformInputResourceUtil inputResourceUtil, TransformOutputResourceUtil outputResourceUtil) {
         this.inputResourceUtil = inputResourceUtil;
         this.outputResourceUtil = outputResourceUtil;
     }
 
-    public void compareXmlSchemas(final String xDefFileName,
+    public void compareXmlSchemas(final String schemaFileName,
                                   final XmlSchemaCollection outputSchemaCollection,
                                   final Set<String> schemaNames,
                                   int schemaCount) throws UnsupportedEncodingException {
-        final XmlSchemaCollection refSchemaCollection = inputResourceUtil.createRefXmlSchemaCollection(xDefFileName);
+        final XmlSchemaCollection refSchemaCollection = inputResourceUtil.createXmlSchemaCollection(schemaFileName);
 
-        LOG.debug("Comparing XML schemas. xDefFileName='{}'", xDefFileName);
+        LOG.debug("Comparing XML schemas. schemaFileName='{}'", schemaFileName);
 
         XmlSchema[] refSchemasAll = refSchemaCollection.getXmlSchemas();
         XmlSchema[] outputSchemasAll = outputSchemaCollection.getXmlSchemas();
@@ -76,7 +69,7 @@ public class Xd2SchemaValidator {
         }
 
         //assertEquals(realRefSchemas + 1, schemaCount + 1, "Invalid number of reference schemas, fileName: " + fileName);
-        assertEquals(outputSchemasAll.length, schemaCount + 1, "Invalid number of output schemas, fileName: " + xDefFileName);
+        assertEquals(outputSchemasAll.length, schemaCount + 1, "Invalid number of output schemas, fileName: " + schemaFileName);
         //assertEquals(realRefSchemas + 1, outputSchemasAll.length, "Expected same number of reference and output schemas, fileName: " + fileName);
 
         if (LOG_OUTPUT_ENABLED == true) {
@@ -90,7 +83,7 @@ public class Xd2SchemaValidator {
         boolean xsdRootChecked = false;
 
         for (String schemaName : schemaNames) {
-            String refSourceName = ("file:/" + inputResourceUtil.resolve(schemaName + ".xsd").toAbsolutePath())
+            String refSourceName = ("file:/" + inputResourceUtil.resolve(schemaName + XML_SCHEMA_FILE_EXT).toAbsolutePath())
                     .replace('\\', '/');
             XmlSchema[] refSchemas = refSchemaCollection.getXmlSchema(refSourceName);
             if (refSchemas.length == 0 && xsdRootChecked == false) {
@@ -128,7 +121,7 @@ public class Xd2SchemaValidator {
                         }
 
                         outFileName += "_ref";
-                        outFileName += ".xsd";
+                        outFileName += XML_SCHEMA_FILE_EXT;
 
                         try (Writer writer = outputResourceUtil.createFileWriter(outFileName)) {
                             refSchemas[i].write(writer);
@@ -146,7 +139,7 @@ public class Xd2SchemaValidator {
                             outFileName += "_" + i;
                         }
 
-                        outFileName += ".xsd";
+                        outFileName += XML_SCHEMA_FILE_EXT;
 
                         try (Writer writer = outputResourceUtil.createFileWriter(outFileName)) {
                             outputSchemas[i].write(writer);
@@ -165,7 +158,7 @@ public class Xd2SchemaValidator {
                 String refFileName = tmpFile.getName().replaceFirst("[.][^.]+$", "");
                 if (refFileName != null && !schemaNames.contains(refFileName)) {
                     try {
-                        try (Writer refWriter = outputResourceUtil.createFileWriter(xDefFileName + "_unk_ref_" + i + ".xsd")) {
+                        try (Writer refWriter = outputResourceUtil.createFileWriter(schemaFileName + "_unk_ref_" + i + XML_SCHEMA_FILE_EXT)) {
                             refSchemasAll[i].write(refWriter);
                         }
                     } catch (IOException e) {
@@ -176,54 +169,45 @@ public class Xd2SchemaValidator {
         }
     }
 
-    public void validateXmlAgainstXDef(final String xDefFileName,
-                                       @Nullable final List<String> validTestingData,
-                                       @Nullable final List<String> invalidTestingData) {
-        LOG.debug("Validating XML data against X-Definition. " +
-                "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}",
+    public void validateXmlAgainstInputXmlSchema(final String xDefFileName,
+                                                 @Nullable final List<String> validTestingData,
+                                                 @Nullable final List<String> invalidTestingData) {
+        File inputXsdFile = inputResourceUtil.getSchemaFile(xDefFileName);
+
+        LOG.debug("Validating XML data against reference XML Schema. " +
+                        "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}",
                 xDefFileName,
                 Optional.ofNullable(validTestingData).map(List::size).orElse(0),
                 Optional.ofNullable(invalidTestingData).map(List::size).orElse(0));
 
-        final Properties props = new Properties();
-        // Do not check deprecated
-        props.setProperty(XDConstants.XDPROPERTY_WARNINGS, XDConstants.XDPROPERTYVALUE_WARNINGS_FALSE);
-//        props.setProperty(XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT, XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE);
-
         // Validate valid XML file against XML Schema
         if (validTestingData != null) {
-            for (String testingDataFile : validTestingData) {
-                File xmlDataFile = inputResourceUtil.getXmlDataFile(testingDataFile);
-                File xDefFile = inputResourceUtil.getXDefFile(xDefFileName);
-                ArrayReporter reporter = new ArrayReporter();
-                XDDocument xdDocument = XValidate.validate(props, xmlDataFile, (File[]) Arrays.asList(xDefFile).toArray(), xDefFileName, reporter);
-                assertTrue(xdDocument != null, "XML is not valid against X-Definition. Test=" + xDefFileName + ", File=" + testingDataFile);
-                if (reporter.errors()) {
-                    reporter.printReports(System.err);
+            for (String testingFile : validTestingData) {
+                File xmlDataFile = inputResourceUtil.getXmlDataFile(testingFile);
+                if (inputXsdFile != null) {
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, inputXsdFile, true, "input");
                 }
-                assertFalse(reporter.errors(), "Error occurs on X-Definition validation. Test=" + xDefFileName + ", File=" + testingDataFile);
             }
         }
 
         // Validate invalid XML file against XML Schema
         if (invalidTestingData != null) {
-            for (String testingDataFile : invalidTestingData) {
-                File xmlDataFile = inputResourceUtil.getXmlDataFile(testingDataFile);
-                File xDefFile = inputResourceUtil.getXDefFile(xDefFileName);
-                ArrayReporter reporter = new ArrayReporter();
-                XValidate.validate(props, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), xDefFileName, reporter);
-                assertTrue(reporter.errors(), "Error does not occurs on X-Definition validation (but it should). Test=" + xDefFileName + ", File=" + testingDataFile);
+            for (String testingFile : invalidTestingData) {
+                File xmlDataFile = inputResourceUtil.getXmlDataFile(testingFile);
+                if (inputXsdFile != null) {
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, inputXsdFile, false, "input");
+                }
             }
         }
     }
 
-    public void validateXmlAgainstXmlSchemas(final String xDefFileName,
-                                             final List<String> validTestingData,
-                                             final List<String> invalidTestingData,
-                                             final boolean validateRef,
-                                             final boolean expectedInvalidXmlSchema) {
-        File outputXsdFile = outputResourceUtil.getOutputSchemaFile(xDefFileName);
-        File refXsdFile = validateRef ? inputResourceUtil.getRefSchemaFile(xDefFileName) : null;
+    public void validateXmlAgainstOutputXmlSchema(final String xDefFileName,
+                                                  @Nullable final List<String> validTestingData,
+                                                  @Nullable final List<String> invalidTestingData,
+                                                  final boolean validateRef,
+                                                  final boolean expectedInvalidXmlSchema) {
+        File outputXsdFile = outputResourceUtil.getSchemaFile(xDefFileName);
+        File refXsdFile = validateRef ? inputResourceUtil.getSchemaFile(xDefFileName) : null;
 
         if (validateRef) {
             LOG.debug("Validating XML data against output XML Schema and reference XML Schema. " +
@@ -239,18 +223,17 @@ public class Xd2SchemaValidator {
                     Optional.ofNullable(invalidTestingData).map(List::size).orElse(0));
         }
 
-
         // Validate valid XML file against XML Schema
         if (validTestingData != null) {
             for (String testingFile : validTestingData) {
                 File xmlDataFile = inputResourceUtil.getXmlDataFile(testingFile);
 
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
-                    validateXmlAgainstXmlSchemas(xDefFileName, xmlDataFile, refXsdFile, true, "ref");
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, refXsdFile, true, "reference");
                 }
 
                 if (outputXsdFile != null) {
-                    validateXmlAgainstXmlSchemas(xDefFileName, xmlDataFile, outputXsdFile, !expectedInvalidXmlSchema, "out");
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, outputXsdFile, !expectedInvalidXmlSchema, "output");
                 }
             }
         }
@@ -260,24 +243,37 @@ public class Xd2SchemaValidator {
             for (String testingFile : invalidTestingData) {
                 File xmlDataFile = inputResourceUtil.getXmlDataFile(testingFile);
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
-                    validateXmlAgainstXmlSchemas(xDefFileName, xmlDataFile, refXsdFile, false, "ref");
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, refXsdFile, false, "reference");
                 }
                 if (outputXsdFile != null) {
-                    validateXmlAgainstXmlSchemas(xDefFileName, xmlDataFile, outputXsdFile, false, "out");
+                    validateXmlAgainstXmlSchema(xDefFileName, xmlDataFile, outputXsdFile, false, "output");
                 }
             }
         }
     }
 
-    public void validateXmlAgainstXmlSchemas(final String xDefFileName,
-                                             final File xmlFile,
-                                             final File xsdSchemaFile,
-                                             boolean expectedResult,
-                                             String type) {
+    private static void validateXmlAgainstXmlSchema(final String xDefFileName,
+                                                    final File xmlFile,
+                                                    final File xsdSchemaFile,
+                                                    boolean expectedResult,
+                                                    String type) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlFile), new StreamSource(xsdSchemaFile));
+        boolean validateResult;
+        Exception validateEx = null;
+        try {
+            validateResult = validator.validate();
+        } catch (Exception ex) {
+            validateResult = false;
+            validateEx = ex;
+        }
+
+        if (expectedResult != validateResult && validateEx != null && PRINT_XML_VALIDATION_ERRORS) {
+            validateEx.printStackTrace();
+        }
+
         assertEquals(
                 expectedResult,
-                validator.validate(expectedResult && PRINT_XML_VALIDATION_ERRORS),
+                validateResult,
                 StringFormatter.format("XML validation against XML schema failed. " +
                         "xDefFileName='{}', type='{}', xmlFileName='{}'",
                         xDefFileName, type, xmlFile.getName()));

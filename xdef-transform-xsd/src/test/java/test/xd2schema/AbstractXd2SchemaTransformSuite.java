@@ -17,7 +17,8 @@ import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import test.resource.TransformInputResourceUtil;
 import test.resource.TransformOutputResourceUtil;
-import test.validator.Xd2SchemaValidator;
+import test.validator.XDefValidator;
+import test.validator.XmlSchemaValidator;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -44,20 +45,23 @@ public abstract class AbstractXd2SchemaTransformSuite {
     protected TransformInputResourceUtil inputResourceUtil;
     protected TransformOutputResourceUtil outputResourceUtil;
 
-    private Xd2SchemaValidator xd2SchemaValidator;
-
     protected ReportWriter reportWriter;
+
+    private XDefValidator xDefValidator;
+    private XmlSchemaValidator xmlSchemaValidator;
 
     @BeforeEach
     public void init() {
-        inputResourceUtil = new TransformInputResourceUtil("xd2xsd/input");
-        outputResourceUtil = new TransformOutputResourceUtil("xd2xsd/output");
-        xd2SchemaValidator = new Xd2SchemaValidator(inputResourceUtil, outputResourceUtil);
+        inputResourceUtil = new TransformInputResourceUtil("xd2schema/input");
+        outputResourceUtil = new TransformOutputResourceUtil("xd2schema/output");
+
+        xDefValidator = new XDefValidator(inputResourceUtil, outputResourceUtil);
+        xmlSchemaValidator = new XmlSchemaValidator(inputResourceUtil, outputResourceUtil);
 
         reportWriter = new ArrayReporter();
     }
 
-    protected void initCaseDirs(final String suiteName, final String caseName) {
+    protected void initTestCaseDirs(final String suiteName, final String caseName) {
         try {
             Path caseInputDir = inputResourceUtil.getDirResourcePath(Paths.get(suiteName).resolve(caseName).toString());
             Path caseOutputDir = outputResourceUtil.getResourcePath(Paths.get(suiteName).resolve(caseName).toString());
@@ -78,7 +82,7 @@ public abstract class AbstractXd2SchemaTransformSuite {
         }
     }
 
-    protected XdPool2XsdAdapter createXdAdapter(Set<Xd2XsdFeature> additionalFeatures) {
+    protected XdPool2XsdAdapter createXdPoolAdapter(@Nullable final Set<Xd2XsdFeature> additionalFeatures) {
         final XdPool2XsdAdapter adapter = new XdPool2XsdAdapter();
         final Set<Xd2XsdFeature> features = Xd2XsdUtils.defaultFeatures();
 
@@ -96,37 +100,37 @@ public abstract class AbstractXd2SchemaTransformSuite {
         return adapter;
     }
 
-    protected void convertXdSchemaNoSupport(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData, String exMsg) {
-        convertXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, exMsg, false, null);
+    protected void transformXdSchemaNoSupport(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData, String exMsg) {
+        transformXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, exMsg, false, null);
     }
 
-    protected void convertXd2SchemaInvalidXsd(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
-        convertXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, true, null);
+    protected void transformXd2SchemaInvalidXsd(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
+        transformXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, true, null);
     }
 
-    protected void convertXd2SchemaNoRef(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
-        convertXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, false, null);
+    protected void transformXd2SchemaNoRef(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
+        transformXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, false, null);
     }
 
-    protected void convertXd2SchemaWithFeatures(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData, Set<Xd2XsdFeature> features) {
-        convertXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, false, features);
+    protected void transformXd2SchemaWithFeatures(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData, Set<Xd2XsdFeature> features) {
+        transformXd2Schema(xDefFileName, validTestingData, invalidTestingData, false, null, false, features);
     }
 
-    protected void convertXd2Schema(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
-        convertXd2Schema(xDefFileName, validTestingData, invalidTestingData, true, null, false, null);
+    protected void transformXd2Schema(final String xDefFileName, List<String> validTestingData, List<String> invalidTestingData) {
+        transformXd2Schema(xDefFileName, validTestingData, invalidTestingData, true, null, false, null);
     }
 
-    protected void convertXd2Schema(final String xDefFileName,
-                                    @Nullable final List<String> testingDataFileNamesValid,
-                                    @Nullable final List<String> testingDataFileNamesInvalid,
-                                    boolean doValidationAgainstRefXmlSchema,
-                                    @Nullable String expectedExceptionMsg,
-                                    boolean expectedInvalidXmlSchema,
-                                    Set<Xd2XsdFeature> transformFeatures) {
+    protected void transformXd2Schema(final String xDefFileName,
+                                      @Nullable final List<String> testingDataFileNamesValid,
+                                      @Nullable final List<String> testingDataFileNamesInvalid,
+                                      boolean doValidationAgainstRefXmlSchema,
+                                      @Nullable String expectedExceptionMsg,
+                                      boolean expectedInvalidXmlSchema,
+                                      @Nullable final Set<Xd2XsdFeature> transformFeatures) {
         LOG.debug(HEADER_LINE);
-        LOG.debug("convertXd2Schema: " +
+        LOG.debug("transformXd2Schema: " +
                         "xDefFileName='{}', validDataCount={}, invalidDataCount={}, " +
-                        "validateRefXmlSchema={}, expectedInvalidXmlSchema={}, transformFeatures={}\n" +
+                        "doValidationAgainstRefXmlSchema={}, expectedInvalidXmlSchema={}, transformFeatures={}\n" +
                         "inputDir={}\n" +
                         "outputDir={}",
                 xDefFileName,
@@ -137,7 +141,7 @@ public abstract class AbstractXd2SchemaTransformSuite {
                 outputResourceUtil.getRootDir().toAbsolutePath());
 
         try {
-            final XdPool2XsdAdapter adapter = createXdAdapter(transformFeatures);
+            final XdPool2XsdAdapter adapter = createXdPoolAdapter(transformFeatures);
             final String fileGroupRegex = inputResourceUtil.getRootDir().toAbsolutePath().toString() + '/' + "*.xdef";
 
             // Load X-Definition files
@@ -158,7 +162,7 @@ public abstract class AbstractXd2SchemaTransformSuite {
 
             // Compare output XML Schemas to XML Schema references
             if (doValidationAgainstRefXmlSchema) {
-                xd2SchemaValidator.compareXmlSchemas(
+                xmlSchemaValidator.compareXmlSchemas(
                         xDefFileName,
                         outputXmlSchemaCollection,
                         adapter.getSchemaNames(),
@@ -168,11 +172,11 @@ public abstract class AbstractXd2SchemaTransformSuite {
                 outputResourceUtil.writeOutputSchemas(outputXmlSchemaCollection, adapter.getSchemaNames());
             }
 
-            xd2SchemaValidator.validateXmlAgainstXDef(xDefFileName, testingDataFileNamesValid, testingDataFileNamesInvalid);
+            xDefValidator.validateXmlAgainstInputXDef(xDefFileName, testingDataFileNamesValid, testingDataFileNamesInvalid);
 
             // Validate XML files against output XML Schemas and reference XML Schemas
             if ((testingDataFileNamesValid != null && !testingDataFileNamesValid.isEmpty()) || (testingDataFileNamesInvalid != null && !testingDataFileNamesInvalid.isEmpty())) {
-                xd2SchemaValidator.validateXmlAgainstXmlSchemas(xDefFileName, testingDataFileNamesValid, testingDataFileNamesInvalid, doValidationAgainstRefXmlSchema, expectedInvalidXmlSchema);
+                xmlSchemaValidator.validateXmlAgainstOutputXmlSchema(xDefFileName, testingDataFileNamesValid, testingDataFileNamesInvalid, doValidationAgainstRefXmlSchema, expectedInvalidXmlSchema);
             }
         } catch (Exception ex) {
             if (expectedExceptionMsg != null) {
