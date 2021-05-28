@@ -23,7 +23,7 @@ public class XmlValidator {
         this.schemaSource = schemaSource;
     }
 
-    public boolean validate(final String baseUri, boolean printEx) {
+    public boolean validate(boolean printEx) {
         if (xmlSource == null || schemaSource == null) {
             throw new InternalException("xml == null || schema == null");
         }

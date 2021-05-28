@@ -4,7 +4,6 @@ import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.Test;
 import org.xdef.XDDocument;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.transform.xsd.schema2xd.adapter.impl.DefaultXsd2XDefAdapter;
@@ -204,7 +203,7 @@ public class TestXsd2Xd extends TesterXdSchema {
 
     private void validateXmlAgainstXsd(final String fileName, final File xmlFile, final File xsdSchemaFile, boolean expectedResult, String type) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlFile), new StreamSource(xsdSchemaFile));
-        assertEq(expectedResult, validator.validate(_outputFilesRoot.getAbsolutePath(), expectedResult && PRINT_XML_VALIDATION_ERRORS),
+        assertEq(expectedResult, validator.validate(expectedResult && PRINT_XML_VALIDATION_ERRORS),
                 "Xml validation failed, testCase: " + fileName + ", type: " + type + ", fileName: " + xmlFile.getName());
     }
 
@@ -429,7 +428,6 @@ public class TestXsd2Xd extends TesterXdSchema {
         runTest();
     }
 
-    @Test
     public void testXsd2Xd() {
         runTest();
     }

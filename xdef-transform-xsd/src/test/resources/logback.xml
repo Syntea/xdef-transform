@@ -17,4 +17,8 @@
         <appender-ref ref="Console" />
     </logger>
 
+    <logger name="test" level="DEBUG" additivity="false">
+        <appender-ref ref="Console" />
+    </logger>
+
 </configuration>

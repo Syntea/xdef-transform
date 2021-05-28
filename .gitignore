@@ -1,1 +1,16 @@
-/xdef-transform-xsd/src/test/resources/test/xdutils/data/xd2xsd/internal/*
+
+# /
+/.idea
+/*.ipr
+/*.iws
+/*.iml
+/*.pyc
+/#*
+/overlays
+/target
+/nbproject
+/local
+/.classpath
+/.project
+/.settings
+/.wtpmodules
