@@ -1,17 +1,17 @@
 // This file was generated automatically, DO NOT modify it!
 package org.xdef.transform.xsd.msg;
 
-/** Registered identifiers of reports with the prefix XML Schema. */
+/** Registered identifiers of reports with the prefix XSD. */
 public interface XSD {
 	/** Expected different namespace prefix. Expected="&amp;{0}", Actual="&amp;{1}" */
 	public static final long XSD001 = 1180499968L;
-	/** Input XML Schema document is not set! */
+	/** Input XML schema document is not set! */
 	public static final long XSD002 = 1180499969L;
 	/** Reference to node type element is expected. */
 	public static final long XSD003 = 1180499970L;
 	/** Element referencing to unknown namespace! NamespacePrefix="&amp;{0}" */
 	public static final long XSD004 = 1180499971L;
-	/** X-definition name duplication. */
+	/** X-Definition name duplication. */
 	public static final long XSD005 = 1180499972L;
 	/** Parser not found or multiple parsers has been found. */
 	public static final long XSD006 = 1180499973L;
@@ -21,7 +21,7 @@ public interface XSD {
 	public static final long XSD008 = 1180499975L;
 	/** Referenced schema does not exist! Namespace="&amp;{0}" */
 	public static final long XSD009 = 1180499976L;
-	/** X-definition mixed type is reference, but no XML Schema node reference has been found internally! PathXdefinition="&amp;{0}" */
+	/** X-Definition mixed type is reference, but no XML Schema node reference has been found internally! PathXdefinition="&amp;{0}" */
 	public static final long XSD010 = 1180499977L;
 	/** XML Schema mixed type reference is not complex type! PathXdefinition="&amp;{0}" */
 	public static final long XSD011 = 1180499978L;
@@ -95,7 +95,7 @@ public interface XSD {
 	public static final long XSD045 = 1180500012L;
 	/** Target namespace URI has been not found for prefix. Prefix="&amp;{0}" */
 	public static final long XSD046 = 1180500013L;
-	/** X-definition pool is null */
+	/** X-Definition pool is null */
 	public static final long XSD047 = 1180500014L;
 	/** Input XML Schema document collection is empty! */
 	public static final long XSD200 = 1180500015L;
@@ -131,11 +131,11 @@ public interface XSD {
 	public static final long XSD215 = 1180500030L;
 	/** Declaration - Unsupported XML Schema facet! Clazz="&amp;{0}" */
 	public static final long XSD216 = 1180500031L;
-	/** X-definition target namespace already exists. XDefinition="&amp;{0}" */
+	/** X-Definition target namespace already exists. XDefinition="&amp;{0}" */
 	public static final long XSD217 = 1180500032L;
-	/** X-definition namespace already exists. XDefinition="&amp;{0}", NsPrefix="&amp;{1}" */
+	/** X-Definition namespace already exists. XDefinition="&amp;{0}", NsPrefix="&amp;{1}" */
 	public static final long XSD218 = 1180500033L;
-	/** Error messages for XML Schema */
+	/** Error messages for XML schema */
 	public static final long XSD_DESCRIPTION = 1180500034L;
 	/** English */
 	public static final long XSD_LANGUAGE = 1180500035L;
