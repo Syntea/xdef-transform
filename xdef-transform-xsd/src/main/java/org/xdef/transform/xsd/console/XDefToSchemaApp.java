@@ -31,6 +31,7 @@ public class XDefToSchemaApp {
             final DefaultXDefAdapter xDefAdapter = new DefaultXDefAdapter(xdefAdapterConfig);
             xDefAdapter.transform();
         } catch (MissingOptionException ex) {
+            LOG.error(ex.getMessage());
             printHelp(cmdOptions);
         } catch (Exception ex) {
             LOG.error("Exception occurs.", ex);

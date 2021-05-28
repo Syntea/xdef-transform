@@ -1,0 +1,41 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+    <id>dist</id>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <fileSets>
+        <!-- Nakopirovani resources, ktere byly pomoci pluginu maven-resources-plugin vyhodnoceny -->
+        <fileSet>
+            <directory>target/dist/template</directory>
+            <outputDirectory>${finalName}</outputDirectory>
+        </fileSet>
+        <!-- Nakopirovani zbylych resources -->
+        <fileSet>
+            <directory>src/dist/template</directory>
+            <outputDirectory>${finalName}</outputDirectory>
+            <excludes>
+                <exclude>**/.keepit</exclude>
+            </excludes>
+        </fileSet>
+    </fileSets>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>${finalName}/app/lib</outputDirectory>
+            <includes>
+                <include>*:jar:*</include>
+            </includes>
+            <excludes>
+                <exclude>${groupId}:${artifactId}</exclude>
+            </excludes>
+        </dependencySet>
+        <dependencySet>
+            <outputDirectory>${finalName}/app</outputDirectory>
+            <includes>
+                <include>${groupId}:${artifactId}</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+</assembly>

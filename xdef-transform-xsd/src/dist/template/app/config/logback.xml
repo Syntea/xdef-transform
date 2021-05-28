@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration debug="${logback.configuration.debug:-false}" >
+
+    <timestamp key="timestamp_bySecond" datePattern="yyyy-MM-dd_HHmmss"/>
+    
+    <!-- ********** PROPERTIES -->
+    <property name="PATTERN" value="%d{HH:mm:ss.SSS}|%-5p|%-35.35c %4L- %m%n"/>
+
+    <!-- Cesta na logovací adresář  -->
+    <property name="LOG_DIR" value="${logback.log.dir:-logs}"/>
+
+    <!-- Nazev logovacího souboru bez koncovky -->
+    <property name="LOG_FILE" value="${logback.log.file:-xdef-transform-wsdl-${timestamp_bySecond}}"/>
+
+
+    <!-- ********** APPENDERS -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>${LOG_DIR}/${LOG_FILE}.log</file>
+        <encoder>   
+            <charset>${logback.encoder.charset:-UTF-8}</charset>            
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- *********** LOGGERS ********************************************** -->
+    <root level="${logback.logger-root.level:-INFO}">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </root>
+
+    <logger name="org.xdef" level="${logback.logger-org.xdef.level:-DEBUG}" additivity="false">
+        <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
+    </logger>
+
+</configuration>

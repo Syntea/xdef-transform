@@ -37,6 +37,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+
 public class DefaultXDefAdapter implements XDefAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultCommandLineProcessor.class);
@@ -49,7 +51,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
     @Override
     public XDefTransformResult transform() {
-        LOG.info("Preparing XDef2Xsd transformation ... ");
+        LOG.info("Preparing XDef2XmlSchema transformation ... ");
         StopWatch watch = StopWatch.createStarted();
 
         XDPool inputXD;
@@ -199,8 +201,11 @@ public class DefaultXDefAdapter implements XDefAdapter {
     }
 
     private void validateXmlData(final Path outputRootSchema) {
+        LOG.info(HEADER_LINE);
         LOG.info("Validating testing data against output XML Schema ... ");
-        StopWatch watch = StopWatch.createStarted();
+        LOG.info(HEADER_LINE);
+
+        final StopWatch watch = StopWatch.createStarted();
 
         final StreamSource outputRootSchemaFile = new StreamSource(outputRootSchema.toFile());
 
@@ -220,9 +225,12 @@ public class DefaultXDefAdapter implements XDefAdapter {
         LOG.info("Testing data validation against output XML Schema done, elapsed {} ms.", watch.getTime());
     }
 
-    private void validateXmlAgainstXsd(final File xmlDataFile, final StreamSource outputRootSchema, boolean expectedResult) {
-        XmlValidator validator = new XmlValidator(new StreamSource(xmlDataFile), outputRootSchema);
-        LOG.info("Xml validation {} failed, fileName: '{}'", expectedResult ? "positive" : "negative", xmlDataFile);
+    private void validateXmlAgainstXsd(final File xmlDataFile,
+                                       final StreamSource outputRootSchema,
+                                       boolean expectedResult) {
+        final XmlValidator validator = new XmlValidator(new StreamSource(xmlDataFile), outputRootSchema);
+        LOG.info("XML data {} validation against XML schema. fileName='{}'",
+                expectedResult ? "positive" : "negative", xmlDataFile.getAbsolutePath());
 
         try {
             validator.validate();

@@ -44,3 +44,10 @@ java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o 
 ```console
 java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -r "sisma" -tp "C:\syntea\projects\xdefinition\data\sisma.xml"
 ```
+
+## Distribution
+
+Maven command: creating a distribution archive containing the application
+```
+mvn clean package -Pdist
+```
