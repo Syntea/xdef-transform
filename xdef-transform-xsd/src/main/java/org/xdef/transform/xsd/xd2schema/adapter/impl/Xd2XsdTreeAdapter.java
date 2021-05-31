@@ -66,8 +66,8 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static org.xdef.impl.compile.CompileBase.UNIQUESET_M_VALUE;
-import static org.xdef.impl.compile.CompileBase.UNIQUESET_VALUE;
+import static org.xdef.impl.compile.CompileBase.X_UNIQUESET;
+import static org.xdef.impl.compile.CompileBase.X_UNIQUESET_M;
 import static org.xdef.transform.xsd.def.NamespaceConst.NAMESPACE_PREFIX_EMPTY;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.POSTPROCESSING;
@@ -175,7 +175,7 @@ public class Xd2XsdTreeAdapter {
             LOG.info("{}Loading unique sets of X-Definition.", logHeader(PREPROCESSING, xNode));
 
             for (XMVariable xmVariable : varTable.toArray()) {
-                if ((xmVariable.getType() == UNIQUESET_M_VALUE || xmVariable.getType() == UNIQUESET_VALUE)
+                if ((xmVariable.getType() == X_UNIQUESET || xmVariable.getType() == X_UNIQUESET_M)
                         && xmVariable.getOffset() != -1) {
                     adapterCtx.addOrGetUniqueConst(
                             XsdNameUtils.getReferenceName(xmVariable.getName()),

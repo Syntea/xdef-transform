@@ -18,7 +18,7 @@
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="d_Type">
-    <xs:restriction base="xs:double">
+    <xs:restriction base="xs:float">
       <xs:minInclusive value="3.0"/>
       <xs:maxInclusive value="4.0"/>
     </xs:restriction>
