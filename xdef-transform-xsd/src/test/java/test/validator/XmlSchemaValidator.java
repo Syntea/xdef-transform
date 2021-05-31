@@ -275,8 +275,8 @@ public class XmlSchemaValidator {
                 expectedResult,
                 validateResult,
                 StringFormatter.format("XML validation against XML schema failed. " +
-                        "xDefFileName='{}', type='{}', xmlFileName='{}'",
-                        xDefFileName, type, xmlFile.getName()));
+                        "type='{}', xsdSchemaFile='{}', xmlFile='{}'",
+                        type, xsdSchemaFile.getAbsolutePath(), xmlFile.getAbsolutePath()));
     }
 
 }
