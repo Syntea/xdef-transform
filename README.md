@@ -1,5 +1,6 @@
-# X-Definition transformation library
+# X-Definition transformation library and application
 
-Transformation between X-Definition and XML Schema data description formats
+Java libraries and console applications for mutual transformation of X-Definition and other data description format.
 
-[XML Schema transformation](xdef-transform-xsd/README.md)
+Following algorithms are available:
+* [X-Definition <-> XML Schema transformation](xdef-transform-xsd/README.md)

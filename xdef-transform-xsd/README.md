@@ -1,53 +1,87 @@
-# X-definition <-> XML schema transformation
+# Mutual transformation of X-Definition and XML Schema
 
-Transformace mezi formáty X-definice a XML schéma.
-* Převod z X-definice do XML schéma může být ztrátový
-    * Uživatel je o ztrátové transformaci informován v rámci výstupu algoritmu
-* Převod z XML schéma do X-definice by neměl být ztrátový
+* Transformation from X-Definition to XML Schema can be **lossy**.
+  * The user is informed of the lossy transformation by warning messages.
+* Transformation from XML Schema to X-Definition should always be lossless (provided that the specific transformation is supported).
 
 ## Usage
 
-### Spuštení v konzoli
-* Je potřeba mít zadefinovanou Javu v cestě systémových proměnných.
-* Ukázka spuštění:
+### Console: X-Definition transformation to XML Schema
 
+#### Prerequisites
+* Installed JRE version 8 or higher.
+
+#### Basic examples
+
+* Executing application distribution
+```console
+.\xdef-transform-xsd.cmd
+```
+
+* Manual build
 ```console
 java -jar .\xdef-transform-xsd.jar
 ```
 
-* Do konzole by se mělo vypsat následující:
+* Output
 
 ```console
 Missing required options: i, o
-usage: X-definition to XSD converter
-…
+usage: xdef-transform-xsd ...
+...
 ```
 
-Dále pokračují popisy přepínačů...
+The console output includes descriptions of all options and their meaning in standard unix format.
 
-* **Povinné přepínače jsou:**
+* Required options:
+  * `i` – directory containing input X-Definition file(s)
+  * `o` – directory containing the output XML Schema file(s)
 
-    * `i` – adresář obsahující vstupní soubory X-definic
-    * `o` – výstupní složka pro XSD
-
-**Príklad kompletního volání**
+**Example of using**
 ```console
-java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output"
+.\xdef-transform-xsd.cmd -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output"
 ```
 
-* Pokud chcete do výstupního schéma přidat uzly <xs:annotation>, které obsahují základní informace o ztrátových transformacích, tak potom stačí přidat přepínač `-f` s hodnotou `a`. Příklad:
+* If you want to add *<xs: annotation>* nodes to the output XML Schema(s), which contain basic information about loss transformations, then just add the `-f` switch with the value` a`. Example:
+
 ```console
-java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -f a
+.\xdef-transform-xsd.cmd -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -f a
 ```
 
-* Volání je možné rozšířit o validaci XML dat skrze interní nástroj (rozumějme knihovnu) Javy. Pokud chcete zvalidovat nějaký validní (myšleno vůči vstupní X-definici) XML soubor proti výstupu algoritmu (XML schema), potom stačí použít přepínač `-tp`. Je možné najednou testovat i více testovacích datových souboru. Zároveň je nutné pomocí přepínače `-r` určit i název kořenovou X-definice, resp. název XML schema souboru, vůči kterému budou data validována. Příklad volání s jedním datovým souborem:
+* The application execution can be extended by validation of XML data via an internal tool (Java library).
+  * If you want to validate a valid (meaning in relation to the input X-Definition file(s)) XML file against the output of the algorithm (XML schema file(s)), then just use the `-tp` option. It is possible to test multiple XML data files at once.
+  * At the same time, it is necessary to use the `-r` option to specify the name of the root X-Definition, in fact the name of the output XML schema file against which the data will be validated.
+  * Example of a application execution with single data file:
+  
 ```console
-java -jar .\xdef-transform-xsd.jar -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -r "sisma" -tp "C:\syntea\projects\xdefinition\data\sisma.xml"
+.\xdef-transform-xsd.cmd -i "C:\syntea\projects\xdefinition\input" -o "C:\syntea\projects\xdefinition\output" -r "root-name" -tp "C:\syntea\projects\xdefinition\data\testing-data.xml"
 ```
+
+### Library: X-Definition transformation to XML Schema
+
+The project can be used as third-party library. Example of usage:
+```java
+import org.xdef.transform.xsd.console.impl.DefaultXDefAdapter;
+import org.xdef.transform.xsd.console.impl.XDefAdapterConfig;
+
+XDefAdapterConfig xdefAdapterConfig = ...
+
+DefaultXDefAdapter xDefAdapter = new DefaultXDefAdapter(xdefAdapterConfig);
+xDefAdapter.transform();
+```
+
+Configuration of `XDefAdapterConfig` is similar to the command line options.
+
+### Console: XML Schema transformation to X-Definition
+TBU
+### Library: XML Schema transformation to X-Definition
+TBU
 
 ## Distribution
 
-Maven command: creating a distribution archive containing the application
+**Maven command:** creating a distribution archive containing the application
 ```
 mvn clean package -Pdist
 ```
+
+Distribution archive contains **two examples** to demonstrate using of application.

@@ -44,17 +44,17 @@ public class XDefToSchemaOptions {
         options.addOption(defaultFeatures);
 
         Option features = new Option("f", XDefToSchemaOptionsConst.FEATURES, true, "transformation features\n" +
-                XDefToSchemaOptionsConst.F_XSD_ANNOTATION + " - XSD_ANNOTATION,\n" +
-                XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR + " - XSD_DECIMAL_ANY_SEPARATOR,\n" +
-                XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED + " - XSD_ALL_UNBOUNDED,\n" +
-                XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR + " - XSD_NAME_COLISSION_DETECTOR,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING + " - POSTPROCESSING,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS + " - POSTPROCESSING_EXTRA_SCHEMAS,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_REFS + " - POSTPROCESSING_REFS,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_QNAMES + " - POSTPROCESSING_QNAMES,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_ALL_TO_CHOICE + " - POSTPROCESSING_ALL_TO_CHOICE,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_MIXED + " - POSTPROCESSING_MIXED,\n" +
-                XDefToSchemaOptionsConst.F_POSTPROCESSING_UNIQUE + " - POSTPROCESSING_KEYS_AND_REFS");
+                XDefToSchemaOptionsConst.F_XSD_ANNOTATION + " - XSD_ANNOTATION (algorithm creates additional annotation nodes containing extended transformation info),\n" +
+                XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR + " - XSD_DECIMAL_ANY_SEPARATOR (decimal parser will be converted to string regular expression),\n" +
+                XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED + " - XSD_ALL_UNBOUNDED (creates 'all' and 'choice' XML Schema nodes with unbound max occurrence),\n" +
+                XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR + " - XSD_NAME_COLLISION_DETECTOR (enables name generator if name collision is found on top-level),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING + " - POSTPROCESSING (enables any node(s) post-processing),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS + " - POSTPROCESSING_EXTRA_SCHEMAS (enables transformation of X-Definition nodes that leads to creation of additional XML Schema(s) due to namespace usage),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_REFS + " - POSTPROCESSING_REFS (enables post-processing of node's references),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_QNAMES + " - POSTPROCESSING_QNAMES (enables post-processing of node's qualified names),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_ALL_TO_CHOICE + " - POSTPROCESSING_ALL_TO_CHOICE (enables post-processing transformation of 'all' XML Schema node to 'choice', if required - XML Schema validation rules are violated),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_MIXED + " - POSTPROCESSING_MIXED (adds 'mixed' attribute to XML Schema nodes if need it),\n" +
+                XDefToSchemaOptionsConst.F_POSTPROCESSING_UNIQUE + " - POSTPROCESSING_KEYS_AND_REFS (transforms X-Definition unique sets to key and refs in XML Schema - Proof of concept, limited)");
         features.setRequired(false);
         features.setArgs(Option.UNLIMITED_VALUES);
         options.addOption(features);
