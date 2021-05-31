@@ -413,7 +413,7 @@ public class XsdAdapterCtx {
             if (node.hasReference()) {
                 sb.append(" (with reference)");
             }
-            sb.append(".");
+            sb.append(". ");
 
             sb.append(StringFormatter.format("systemId='{}', nodeXDefPath='{}', nodeXDefPos='{}'",
                     systemId, nodePath, node.getXdPosition()));
@@ -430,7 +430,7 @@ public class XsdAdapterCtx {
             if (node.hasReference()) {
                 sb.append(" (with reference)");
             }
-            sb.append(".");
+            sb.append(". ");
 
             sb.append(StringFormatter.format("systemId='{}', nodeXDefPath='{}', nodeXDefPos='{}'",
                     systemId, nodePath, node.getXdPosition()));

@@ -1,10 +1,12 @@
 package test.xd2schema.suite;
 
 import org.junit.jupiter.api.Test;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import test.xd2schema.AbstractXd2SchemaTransformSuite;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumSet;
 
 /**
  * @author smid
@@ -92,12 +94,32 @@ public class XDefExtendedXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     }
 
     @Test
-    public void extended_B1_common() {
+    public void extended_B1_common1() {
         initTestCaseDirs(SUITE_NAME, "B1_common");
         transformXd2SchemaNoRef(
                 "B1_common",
                 Arrays.asList("B1_Common_valid_1", "B1_Common_valid_2"),
                 null);
+    }
+
+    @Test
+    public void extended_B1_common2() {
+        initTestCaseDirs(SUITE_NAME, "B1_common2");
+        transformXd2SchemaWithFeatures(
+                "B1_common",
+                Arrays.asList("B1_Common_valid_1", "B1_Common_valid_2"),
+                null,
+                EnumSet.of(Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL));
+    }
+
+    @Test
+    public void extended_B1WS_common() {
+        initTestCaseDirs(SUITE_NAME, "B1WS_common");
+        transformXd2SchemaWithFeatures(
+                "B1WS_common",
+                null,
+                null,
+                EnumSet.of(Xd2XsdFeature.XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS, Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL));
     }
 
     @Test

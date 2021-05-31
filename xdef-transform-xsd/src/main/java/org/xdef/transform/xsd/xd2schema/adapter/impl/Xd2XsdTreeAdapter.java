@@ -566,7 +566,17 @@ public class Xd2XsdTreeAdapter {
 
                     final String refNodePath = XsdNameUtils.getXNodePath(refXPos);
                     final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refXPos);
-                    SchemaNodeFactory.createComplexExtRefAndDef(xElem, complexContentExtension, refSystemId, refXPos, refNodePath, adapterCtx);
+                    SchemaNodeFactory.createComplexExtRefAndDef(
+                            xElem,
+                            complexContentExtension,
+                            refSystemId,
+                            refXPos,
+                            refNodePath,
+                            adapterCtx
+                    );
+
+                    final SchemaNode node = SchemaNodeFactory.createElementNode(xsdElem, xElem);
+                    adapterCtx.addOrUpdateNode(node);
                 }
             }
         }

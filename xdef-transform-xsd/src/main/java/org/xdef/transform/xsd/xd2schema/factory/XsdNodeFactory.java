@@ -98,7 +98,7 @@ public class XsdNodeFactory {
      * @return <xs:element/>
      */
     public XmlSchemaElement createEmptyElement(final XElement xElem, boolean topLevel) {
-        LOG.trace("{}Empty element. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+        LOG.trace("{}Empty element. topLevel={}", logHeader(XSD_ELEM_FACTORY, xElem), topLevel);
 
         XmlSchemaElement elem = new XmlSchemaElement(schema, topLevel);
 
@@ -123,7 +123,7 @@ public class XsdNodeFactory {
      * @return <xs:attribute/>
      */
     public XmlSchemaAttribute createEmptyAttribute(final XData xData, boolean topLevel) {
-        LOG.trace("{}Attribute element. topLevel={}", logHeader(XSD_ELEM_FACTORY), topLevel);
+        LOG.trace("{}Attribute element. topLevel={}", logHeader(XSD_ELEM_FACTORY, xData), topLevel);
 
         XmlSchemaAttribute attr = new XmlSchemaAttribute(schema, topLevel);
 
