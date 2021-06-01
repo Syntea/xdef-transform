@@ -104,7 +104,6 @@ public class XmlSchemaValidator {
                 outputSchemas[0].write(outputStream);
 
                 mismatch = !refOutputStream.toString().equals(outputStream.toString());
-                assertFalse(mismatch, "Same schema by sourceId, but different content. Schema=" + schemaName);
             }
 
             if (WRITE_OUTPUT_INTO_FILE == true) {
@@ -149,6 +148,8 @@ public class XmlSchemaValidator {
                     e.printStackTrace();
                 }
             }
+
+            assertFalse(mismatch, "Same schema by sourceId, but different content. Schema=" + schemaName);
         }
 
         for (int i = 0; i < refSchemasAll.length; i++) {
