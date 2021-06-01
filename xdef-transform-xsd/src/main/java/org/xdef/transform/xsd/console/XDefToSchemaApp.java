@@ -31,7 +31,7 @@ public class XDefToSchemaApp {
             final DefaultXDefAdapter xDefAdapter = new DefaultXDefAdapter(xdefAdapterConfig);
             xDefAdapter.transform();
         } catch (MissingOptionException ex) {
-            LOG.error(ex.getMessage());
+            System.err.println(ex.getMessage());
             printHelp(cmdOptions);
         } catch (Exception ex) {
             LOG.error("Exception occurs.", ex);
@@ -41,7 +41,7 @@ public class XDefToSchemaApp {
 
     private static void printHelp(final Options cmdOptions) {
         if (cmdOptions == null) {
-            LOG.error("Application command line options are not initialized.");
+            System.err.println("Application command line options are not initialized.");
         } else {
             new HelpFormatter().printHelp(
                     "xdef-transform-xsd",
