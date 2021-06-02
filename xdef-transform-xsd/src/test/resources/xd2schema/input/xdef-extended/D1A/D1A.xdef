@@ -154,7 +154,7 @@
     </xd:sequence>
   </ZaznamPDN_ZaznamPDN_type_cType>
   <ZaznamPDN_ProtokolDN_type_cType KodUtvaruPolicie="required KodUtvaruPolicie_user_Type()"
-    RokDN="required ISOyear()"
+    RokDN="required gYear()"
     CisloDN="required CisloDN_Xdnum_Type()"
     CJ="required string()"
     DatumCasOznameni="required DatumCasOznameni_XdDatetime_Type()"

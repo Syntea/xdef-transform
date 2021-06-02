@@ -28,16 +28,12 @@
     <ID>id</ID>
     <IDREF>id</IDREF>
     <IDREFS>id id</IDREFS>
-    <ISOdateTime>2000-01-01T00:00:00</ISOdateTime>
-    <ISOdate>2000-01-01</ISOdate>
     <ISOtime>00:00:00</ISOtime>
     <ISOday>---15</ISOday>
     <ISOlanguage>ces</ISOlanguage>
     <ISOlanguages>ces eng</ISOlanguages>
     <ISOmonth>--01</ISOmonth>
     <ISOmonthDay>--01-01</ISOmonthDay>
-    <ISOyear>2000</ISOyear>
-    <ISOyearMonth>2000-01</ISOyearMonth>
     <ISOduration>P01Y20M12D</ISOduration>
     <email>john.doe@server.com</email>
     <emailList>john.doe@server.com, joe.smith@another.server.com</emailList>
@@ -68,10 +64,6 @@
     <enumi_n>ABC</enumi_n>
     <enumi_n>def</enumi_n>
     <ListOf_m>1 2 3 4</ListOf_m>
-    <tokens_1>abc</tokens_1>
-    <tokens_1>def</tokens_1>
-    <tokensi_1>AbC</tokensi_1>
-    <tokensi_1>deF</tokensi_1>
     <MD5>e4d909c290d0fb1ca068ffaddf22cbd0</MD5>
     <NCname>ncname</NCname>
     <NCNameList>ncname ncname</NCNameList>

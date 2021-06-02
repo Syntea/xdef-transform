@@ -308,7 +308,7 @@
     </xd:sequence>
   </InfoZaznamPDN_InfoZaznamPDN_type_cType>
   <InfoZaznamPDN_ProtokolDN_type_cType KodUtvaruPolicie="required KodUtvaruPolicie_user_Type()"
-    RokDN="required ISOyear()"
+    RokDN="required gYear()"
     CisloDN="required CisloDN_Xdnum_Type()"
     CJ="required CJ_Type()"
     DatumCasOznameni="required DatumCasOznameni_user_Type()"
@@ -345,7 +345,7 @@
     VIN="optional VIN_Type()"
     ZnackaVozidla="optional ZnackaVozidla_Type()"
     TypVozidla="optional TypVozidla_Type()"
-    RokVyroby="optional ISOyear()"
+    RokVyroby="optional gYear()"
     PlatnostSTK="optional PlatnostSTK_Type()"
     MesicSTKDo="optional MesicSTKDo_user_Type()"
     TypBrzd="optional TypBrzd_user_Type()"
@@ -539,7 +539,7 @@
     DuvodOdeslani="required string()"/>
   <InfoPrilohaPDN_InfoPrilohaPDN_type_cType SeqRec="required int()"
     KodUtvaruPolicie="required KodUtvaruPolicie_user_Type()"
-    RokDN="required ISOyear()"
+    RokDN="required gYear()"
     CisloDN="required CisloDN_Xdnum_Type()"
     MD5="required MD5_Type()"
     Delka="required Delka_Type()"
