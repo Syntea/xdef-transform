@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:def  xmlns:xd    ="http://www.syntea.cz/xdef/3.1"
+         impl-version="2019/01.0" impl-date="14.01.2019"
+         xmlns       ="http://ws.ckp.cz/pis/bm/B1WS/2019/01"
+         xd:name     ="B1WS_common">
+
+ <!-- Struktury element Body (požadavky)                    -->
+ <!-- ===================================================== -->
+ <Get_ListPSP            xd:script="ref Get_SubjektPSP" />
+ <Get_ListPSPAgr         xd:script="ref Get_SubjektPSPAgr" />
+ <Get_ListPSPAgr365      xd:script="ref Get_SubjektPSPAgr365" />
+
+ <Get_NositelPSP
+        ObdobiOd           ="optional xsDate()"
+        ObdobiDo           ="optional xsDate()">
+   <DruhVozidla          xd:script="occurs 0..">
+        required tab('CC_DruhVozidla','KodDruhuVozidla')
+   </DruhVozidla>
+   <xd:choice>
+     <Nositel              xd:script="ref Id_Subjekt" />
+     <CilovaSmlouva        xd:script="ref Id_Smlouva" />
+     <CilovyPSP            xd:script="ref Id_Smlouva" />
+   </xd:choice>
+ </Get_NositelPSP>
+
+ <Get_NositelPSPAgr>
+    <Nositel             xd:script="ref Id_Subjekt" />
+</Get_NositelPSPAgr>
+
+ <Get_NositelPSPAgr365>
+    <Nositel             xd:script="ref Id_Subjekt" />
+ </Get_NositelPSPAgr365>
+
+ <Get_SubjektPSP
+        RoleSubjektu       ="required enum('NOSITEL','NENOSITEL')"
+        ObdobiOd           ="optional xsDate()"
+        ObdobiDo           ="optional xsDate()">
+   <DruhVozidla          xd:script="occurs 0..">
+        required tab('CC_DruhVozidla','KodDruhuVozidla')
+   </DruhVozidla>
+   <xd:choice>
+     <Subjekt              xd:script="ref Id_Subjekt" />
+     <CilovaSmlouva        xd:script="ref Id_Smlouva" />
+     <CilovyPSP            xd:script="ref Id_Smlouva" />
+   </xd:choice>
+ </Get_SubjektPSP>
+
+ <Get_SubjektPSPAgr
+        RoleSubjektu       ="required enum('NOSITEL','NENOSITEL')">
+    <Subjekt               xd:script="ref Id_Subjekt" />
+ </Get_SubjektPSPAgr>
+
+ <Get_SubjektPSPAgr365
+        RoleSubjektu       ="required enum('NOSITEL','NENOSITEL')">
+    <Subjekt               xd:script="ref Id_Subjekt" />
+ </Get_SubjektPSPAgr365>
+
+ <Get_PSP                  xd:script="ref Id_Smlouva" />
+
+ <Get_ZanikyPS
+        RoleSubjektu       ="required enum('P','N')"
+        ObdobiOd           ="optional xsDate()"
+        ObdobiDo           ="optional xsDate()"
+        Detail             ="optional enum('A','DV','DVA')">
+    <Subjekt
+         Jmeno               ="optional string(1,24)"
+         Prijmeni            ="optional string(1,36)"
+         RC                  ="optional num(9,10)"
+         DatumNarozeni       ="optional xsDate()"
+         StatPrislusnost     ="optional string(1,3)"
+         IC                  ="optional long(1,99_999_999)"
+    />
+ </Get_ZanikyPS>
+
+
+ <!-- Struktury element Body (odpovědi)                     -->
+ <!-- ===================================================== -->
+ <ListPSP                  xd:script="ref SubjektPSP" />
+ <ListPSPAgr               xd:script="ref SubjektPSPAgr" />
+ <ListPSPAgr365            xd:script="ref SubjektPSPAgr365" />
+
+ <NositelPSP               xd:script="ref SubjektPSP" />
+ <NositelPSPAgr            xd:script="ref SubjektPSPAgr" />
+ <NositelPSPAgr365         xd:script="ref SubjektPSPAgr365" />
+
+ <PSP
+        ORD                  ="optional int(-9999,+9999)"
+        InfoDatum            ="required xsDate()"
+        KodPojistitele       ="required tab('CC_Pojistitel','KodPojistitele')"
+        CisloSmlouvy         ="required string(1,35)"
+        PoradiVozidla        ="required num(1,10)"
+        StavSmlouvy          ="optional enum('T','U')"
+        AltIdentPSP          ="optional enum('A')">
+    <UsekPojisteni         xd:script="occurs 1"
+         KodPojistitele      ="required num(4)"
+         CisloSmlouvy        ="required string(1,35)"
+         PoradiVozidla       ="required num(1,10)"
+         DruhVozidla         ="required num(2)"
+         CelkovaHmotnost     ="optional int(0,999_999)"
+         UsekPojisteniOd     ="required xsDate()"
+         UsekPojisteniDo     ="optional xsDate()">
+      <RozhodnaUdalost     xd:script="occurs 0.."
+         Rezerva             ="required long()"
+         Vyplaceno           ="required long()"
+         Regres              ="required long()"
+         DatumCasSU          ="required xsDateTime()"
+         KlasifikovanaUdalost="required enum('A','N')"
+      />
+    </UsekPojisteni>
+ </PSP>
+
+ <SubjektPSP
+        AddInfo            ="optional enum('0', '1')">
+    <PSP                   xd:script="occurs 0..; ref PSP" />
+ </SubjektPSP>
+
+ <SubjektPSPAgr
+         InfoDatum           ="required xsDate()"
+         IC                  ="optional string()"
+         RC                  ="optional string()"
+         Jmeno               ="optional string()"
+         Prijmeni            ="optional string()"
+         StatPrislusnost     ="optional string()">
+  <PSPAgr
+         PS                  ="required long(1,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         DobaPojisteni       ="required long(0,99_999_999)"
+         DobaPojisteniBP     ="required long(0,48)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)">
+    <Agr                   xd:script="occurs 1.."
+         Rok                 ="required xdatetime('yyyy')"
+         PS                  ="required long(1,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)">
+      <Detail              xd:script="occurs 1..; ref Detail"/>
+    </Agr>
+  </PSPAgr>
+ </SubjektPSPAgr>
+
+ <SubjektPSPAgr365
+         InfoDatum           ="required xsDate()"
+         IC                  ="optional string()"
+         RC                  ="optional string()"
+         Jmeno               ="optional string()"
+         Prijmeni            ="optional string()"
+         StatPrislusnost     ="optional string()">
+  <PSPAgr365
+         PS                  ="required long(0,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         DobaPojisteni       ="required long(0,99_999_999)"
+         DobaPojisteniBP     ="required long(0,48)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)">
+    <Agr365                xd:script="occurs 0.."
+         Rok365              ="required enum('0', '-1', '-2', '-3')"
+         PS                  ="required long(1,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)">
+      <Detail              xd:script="occurs 1..; ref Detail"/>
+    </Agr365>
+  </PSPAgr365>
+ </SubjektPSPAgr365>
+
+ <ZanikyPS
+         RoleSubjektu        ="required enum('P','N')"
+         ObdobiOd            ="optional xsDate()"
+         ObdobiDo            ="optional xsDate()"
+         Detail              ="optional enum('A','DV','DVA')">
+    <Subjekt
+         Jmeno               ="optional string(1,24)"
+         Prijmeni            ="optional string(1,36)"
+         RC                  ="optional num(9,10)"
+         DatumNarozeni       ="optional xsDate()"
+         StatPrislusnost     ="optional string(1,3)"
+         IC                  ="optional int(1,99_999_999)"
+    />
+    <Zaniky                xd:script="occurs 1;   ref Skupina"/>
+    <SkupinaDV             xd:script="occurs 0..; ref Skupina"
+         DruhVozidla         ="required num(2)"
+    />
+    <ZaniklaSmlouva        xd:script="occurs 0..; ref Id_ZaniklaSmlouva"/>
+ </ZanikyPS>
+
+ <!-- Dílčí věcné struktury (v abecedním pořadí) -->
+ <!-- ========================================== -->
+ <Detail
+         DruhVozidla         ="required tab('CC_DruhVozidla','KodDruhuVozidla')"
+         PS                  ="required long(1,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         DobaPojisteni       ="required long(0,99_999_999)"
+         DobaPojisteniBP     ="required long(0,12)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)">
+   <SubDetail              xd:script="occurs 0.."
+         Kategorie           ="required tab('BM_Kategorie','Kategorie')"
+         PS                  ="required long(1,999_999)"
+         SpravovanePS        ="optional long(1,999_999)"
+         DobaPojisteni       ="required long(0,99_999_999)"
+         DobaPojisteniBP     ="required long(0,12)"
+         SU                  ="optional long(1,999_999)"
+         SUZAHR              ="optional long(1,999_999)"
+         DatumPosledniSU     ="optional xsDate()"
+         Rezerva             ="optional long(1,9_999_999_999)"
+         Plneni              ="optional long(1,99_999_999_999)"
+         Regres              ="optional long(1,99_999_999_999)"
+   />
+ </Detail>
+
+ <Id_Subjekt
+         Jmeno               ="optional string(1,24)"
+         Prijmeni            ="optional string(1,36)"
+         RC                  ="optional num(9,10)"
+         DatumNarozeni       ="optional xsDate()"
+         StatPrislusnost     ="optional string(1,3)"
+         NazevFirmy          ="optional string(1,100)"
+         IC                  ="optional int(1,99_999_999)"
+ />
+
+ <Id_Smlouva
+         KodPojistitele      ="required tab('CC_DruhVozidla','KodDruhuVozidla')"
+         CisloSmlouvy        ="required string(1,35)"
+         PoradiVozidla       ="required num(1,10)"
+ />
+
+ <Id_ZaniklaSmlouva        xd:script="ref Id_Smlouva"
+         DruhVozidla         ="required num(2)"
+         PojisteniOd         ="required xsDate()"
+         PojisteniDo         ="required xsDate()"
+         NositelPSP          ="required enum('S','V')">
+   <Pojistnik              xd:script="ref Id_Subjekt"/>
+   <Provozovatel           xd:script="ref Id_Subjekt"/>
+ </Id_ZaniklaSmlouva>
+
+ <Skupina
+         PocetPS             ="required long(0,999_999)"
+         UkoncenePS          ="required long(0,999_999)"
+         UkonceneNeplacenimPS="required long(0,999_999)"
+         DatumPrvni          ="optional xsDate()"
+         DatumPosledni       ="optional xsDate()"
+ />
+
+</xd:def>

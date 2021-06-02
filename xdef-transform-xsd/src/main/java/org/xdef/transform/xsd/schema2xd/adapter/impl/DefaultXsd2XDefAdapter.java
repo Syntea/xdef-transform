@@ -380,7 +380,7 @@ public class DefaultXsd2XDefAdapter extends AbstractXsd2XdAdapter implements Xsd
         final String rootElements = treeAdapter.loadXsdRootElementNames();
         final Element xdDefRootElem = pool
                 ? elementFactory.createXDefinition(schemaName, rootElements)
-                : elementFactory.createRootXdefinition(schemaName, rootElements);
+                : elementFactory.createRootXDefinition(schemaName, rootElements);
 
         addNamespaces(xdDefRootElem, schemaName);
         transformXsdTree(treeAdapter, xdDefRootElem, schemaName, schema);

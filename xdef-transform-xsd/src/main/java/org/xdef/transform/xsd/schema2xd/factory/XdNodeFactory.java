@@ -69,7 +69,7 @@ public class XdNodeFactory {
      * @param rootNodeName      X-definition root node's names
      * @return X-Definition node
      */
-    public Element createRootXdefinition(final String xDefName, final String rootNodeName) {
+    public Element createRootXDefinition(final String xDefName, final String rootNodeName) {
         LOG.info("{}X-definition node in root. rootNodeName='{}'", logHeader(TRANSFORMATION, xDefName), rootNodeName);
         doc = KXmlUtils.newDocument(XDEF_DEFAULT_NAMESPACE_URI, XD_ELEM_XDEF, null);
         final Element xDefRoot = doc.getDocumentElement();

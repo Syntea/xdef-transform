@@ -156,6 +156,7 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
      */
     private XDef2XsdAdapter createXDefAdapter() {
         XDef2XsdAdapter adapter = new XDef2XsdAdapter();
+        adapter.setFeatures(features);
         adapter.setAdapterCtx(adapterCtx);
         return adapter;
     }

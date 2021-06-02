@@ -25,7 +25,7 @@
   <PrilohaPDN_PrilohaPDN_type_cType SeqRec="required int()"
     IdentSouboru="required int()"
     KodUtvaruPolicie="required KodUtvaruPolicie_user_Type()"
-    RokDN="required ISOyear()"
+    RokDN="required gYear()"
     CisloDN="required CisloDN_Xdnum_Type()"
     Poradi="required int()"
     MD5="required MD5_Type()"

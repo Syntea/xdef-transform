@@ -176,17 +176,17 @@ public class XsdNamespaceUtils {
      * @return  namespace prefix if it is part of reference node position, otherwise empty string
      */
     public static String getReferenceNamespacePrefix(final String refPos) {
-        int xdefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
-        if (xdefNamespaceSeparatorPos == -1) {
+        int xDefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
+        if (xDefNamespaceSeparatorPos == -1) {
             return NAMESPACE_PREFIX_EMPTY;
         }
 
-        int xdefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
-        if (xdefSystemSeparatorPos == -1) {
+        int xDefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
+        if (xDefSystemSeparatorPos == -1) {
             return NAMESPACE_PREFIX_EMPTY;
         }
 
-        return refPos.substring(xdefSystemSeparatorPos + 1, xdefNamespaceSeparatorPos);
+        return refPos.substring(xDefSystemSeparatorPos + 1, xDefNamespaceSeparatorPos);
     }
 
     /**

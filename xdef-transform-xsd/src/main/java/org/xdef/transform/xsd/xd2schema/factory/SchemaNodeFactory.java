@@ -8,10 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.impl.XData;
 import org.xdef.impl.XElement;
-import org.xdef.transform.xsd.xd2schema.model.impl.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.XmlSchemaNodeMap;
+import org.xdef.transform.xsd.xd2schema.model.impl.SchemaNode;
 import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
+import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
 import java.util.Optional;
 
@@ -37,9 +38,14 @@ public class SchemaNodeFactory {
      * @param refNodePath   reference node path
      * @param adapterCtx    XML Schema adapter context
      */
-    public static void createElemRefAndDef(final XElement xElem, final XmlSchemaElement xsdElem,
-                                           final String refSystemId, final String refNodePos, final String refNodePath,
+    public static void createElemRefAndDef(final XElement xElem,
+                                           final XmlSchemaElement xsdElem,
+                                           final String refSystemId,
+                                           final String refNodePos,
+                                           final String refNodePath,
                                            final XsdAdapterCtx adapterCtx) {
+        LOG.trace("{}createElemRefAndDef ...", logHeader(XSD_REFERENCE));
+
         SchemaNode node = createElementNode(xsdElem, xElem);
         final SchemaNode nodeRef = createDefNode(refSystemId, refNodePos, refNodePath, adapterCtx);
         node = adapterCtx.addOrUpdateNode(node);
@@ -59,10 +65,16 @@ public class SchemaNodeFactory {
      * @param refNodePath   reference node path
      * @param adapterCtx    XML Schema adapter context
      */
-    public static void createElemRefAndDefDiffNamespace(final XElement xElem, final XmlSchemaElement xsdElem,
-                                                        final String systemId, String nodePath,
-                                                        final String refSystemId, final String refNodePos, final String refNodePath,
+    public static void createElemRefAndDefDiffNamespace(final XElement xElem,
+                                                        final XmlSchemaElement xsdElem,
+                                                        final String systemId,
+                                                        final String nodePath,
+                                                        final String refSystemId,
+                                                        final String refNodePos,
+                                                        final String refNodePath,
                                                         final XsdAdapterCtx adapterCtx) {
+        LOG.trace("{}createElemRefAndDefDiffNamespace ...", logHeader(XSD_REFERENCE));
+
         SchemaNode node = createElementNode(xsdElem, xElem);
         final SchemaNode nodeRef = createDefNode(refSystemId, refNodePos, refNodePath, adapterCtx);
         node = adapterCtx.addOrUpdateNode(systemId, nodePath, node);
@@ -80,12 +92,26 @@ public class SchemaNodeFactory {
      * @param refNodePath       reference node path
      * @param adapterCtx        XML Schema adapter context
      */
-    public static void createComplexExtRefAndDef(final XElement xElem, final XmlSchemaComplexContentExtension xsdComplexExt,
-                                           final String refSystemId, final String refNodePos, final String refNodePath,
-                                           final XsdAdapterCtx adapterCtx) {
+    public static void createComplexExtRefAndDef(final XElement xElem,
+                                                 final XmlSchemaComplexContentExtension xsdComplexExt,
+                                                 final String refSystemId,
+                                                 final String refNodePos,
+                                                 final String refNodePath,
+                                                 final XsdAdapterCtx adapterCtx) {
+        LOG.trace("{}createComplexExtRefAndDef ...", logHeader(XSD_REFERENCE));
+
         SchemaNode node = createComplexExtNode(xElem, xsdComplexExt);
         final SchemaNode nodeRef = createDefNode(refSystemId, refNodePos, refNodePath, adapterCtx);
-        node = adapterCtx.addOrUpdateNode(node);
+
+        final String xPos = node.getXdNodeReq().getXDPosition();
+        final String systemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xPos);
+        // Single X-Definition position is related to two XML Schema nodes ...
+        //  1) XML Schema element
+        //  2) XML Schema element's complex content extension
+        // Mark complex content extension as _internal
+        final String nodePath = XsdNameUtils.getXNodePath(xPos) + "_internal";
+
+        node = adapterCtx.addOrUpdateNode(systemId, nodePath, node);
         SchemaNode.createBinding(node, nodeRef);
     }
 

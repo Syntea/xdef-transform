@@ -1,4 +1,4 @@
-<xd:collection xmlns:xd="http://www.syntea.cz/xdef/2.0">
+<xd:collection xmlns:xd="http://www.syntea.cz/xdef/3.1">
     <xd:def xd:name="namespaceTest3_1"
         xmlns:tns="http://www.w3ctest.com"
         xmlns:car     = "http://example.com/carInfo"

@@ -24,6 +24,7 @@ import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
 import static org.xdef.transform.xsd.util.LoggingUtil.logHeader;
 import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.INITIALIZATION;
 import static org.xdef.transform.xsd.xd2schema.def.AlgPhase.TRANSFORMATION;
+import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL;
 import static org.xdef.transform.xsd.xd2schema.def.Xd2XsdLogGroup.XSD_XDEF_ADAPTER;
 
 /**
@@ -73,10 +74,10 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
         final Xd2XsdTreeAdapter treeAdapter = new Xd2XsdTreeAdapter(schema, xDef.getName(), xsdFactory, adapterCtx);
         final Xd2XsdReferenceAdapter referenceAdapter = new Xd2XsdReferenceAdapter(schema, xDef.getName(), xsdFactory, treeAdapter, adapterCtx);
 
-        treeAdapter.loadXdefRootNames(xDefinition);
-        treeAdapter.loadXdefRootUniqueSets(xDefinition);
+        treeAdapter.loadXDefRootNames(xDefinition);
+        treeAdapter.loadXDefRootUniqueSets(xDefinition);
         referenceAdapter.createRefsAndImports(xDefinition);
-        transformXdef(treeAdapter);
+        transformXDef(treeAdapter);
 
         if (!poolPostProcessing) {
             final Xd2XsdPostProcessingAdapter postProcessingAdapter = new Xd2XsdPostProcessingAdapter();
@@ -92,7 +93,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
      * Transform X-Definition tree to XML Schema document via treeAdapter
      * @param treeAdapter   transformation algorithm
      */
-    private void transformXdef(final Xd2XsdTreeAdapter treeAdapter) {
+    private void transformXDef(final Xd2XsdTreeAdapter treeAdapter) {
         LOG.info(HEADER_LINE);
         LOG.info("{}Transformation of X-Definition tree", logHeader(TRANSFORMATION, xDefinition));
         LOG.info(HEADER_LINE);
@@ -100,7 +101,7 @@ public class XDef2XsdAdapter extends AbstractXd2XsdAdapter implements XDef2Schem
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(xDefinition.getName());
 
         for (XMElement elem : xDefinition.getModels()) {
-            if (rootNodeNames.contains(elem.getName())) {
+            if (features.contains(XSD_ALL_ELEMENTS_TOPLEVEL) || rootNodeNames.contains(elem.getName())) {
                 treeAdapter.convertTree(elem);
                 LOG.info("{}Adding root element to schema. elementName='{}'",
                         logHeader(TRANSFORMATION, elem), elem.getName());

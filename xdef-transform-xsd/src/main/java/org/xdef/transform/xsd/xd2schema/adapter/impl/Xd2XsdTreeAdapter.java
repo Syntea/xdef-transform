@@ -136,7 +136,7 @@ public class Xd2XsdTreeAdapter {
      * Gather names of all X-Definition root element nodes
      * @param xDef  input X-Definition
      */
-    public void loadXdefRootNames(final XDefinition xDef) {
+    public void loadXDefRootNames(final XDefinition xDef) {
         LOG.info("{}Loading root of X-Definition", logHeader(PREPROCESSING, xDef));
 
         if (xDef._rootSelection != null) {
@@ -152,7 +152,7 @@ public class Xd2XsdTreeAdapter {
      * Gather data of all global and local uniqueSets used by X-Definition
      * @param xDef  input X-Definition
      */
-    public void loadXdefRootUniqueSets(final XDefinition xDef) {
+    public void loadXDefRootUniqueSets(final XDefinition xDef) {
         loadUniqueSets(xDef, xDef.getXDPool().getVariableTable(), "");
     }
 
@@ -566,7 +566,17 @@ public class Xd2XsdTreeAdapter {
 
                     final String refNodePath = XsdNameUtils.getXNodePath(refXPos);
                     final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refXPos);
-                    SchemaNodeFactory.createComplexExtRefAndDef(xElem, complexContentExtension, refSystemId, refXPos, refNodePath, adapterCtx);
+                    SchemaNodeFactory.createComplexExtRefAndDef(
+                            xElem,
+                            complexContentExtension,
+                            refSystemId,
+                            refXPos,
+                            refNodePath,
+                            adapterCtx
+                    );
+
+                    final SchemaNode node = SchemaNodeFactory.createElementNode(xsdElem, xElem);
+                    adapterCtx.addOrUpdateNode(node);
                 }
             }
         }

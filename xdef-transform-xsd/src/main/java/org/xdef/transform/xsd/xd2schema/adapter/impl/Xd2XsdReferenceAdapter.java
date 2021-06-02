@@ -17,6 +17,7 @@ import org.xdef.model.XMNode;
 import org.xdef.transform.xsd.model.impl.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.error.XdAdapterCtxException;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNodeFactory;
 import org.xdef.transform.xsd.xd2schema.model.impl.XsdAdapterCtx;
@@ -175,7 +176,8 @@ public class Xd2XsdReferenceAdapter {
         LOG.info("{}Extracting complex references ...", logHeader(PREPROCESSING, xDef));
         final Set<String> rootNodeNames = adapterCtx.findSchemaRootNodeNames(schemaName);
         for (XMElement elem : xDef.getModels()) {
-            if (rootNodeNames.isEmpty() || !rootNodeNames.contains(elem.getName())) {
+            if ((rootNodeNames.isEmpty() || !rootNodeNames.contains(elem.getName()))
+                    && !adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL)) {
                 transformTopLevelElem(elem);
             }
         }

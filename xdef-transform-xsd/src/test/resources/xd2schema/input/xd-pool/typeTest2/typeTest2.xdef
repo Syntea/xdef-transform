@@ -1,5 +1,5 @@
 <!-- Because of usage of the the type ListOf use X-definition 2.0! -->
-<xd:def xmlns:xd="http://www.syntea.cz/xdef/2.0" xd:name="typeTest2" xd:root="Types">
+<xd:def xmlns:xd="http://www.syntea.cz/xdef/3.1" xd:name="typeTest2" xd:root="Types">
 
     <Types>
         <xd:mixed>
@@ -25,16 +25,12 @@
             <ID xd:script="occurs *">ID</ID>
             <IDREF xd:script="occurs *">IDREF</IDREF>
             <IDREFS xd:script="occurs *">IDREFS</IDREFS>
-            <ISOdateTime xd:script="occurs *">ISOdateTime</ISOdateTime>
-            <ISOdate xd:script="occurs *">ISOdate</ISOdate>
             <ISOtime xd:script="occurs *">time</ISOtime>
             <ISOday xd:script="occurs *">gDay</ISOday>
             <ISOlanguage xd:script="occurs *">language</ISOlanguage>
             <ISOlanguages xd:script="occurs *">languages</ISOlanguages>
             <ISOmonth xd:script="occurs *">gMonth</ISOmonth>
             <ISOmonthDay xd:script="occurs *">gMonthDay</ISOmonthDay>
-            <ISOyear xd:script="occurs *">ISOyear</ISOyear>
-            <ISOyearMonth xd:script="occurs *">ISOyearMonth</ISOyearMonth>
             <ISOduration xd:script="occurs *">duration</ISOduration>
             <email xd:script="occurs *">email</email>
             <emailList xd:script="occurs *">emailList()</emailList>
@@ -56,8 +52,6 @@
             <enum_n xd:script="occurs *">enum('abc', 'def')</enum_n>
             <enumi_n xd:script="occurs *">enumi('aBc', 'DeF')</enumi_n>
             <ListOf_m xd:script="occurs *">list(int(1,10))</ListOf_m>
-            <tokens_1 xd:script="occurs *">tokens('abc|def')</tokens_1>
-            <tokensi_1 xd:script="occurs *">tokensi('abc |def')</tokensi_1>
             <MD5 xd:script="occurs *">MD5</MD5>
             <NCname xd:script="occurs *">NCName</NCname>
             <NCNameList xd:script="occurs *">NCNameList(' ')</NCNameList>

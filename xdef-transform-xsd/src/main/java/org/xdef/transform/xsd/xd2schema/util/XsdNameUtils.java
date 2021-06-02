@@ -59,14 +59,14 @@ public class XsdNameUtils {
      * @return X-Definition reference node name
      */
     public static String getReferenceName(final String refPos) {
-        int xdefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
-        if (xdefNamespaceSeparatorPos != -1) {
-            return refPos.substring(xdefNamespaceSeparatorPos + 1);
+        int xDefNamespaceSeparatorPos = refPos.indexOf(NAMESPACE_DELIMITER);
+        if (xDefNamespaceSeparatorPos != -1) {
+            return refPos.substring(xDefNamespaceSeparatorPos + 1);
         }
 
-        int xdefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
-        if (xdefSystemSeparatorPos != -1) {
-            return refPos.substring(xdefSystemSeparatorPos + 1);
+        int xDefSystemSeparatorPos = refPos.indexOf(XDEF_REF_DELIMITER);
+        if (xDefSystemSeparatorPos != -1) {
+            return refPos.substring(xDefSystemSeparatorPos + 1);
         }
 
         return refPos;
@@ -78,9 +78,9 @@ public class XsdNameUtils {
      * @return  position without X-Definition name
      */
     public static String getXNodePath(final String nodePos) {
-        int xdefSystemSeparatorPos = nodePos.indexOf(XDEF_REF_DELIMITER);
-        if (xdefSystemSeparatorPos != -1) {
-            return nodePos.substring(xdefSystemSeparatorPos + 1);
+        int xDefSystemSeparatorPos = nodePos.indexOf(XDEF_REF_DELIMITER);
+        if (xDefSystemSeparatorPos != -1) {
+            return nodePos.substring(xDefSystemSeparatorPos + 1);
         }
 
         return nodePos;

@@ -113,9 +113,6 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="date4"
-          maxOccurs="unbounded"
-          type="xs:gYear"/>
         <xs:element maxOccurs="unbounded" name="date5">
           <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -158,30 +155,18 @@
             </xs:restriction>
           </xs:simpleType>
         </xs:element>
-        <xs:element name="date"
-          maxOccurs="unbounded"
-          type="xs:date"/>
         <xs:element name="time"
           maxOccurs="unbounded"
           type="xs:time"/>
-        <xs:element name="dateTime"
-          maxOccurs="unbounded"
-          type="xs:dateTime"/>
         <xs:element name="day"
           maxOccurs="unbounded"
           type="xs:gDay"/>
         <xs:element name="month"
           maxOccurs="unbounded"
           type="xs:gMonth"/>
-        <xs:element name="year"
-          maxOccurs="unbounded"
-          type="xs:gYear"/>
         <xs:element name="monthDay"
           maxOccurs="unbounded"
           type="xs:gMonthDay"/>
-        <xs:element name="yearMonth"
-          maxOccurs="unbounded"
-          type="xs:gYearMonth"/>
         <xs:element maxOccurs="unbounded" name="duration">
           <xs:simpleType>
             <xs:restriction base="xs:string">
@@ -254,9 +239,6 @@
       <xs:attribute name="date3"
         type="date3_XdDatetime_Type"
         use="required"/>
-      <xs:attribute name="date4"
-        type="xs:gYear"
-        use="required"/>
       <xs:attribute name="date5"
         type="date5_XdDatetime_Type"
         use="required"/>
@@ -275,14 +257,8 @@
       <xs:attribute name="date10"
         type="date10_XdDatetime_Type"
         use="required"/>
-      <xs:attribute name="date"
-        type="xs:date"
-        use="required"/>
       <xs:attribute name="time"
         type="xs:time"
-        use="required"/>
-      <xs:attribute name="dateTime"
-        type="xs:dateTime"
         use="required"/>
       <xs:attribute name="day"
         type="xs:gDay"
@@ -290,14 +266,8 @@
       <xs:attribute name="month"
         type="xs:gMonth"
         use="required"/>
-      <xs:attribute name="year"
-        type="xs:gYear"
-        use="required"/>
       <xs:attribute name="monthDay"
         type="xs:gMonthDay"
-        use="required"/>
-      <xs:attribute name="yearMonth"
-        type="xs:gYearMonth"
         use="required"/>
       <xs:attribute name="duration"
         type="duration_user_Type"

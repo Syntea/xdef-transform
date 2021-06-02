@@ -62,19 +62,19 @@ public class XdPoolXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     }
 
     @Test
-    public void xdPool_MultiXdef1() {
+    public void xdPool_MultiXDef1() {
         initTestCaseDirs(SUITE_NAME, "multiXdefTest");
         transformXd2SchemaNoRef("multiXdefTest", Collections.singletonList("multiXdefTest_valid_1"), null);
     }
 
     @Test
-    public void xdPool_MultiXdef2() {
+    public void xdPool_MultiXDef2() {
         initTestCaseDirs(SUITE_NAME, "multiXdefTest2");
         transformXd2SchemaNoRef("multiXdefTest2", Collections.singletonList("multiXdefTest2_valid_1"), null);
     }
 
     @Test
-    public void xdPool_MultiXdef3() {
+    public void xdPool_MultiXDef3() {
         initTestCaseDirs(SUITE_NAME, "multiXdefTest3");
         transformXd2SchemaNoRef("multiXdefTest3", Collections.singletonList("multiXdefTest3_valid_1"), null);
     }
