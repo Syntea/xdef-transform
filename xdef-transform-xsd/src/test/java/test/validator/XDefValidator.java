@@ -68,7 +68,7 @@ public class XDefValidator {
                     XDDocument xdDocument = XValidate.validate(
                             null,
                             xmlDataFile,
-                            (File[])Arrays.asList(refXDefFile).toArray(),
+                            new File[]{refXDefFile},
                             xDefFileName,
                             reporter);
 
@@ -96,7 +96,7 @@ public class XDefValidator {
                 XDDocument xdDocument = XValidate.validate(
                         null,
                         xmlDataFile,
-                        (File[])Arrays.asList(xDefFile).toArray(),
+                        new File[]{xDefFile},
                         xDefFileName,
                         reporter);
 
@@ -130,7 +130,7 @@ public class XDefValidator {
                     XValidate.validate(
                             null,
                             xmlDataFile,
-                            (File[])Arrays.asList(refXDefFile).toArray(),
+                            new File[]{refXDefFile},
                             xDefFileName,
                             reporter);
 
@@ -147,7 +147,7 @@ public class XDefValidator {
                 XValidate.validate(
                         null,
                         xmlDataFile,
-                        (File[])Arrays.asList(xDefFile).toArray(),
+                        new File[]{xDefFile},
                         xDefFileName,
                         reporter);
 
@@ -187,7 +187,7 @@ public class XDefValidator {
                 XDDocument xdDocument = XValidate.validate(
                         props,
                         xmlDataFile,
-                        (File[]) Arrays.asList(xDefFile).toArray(),
+                        new File[]{xDefFile},
                         xDefFileName,
                         reporter);
 
@@ -218,7 +218,7 @@ public class XDefValidator {
                 File xmlDataFile = inputResourceUtil.getXmlDataFile(testingDataFile);
 
                 ArrayReporter reporter = new ArrayReporter();
-                XValidate.validate(props, xmlDataFile, (File[])Arrays.asList(xDefFile).toArray(), xDefFileName, reporter);
+                XValidate.validate(props, xmlDataFile, new File[]{xDefFile}, xDefFileName, reporter);
 
                 assertTrue(
                         reporter.errors(),
