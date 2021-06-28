@@ -6,7 +6,7 @@
 
     <groupId>org.xdef</groupId>
     <artifactId>xdef-transform</artifactId>
-    <version>1.0.0.0</version>
+    <version>1.0.0.1-SNAPSHOT</version>
     <modules>
         <module>xdef-transform-tool</module>
         <module>xdef-transform-xsd</module>
