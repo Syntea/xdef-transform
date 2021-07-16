@@ -5,6 +5,9 @@ import org.apache.ws.commons.schema.XmlSchemaComplexType;
 import org.apache.ws.commons.schema.XmlSchemaElement;
 import org.apache.ws.commons.schema.XmlSchemaGroup;
 import org.apache.ws.commons.schema.XmlSchemaGroupParticle;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContent;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContentExtension;
+import org.apache.ws.commons.schema.XmlSchemaSimpleContentRestriction;
 import org.apache.ws.commons.schema.XmlSchemaType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +31,10 @@ import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNameUtils;
 import org.xdef.transform.xsd.xd2schema.util.XsdNamespaceUtils;
 
+import javax.xml.namespace.QName;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.xdef.model.XMNode.XMATTRIBUTE;
@@ -213,6 +218,34 @@ public class Xd2XsdReferenceAdapter {
                 Xd2XsdUtils.removeNode(schema, xsdElem);
                 LOG.info("{}Add definition of reference as complex/simple type. name='{}'",
                         logHeader(PREPROCESSING, xElem), xsdElem.getName());
+
+                // If complex-type contains simpleType with restriction, the simpleType should be move to top-level
+                if (elementType instanceof XmlSchemaComplexType
+                        && ((XmlSchemaComplexType) elementType).getContentModel() instanceof XmlSchemaSimpleContent
+                        && ((XmlSchemaComplexType) elementType).getContentModel().getContent() instanceof XmlSchemaSimpleContentRestriction) {
+                    if (xElem instanceof XElement) {
+                        final XElement xElement = (XElement) xElem;
+                        if (xElement._attrs.size() == 0
+                                && xElement._childNodes.length == 1
+                                && xElement._childNodes[0].getKind() == XNode.XMTEXT) {
+                            // Create new simple type at top-level
+                            processSimpleTypeReference((XData) xElement.getChildNodeModels()[0])
+                                    .ifPresent(simpleTypeReferenceName -> {
+                                        // Update simpleType restriction to extension
+                                        final XmlSchemaSimpleContent schemaSimpleContent =
+                                                (XmlSchemaSimpleContent) ((XmlSchemaComplexType) elementType).getContentModel();
+                                        final String targetNamespace = elementType.getParent().getTargetNamespace();
+                                        final XmlSchemaSimpleContentExtension schemaContent =
+                                                xsdFactory.createEmptySimpleContentExtension(
+                                                        new QName(targetNamespace,
+                                                                simpleTypeReferenceName)
+                                                );
+
+                                        schemaSimpleContent.setContent(schemaContent);
+                                    });
+                        }
+                    }
+                }
             }
         }
     }
@@ -309,7 +342,9 @@ public class Xd2XsdReferenceAdapter {
 
                     int childrenCount = xElem._childNodes.length;
                     for (XNode xChild : xElem._childNodes) {
-                        if (xChild.getKind() == XNode.XMTEXT && (childrenCount > 1 || ((XData) xChild).getRefTypeName() != null)) {
+                        if (xChild.getKind() == XNode.XMTEXT
+                                && (adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE)
+                                    || (childrenCount > 1 || ((XData) xChild).getRefTypeName() != null))) {
                             processSimpleTypeReference((XData) xChild);
                         } else {
                             boolean isParentRef = xElem.isReference()
@@ -340,8 +375,9 @@ public class Xd2XsdReferenceAdapter {
      * Insert X-Definition node into post processing queue if it is using different namespace.
      *
      * @param xData attribute/text node using reference
+     * @return reference name if simple type reference has been found or created
      */
-    private void processSimpleTypeReference(final XData xData) {
+    private Optional<String> processSimpleTypeReference(final XData xData) {
         // Element is not reference but name contains different namespace prefix ->
         // we will have to create reference in new namespace in post-processing
         if (XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xData, schema) && !isPostProcessingPhase) {
@@ -365,7 +401,7 @@ public class Xd2XsdReferenceAdapter {
                 // Do not create reference if attribute is using unique set
                 if (uniqueConstraint != null) {
                     uniqueConstraint.addVariable(xData, adapterCtx);
-                    return;
+                    return Optional.empty();
                 }
             }
 
@@ -381,7 +417,7 @@ public class Xd2XsdReferenceAdapter {
                 xsdFactory.createSimpleTypeTop(xData, refTypeName);
                 LOG.info("{}Creating simple type definition of reference. refTypeName='{}'",
                         logHeader(TRANSFORMATION, xData), refTypeName);
-                return;
+                return Optional.of(refTypeName);
             }
 
             if (!isAttrRef
@@ -393,7 +429,7 @@ public class Xd2XsdReferenceAdapter {
                     xsdFactory.createSimpleTypeTop(xData, refTypeName);
                     LOG.info("{}Creating simple type reference from parser. refTypeName='{}'",
                             logHeader(TRANSFORMATION, xData), refTypeName);
-                    return;
+                    return Optional.of(refTypeName);
                 }
             }
         }
@@ -402,6 +438,8 @@ public class Xd2XsdReferenceAdapter {
         if (nodeNsUri != null && XsdNamespaceUtils.isNodeInDifferentNamespace(xData.getName(), nodeNsUri, schema)) {
             addSchemaImportFromSimpleType(XsdNamespaceUtils.getNamespacePrefixRequired(xData.getName()), nodeNsUri);
         }
+
+        return Optional.empty();
     }
 
     /**

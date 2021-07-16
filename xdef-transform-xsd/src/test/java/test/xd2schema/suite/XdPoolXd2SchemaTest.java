@@ -86,6 +86,19 @@ public class XdPoolXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     }
 
     @Test
+    public void xdPool_SimpleRefb() {
+        initTestCaseDirs(SUITE_NAME, "simpleRefTestb");
+        transformXd2Schema(
+                "simpleRefTest",
+                Collections.singletonList("simpleRefTest_valid_1"),
+                null,
+                false,
+                null,
+                false,
+                EnumSet.of(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE));
+    }
+
+    @Test
     public void xdPool_Ref1() {
         initTestCaseDirs(SUITE_NAME, "refTest1");
         transformXd2SchemaNoRef("refTest1", Collections.singletonList("refTest1_valid_1"), null);

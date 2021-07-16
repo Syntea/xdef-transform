@@ -48,6 +48,9 @@ public class XDefToSchemaOptions {
                 XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR + " - XSD_DECIMAL_ANY_SEPARATOR (decimal parser will be converted to string regular expression),\n" +
                 XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED + " - XSD_ALL_UNBOUNDED (creates 'all' and 'choice' XML Schema nodes with unbound max occurrence),\n" +
                 XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR + " - XSD_NAME_COLLISION_DETECTOR (enables name generator if name collision is found on top-level),\n" +
+                XDefToSchemaOptionsConst.F_XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS + " - XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS (top level elements will not be deleted even if its not defined in X-Definition xd:root attribute),\n" +
+                XDefToSchemaOptionsConst.F_XSD_ALL_ELEMENTS_TOPLEVEL + " - XSD_ALL_ELEMENTS_TOPLEVEL (all top-level elements in X-Definition will be transformed to top-level XML Schema no matter content of xd:root),\n" +
+                XDefToSchemaOptionsConst.F_XSD_ELEMENT_NO_SIMPLE_TYPE + " - XSD_ELEMENT_NO_SIMPLE_TYPE (all xs:elements nodes will contain xs:complexType node only (no xs:simpleType occurs),\n" +
                 XDefToSchemaOptionsConst.F_POSTPROCESSING + " - POSTPROCESSING (enables any node(s) post-processing),\n" +
                 XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS + " - POSTPROCESSING_EXTRA_SCHEMAS (enables transformation of X-Definition nodes that leads to creation of additional XML Schema(s) due to namespace usage),\n" +
                 XDefToSchemaOptionsConst.F_POSTPROCESSING_REFS + " - POSTPROCESSING_REFS (enables post-processing of node's references),\n" +

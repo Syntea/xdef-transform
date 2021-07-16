@@ -1,0 +1,41 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.w3schools.com" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.w3schools.com">
+  <xs:simpleType name="string_minl1">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="note">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="to">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="tns:string_minl1"/>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="from">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="tns:string_minl1"/>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="heading">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="tns:string_minl1"/>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="body">
+          <xs:complexType>
+            <xs:simpleContent>
+              <xs:extension base="tns:string_minl1"/>
+            </xs:simpleContent>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

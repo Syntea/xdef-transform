@@ -13,6 +13,7 @@ public enum Xd2XsdFeature {
     XSD_NAME_COLLISION_DETECTOR,        // Generate new name if collision of names has been found on top-level of XML Schema
     XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS,  // Do not delete top level elements if X-Definition has no root element defined
     XSD_ALL_ELEMENTS_TOPLEVEL,          // All top-level elements in X-Definition will be transformed to top-level XML Schema no matter content of xd:root
+    XSD_ELEMENT_NO_SIMPLE_TYPE,         // All xs:elements nodes will contain xs:complexType node only (no xs:simpleType occurs)
 
     POSTPROCESSING,                     // Transform algorithm will execute additional processing of output nodes
     POSTPROCESSING_EXTRA_SCHEMAS,       // Transform algorithm will execute additional processing of nodes that is in different namespace than X-Definition using

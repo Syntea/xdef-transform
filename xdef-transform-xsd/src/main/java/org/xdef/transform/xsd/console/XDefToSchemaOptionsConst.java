@@ -30,6 +30,9 @@ public interface XDefToSchemaOptionsConst {
     String F_XSD_DECIMAL_ANY_SEPARATOR = "ds";
     String F_XSD_ALL_UNBOUNDED = "cu";
     String F_XSD_NAME_COLLISION_DETECTOR = "nc";
+    String F_XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS = "etsd";
+    String F_XSD_ALL_ELEMENTS_TOPLEVEL = "eta";
+    String F_XSD_ELEMENT_NO_SIMPLE_TYPE = "ens";
 
     String F_POSTPROCESSING = "p";
     String F_POSTPROCESSING_EXTRA_SCHEMAS = "pe";

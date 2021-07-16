@@ -86,6 +86,9 @@ public class XDefAdapterConfigFactory {
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR)) { featureSet.add(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED)) { featureSet.add(Xd2XsdFeature.XSD_ALL_UNBOUNDED); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR)) { featureSet.add(Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS)) { featureSet.add(Xd2XsdFeature.XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ALL_ELEMENTS_TOPLEVEL)) { featureSet.add(Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ELEMENT_NO_SIMPLE_TYPE)) { featureSet.add(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE); }
 
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING_EXTRA_SCHEMAS); }
