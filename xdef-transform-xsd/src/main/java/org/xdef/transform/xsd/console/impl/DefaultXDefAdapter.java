@@ -143,9 +143,12 @@ public class DefaultXDefAdapter implements XDefAdapter {
         final Set<Xd2XsdFeature> features = config.useDefaultFeatures()
                 ? Xd2XsdUtils.defaultFeatures()
                 : new HashSet<>();
+
         if (config.getFeatures() != null) {
             features.addAll(config.getFeatures());
         }
+
+        LOG.debug("All of the following features will be used during the transformation: {}", features);
 
         adapter.setFeatures(features);
         return adapter;

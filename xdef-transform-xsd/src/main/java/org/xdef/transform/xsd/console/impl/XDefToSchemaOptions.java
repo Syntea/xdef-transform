@@ -72,6 +72,9 @@ public class XDefToSchemaOptions {
         addFeatureOption(XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR, "choiceUnbounded", options);
         addFeatureOption(XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED, "nameCollision", options);
         addFeatureOption(XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR, "nameCollision", options);
+        addFeatureOption(XDefToSchemaOptionsConst.F_XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS, "noDeleteTopElements", options);
+        addFeatureOption(XDefToSchemaOptionsConst.F_XSD_ALL_ELEMENTS_TOPLEVEL, "allElementsTop", options);
+        addFeatureOption(XDefToSchemaOptionsConst.F_XSD_ELEMENT_NO_SIMPLE_TYPE, "noSimpleElement", options);
 
         addFeatureOption(XDefToSchemaOptionsConst.F_POSTPROCESSING, "postprocessing", options);
         addFeatureOption(XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS, "postprocessingExtraSchema", options);

@@ -33,4 +33,22 @@ class XDefToSchemaAppIntegrationTest {
         });
     }
 
+    @Test
+    public void basicIT_WithFeatures_Ok() throws IOException {
+        Path outputDir = TestResourceUtil.getResourcePath("xd2schema/output/it/t000");
+        if (!Files.isDirectory(outputDir) && Files.exists(outputDir)) {
+            Files.deleteIfExists(outputDir);
+        }
+
+        if (!Files.exists(outputDir)) {
+            Files.createDirectories(outputDir);
+        }
+
+        XDefToSchemaApp.main(new String[]{
+                "-i", TestResourceUtil.getDirResourceAbsolutePath("xd2schema/input/xdef-basic/t000"),
+                "-o", outputDir.toAbsolutePath().toString(),
+                "-f", "a ds"
+        });
+    }
+
 }
