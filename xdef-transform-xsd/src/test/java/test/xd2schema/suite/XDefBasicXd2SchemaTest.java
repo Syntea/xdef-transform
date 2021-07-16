@@ -71,6 +71,19 @@ public class XDefBasicXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     }
 
     @Test
+    public void basic_t007c() {
+        initTestCaseDirs(SUITE_NAME, "t007c");
+        transformXd2Schema(
+                "t007",
+                Collections.singletonList("t007"),
+                null,
+                true,
+                null,
+                false,
+                EnumSet.of(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE));
+    }
+
+    @Test
     public void basic_t009() {
         initTestCaseDirs(SUITE_NAME, "t009");
         transformXd2Schema("t009", Collections.singletonList("t009"), null);
