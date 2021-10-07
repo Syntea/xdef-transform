@@ -62,13 +62,18 @@
         </pluginManagement>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>private</id>
+            <url>${mrmUrl}/private</url>
+        </repository>
+        <snapshotRepository>
+            <id>private-snapshot</id>
+            <url>${mrmUrl}/private-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <profiles>
-        <profile>
-            <id>skipTests</id>
-            <properties>
-                <skipTests>true</skipTests>
-            </properties>
-        </profile>
         <profile>
             <id>javadoc</id>
             <build>

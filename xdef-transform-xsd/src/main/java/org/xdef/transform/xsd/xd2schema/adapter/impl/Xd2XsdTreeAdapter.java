@@ -1,5 +1,6 @@
 package org.xdef.transform.xsd.xd2schema.adapter.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaAll;
 import org.apache.ws.commons.schema.XmlSchemaAny;
@@ -38,6 +39,7 @@ import org.xdef.model.XMVariableTable;
 import org.xdef.transform.xsd.model.impl.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.error.XsdTreeAdapterException;
 import org.xdef.transform.xsd.xd2schema.factory.SchemaNodeFactory;
 import org.xdef.transform.xsd.xd2schema.factory.XsdNameFactory;
@@ -650,7 +652,51 @@ public class Xd2XsdTreeAdapter {
 
         // If element contains only data, we dont have to create complexType
         if (xElem._attrs.size() == 0 && xElem._childNodes.length == 1 && xElem._childNodes[0].getKind() == XNode.XMTEXT) {
-            addSimpleTypeToElem(xsdElem, (XData) xElem._childNodes[0]);
+            final XData xDataText = (XData)xElem._childNodes[0];
+            if (!StringUtils.isBlank(xDataText.getRefTypeName())) {
+                final XmlSchemaComplexType complexType = createComplexType(xElem.getAttrs(), xElem._childNodes, xElem, topLevel);
+                if (complexType.getContentModel() != null || complexType.getAttributes().size() > 0 || complexType.getParticle() != null) {
+                    final String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xDataText, false)
+                            .orElseGet(() -> {
+                                final Optional<String> defaultRefTypeNameOpt = XsdNameFactory.createLocalSimpleTypeName(xDataText);
+                                defaultRefTypeNameOpt.ifPresent(s -> adapterCtx.getNameFactory().addTopSimpleTypeName(xDataText, s));
+
+                                return defaultRefTypeNameOpt.orElse("");
+                            });
+
+                    final XmlSchemaSimpleContentExtension schemaContent = xsdFactory.createEmptySimpleContentExtension(
+                            new QName(xsdElem.getParent().getTargetNamespace(), refTypeName)
+                    );
+
+                    complexType.getContentModel().setContent(schemaContent);
+                }
+
+                xsdElem.setType(complexType);
+            } else if (!adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE)) {
+                addSimpleTypeToElem(xsdElem, xDataText);
+            } else {
+                // No simple type in element
+                final XmlSchemaComplexType complexType = createComplexType(xElem.getAttrs(), xElem._childNodes, xElem, topLevel);
+                if (complexType.getContentModel() != null || complexType.getAttributes().size() > 0 || complexType.getParticle() != null) {
+
+                    if (complexType.getContentModel() instanceof XmlSchemaSimpleContent
+                            && complexType.getContentModel().getContent() instanceof XmlSchemaSimpleContentRestriction) {
+
+                        final String simpleTypeRefName = XsdNameUtils.createRefNameFromParser(
+                                xDataText,
+                                adapterCtx)
+                                .orElse(null);
+
+                        final XmlSchemaSimpleContentExtension schemaContent = xsdFactory.createEmptySimpleContentExtension(
+                                new QName(xsdElem.getParent().getTargetNamespace(), simpleTypeRefName)
+                        );
+
+                        complexType.getContentModel().setContent(schemaContent);
+                    }
+                }
+
+                xsdElem.setType(complexType);
+            }
         } else {
             final XmlSchemaComplexType complexType = createComplexType(xElem.getAttrs(), xElem._childNodes, xElem, topLevel);
             if (complexType.getContentModel() != null || complexType.getAttributes().size() > 0 || complexType.getParticle() != null) {

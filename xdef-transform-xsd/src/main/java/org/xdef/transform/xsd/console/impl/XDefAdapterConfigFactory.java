@@ -4,6 +4,7 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.transform.xsd.console.XDefToSchemaOptionsConst;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author smid
@@ -43,7 +45,7 @@ public class XDefAdapterConfigFactory {
         }
 
         if (cmd.hasOption(XDefToSchemaOptionsConst.FEATURES)) {
-            config.setFeatures(parseFeatures(cmd.getOptionValues(XDefToSchemaOptionsConst.FEATURES)));
+            config.setFeatures(parseFeatures(cmd.getOptionValue(XDefToSchemaOptionsConst.FEATURES)));
         }
 
         if (cmd.hasOption(XDefToSchemaOptionsConst.VALIDATE_POSITIVE_CASE)) {
@@ -57,35 +59,40 @@ public class XDefAdapterConfigFactory {
         return config;
     }
 
-    private EnumSet<Xd2XsdFeature> parseFeatures(String[] features) {
-        Set<Xd2XsdFeature> featureSet = new HashSet<>();
+    private EnumSet<Xd2XsdFeature> parseFeatures(String featuresPlain) {
+        LOG.debug("Parsing features ...");
 
-        if (features == null || features.length == 0) {
+        if (featuresPlain == null || StringUtils.isBlank(featuresPlain)) {
             return null;
         }
 
         CommandLineParser featureParser = new DefaultParser();
         CommandLine cmd;
 
-        for (int i = 0; i < features.length; i++) {
-            if (features[i].length() < 3) {
-                features[i] = "-" + features[i];
+        final Set<String> featurePlainSet = Arrays.stream(featuresPlain.split(",|\\s")).map(feature -> {
+            if (feature.length() < 5) {
+                return "-" + feature;
             } else {
-                features[i] = "--" + features[i];
+                return "--" + feature;
             }
-        }
+        }).collect(Collectors.toSet());
 
         try {
-            cmd = featureParser.parse(XDefToSchemaOptions.features(), features, true);
+            cmd = featureParser.parse(XDefToSchemaOptions.features(), featurePlainSet.stream().toArray(String[]::new), true);
         } catch (ParseException ex) {
             throw new RuntimeException("Error occurs while parsing input commands", ex);
         }
+
+        final Set<Xd2XsdFeature> featureSet = new HashSet<>();
 
         if (cmd != null) {
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ANNOTATION)) { featureSet.add(Xd2XsdFeature.XSD_ANNOTATION); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_DECIMAL_ANY_SEPARATOR)) { featureSet.add(Xd2XsdFeature.XSD_DECIMAL_ANY_SEPARATOR); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ALL_UNBOUNDED)) { featureSet.add(Xd2XsdFeature.XSD_ALL_UNBOUNDED); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_NAME_COLLISION_DETECTOR)) { featureSet.add(Xd2XsdFeature.XSD_NAME_COLLISION_DETECTOR); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS)) { featureSet.add(Xd2XsdFeature.XSD_SKIP_DELETE_TOPLEVEL_ELEMENTS); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ALL_ELEMENTS_TOPLEVEL)) { featureSet.add(Xd2XsdFeature.XSD_ALL_ELEMENTS_TOPLEVEL); }
+            if (cmd.hasOption(XDefToSchemaOptionsConst.F_XSD_ELEMENT_NO_SIMPLE_TYPE)) { featureSet.add(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE); }
 
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING_EXTRA_SCHEMAS)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING_EXTRA_SCHEMAS); }
@@ -95,6 +102,8 @@ public class XDefAdapterConfigFactory {
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING_MIXED)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING_MIXED); }
             if (cmd.hasOption(XDefToSchemaOptionsConst.F_POSTPROCESSING_UNIQUE)) { featureSet.add(Xd2XsdFeature.POSTPROCESSING_UNIQUE); }
         }
+
+        LOG.debug("Command line enabled features: {}", featureSet);
 
         if (featureSet.isEmpty()) {
             return null;

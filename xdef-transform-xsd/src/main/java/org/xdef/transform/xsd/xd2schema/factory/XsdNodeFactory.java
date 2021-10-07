@@ -266,10 +266,10 @@ public class XsdNodeFactory {
                     // then use xs:extension instead of xs:restriction
                     extension = items.length == 0
                             || (items.length == 1
-                            && Constants.XSD_STRING.equals(qName.get())
-                            && XSD_FACET_MIN_LENGTH.equals(items[0].getName())
-                            && items[0].getValue().intValue() == 1
-                            && xDataText.isOptional());
+                                && Constants.XSD_STRING.equals(qName.get())
+                                && XSD_FACET_MIN_LENGTH.equals(items[0].getName())
+                                && items[0].getValue().intValue() == 1
+                                && xDataText.isOptional());
                 }
             }
 

@@ -1,9 +1,11 @@
 package test.xd2schema.suite;
 
 import org.junit.jupiter.api.Test;
+import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import test.xd2schema.AbstractXd2SchemaTransformSuite;
 
 import java.util.Collections;
+import java.util.EnumSet;
 
 /**
  * @author smid
@@ -53,6 +55,32 @@ public class XDefBasicXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     public void basic_t007() {
         initTestCaseDirs(SUITE_NAME, "t007");
         transformXd2Schema("t007", Collections.singletonList("t007"), null);
+    }
+
+    @Test
+    public void basic_t007b() {
+        initTestCaseDirs(SUITE_NAME, "t007b");
+        transformXd2Schema(
+                "t007",
+                Collections.singletonList("t007"),
+                null,
+                true,
+                null,
+                false,
+                EnumSet.of(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE));
+    }
+
+    @Test
+    public void basic_t007c() {
+        initTestCaseDirs(SUITE_NAME, "t007c");
+        transformXd2Schema(
+                "t007",
+                Collections.singletonList("t007"),
+                null,
+                true,
+                null,
+                false,
+                EnumSet.of(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE));
     }
 
     @Test
