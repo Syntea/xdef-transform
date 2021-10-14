@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:collection xmlns:xd="http://www.syntea.cz/xdef/3.1">
+
+    <xd:declaration>
+        boolean tab(String p1, String p2) { return true }
+        boolean errorCode() { return true }
+        boolean errorType() { return true }
+        boolean errorXpath() { return true }
+        boolean errorValue() { return true }
+        boolean errorDescription() { return true }
+        boolean operationName() { return true }
+        boolean recordSeq() { return true }
+    </xd:declaration>
+
+</xd:collection>

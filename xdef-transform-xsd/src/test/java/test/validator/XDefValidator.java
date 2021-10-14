@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.xdef.XDConstants;
 import org.xdef.XDDocument;
 import org.xdef.sys.ArrayReporter;
+import org.xdef.sys.SUtils;
 import org.xdef.transform.xsd.util.StringFormatter;
 import org.xdef.util.XValidate;
 import org.xmlunit.builder.DiffBuilder;
@@ -18,7 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -174,9 +177,15 @@ public class XDefValidator {
         final Properties props = new Properties();
         // Do not check deprecated
         props.setProperty(XDConstants.XDPROPERTY_WARNINGS, XDConstants.XDPROPERTYVALUE_WARNINGS_FALSE);
-//        props.setProperty(XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT, XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE);
 
-        File xDefFile = inputResourceUtil.getXDefFile(xDefFileName);
+        final String xDefInputDir = inputResourceUtil.getRootDir().toAbsolutePath().toString();
+
+        final List<String> xDefWildcardNames = new LinkedList<>();
+        xDefWildcardNames.add(xDefInputDir + '/' + "*.xdef");
+        xDefWildcardNames.add(Paths.get("src/test/resources/xd2schema/input/DefaultExternalMockedMethods.xdef").toAbsolutePath().toString());
+
+        // Load X-Definition files
+        File[] xDefFiles = SUtils.getFileGroup(xDefWildcardNames.toArray(new String[xDefWildcardNames.size()]));
 
         // Validate valid XML file against X-Definition
         if (validTestingData != null) {
@@ -187,7 +196,7 @@ public class XDefValidator {
                 XDDocument xdDocument = XValidate.validate(
                         props,
                         xmlDataFile,
-                        new File[]{xDefFile},
+                        xDefFiles,
                         xDefFileName,
                         reporter);
 
@@ -199,15 +208,13 @@ public class XDefValidator {
                         reporter.errors(),
                         StringFormatter.format("Error occurs while validating input X-Definition (positive scenario). " +
                                         "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                                xDefInputDir, xmlDataFile.getAbsolutePath())
                 );
                 assertTrue(
                         xdDocument != null,
                         StringFormatter.format("XML is not valid against input X-Definition (positive scenario). " +
                                         "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                                xDefInputDir, xmlDataFile.getAbsolutePath())
                 );
             }
         }
@@ -218,14 +225,13 @@ public class XDefValidator {
                 File xmlDataFile = inputResourceUtil.getXmlDataFile(testingDataFile);
 
                 ArrayReporter reporter = new ArrayReporter();
-                XValidate.validate(props, xmlDataFile, new File[]{xDefFile}, xDefFileName, reporter);
+                XValidate.validate(props, xmlDataFile, xDefFiles, xDefFileName, reporter);
 
                 assertTrue(
                         reporter.errors(),
                         StringFormatter.format("No error occurs while validating input X-Definition (negative scenario). " +
                                         "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                                xDefInputDir, xmlDataFile.getAbsolutePath())
                 );
             }
         }
