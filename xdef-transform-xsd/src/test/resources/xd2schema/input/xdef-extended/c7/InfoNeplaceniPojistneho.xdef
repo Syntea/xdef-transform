@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:def  xmlns:xd     ="http://www.xdef.org/xdef/4.0"
+         impl-version ="2005/06.1" impl-date="2021-03-31"
+         xd:name      ="InfoNeplaceniPojistneho"
+         xd:root      ="InfoNeplaceniPojistneho" >
+
+    <xd:declaration scope="local">
+        type  cisloDomu             string(1,10);
+        type  cisloTP               pic('AA999999');
+        type  ic                    string(1,12);
+        type  jmeno                 string(1,24);
+        type  kodPojistitele        string(4);
+        type  modelVozidlaC7        string(1,40);
+        type  nazevFirmy            string(1,100);
+        type  obec                  string(1,36);
+        type  okres                 string(1,36);
+        type  prijmeni              string(1,36);
+        type  psc                   string(1,10);
+        type  rc                    string(1,14);
+        type  seqRec                long(1,9_999_999);
+        type  spz                   string(1,12);
+        type  stat                  string() AND tab('CC_Stat','KodStatu');
+        type  ulice                 string(1,36);
+        type  vin                   string(1,26);
+        type  znackaVozidlaC7       string(1,30);
+        type  xsDateC7              xdatetime('yyyyMMdd');
+
+        Element $e;
+    </xd:declaration>
+
+    <InfoNeplaceniPojistneho  xd:script = "create from('/*/*[last()]')"
+          KodPojistitele      ="  kodPojistitele();                      create getTab('CC_Pojistitel','IdPojistitel','KodPojistitele',from('@IdPojistitel'))"
+          PojisteniDo         ="? xsDateC7()"
+          PojisteniOd         ="? xsDateC7()"
+          SeqRec              ="  seqRec();                              create from('/*[1]/AnswerId/@SeqRec')">
+        <VozidloIdent        xd:script="occurs 1;    ref VozidloIdent"     />
+        <Pojistnik           xd:script="occurs 0..1; ref Subjekt;        create from('PojistnikId')"     />
+        <Provozovatel        xd:script="occurs 0..1; ref Subjekt;        create from('ProvozovatelId')"  />
+        <Vlastnik            xd:script="occurs 0..1; ref Subjekt;        create from('VlastnikId')"      />
+    </InfoNeplaceniPojistneho>
+
+
+    <Subjekt
+          xd:script             = "init {
+                                     $e = getSubjekt(toString(from('@IdSubjekt')));
+                                 }"
+          IC                    = "? ic();                               create from($e,'@IC')"
+          DatumNarozeni         = "? xsDateC7();                         create from($e,'@DatumNarozeni')"
+          Jmeno                 = "? jmeno();                            create from($e,'@Jmeno')"
+          NazevFirmy            = "? nazevFirmy();                       create from($e,'@NazevFirmy')"
+          PlatnostOd            = "? xsDateC7()"
+          Prijmeni              = "? prijmeni();                         create from($e,'@Prijmeni')"
+          RC                    = "? rc();                               create from($e,'@RC')"
+          StatPrislusnost       = "? stat();                             create from($e,'@StatPrislusnost')">
+        <Adresa               xd:script = "occurs 0..1;                  create getAdresa(toString(from('@IdAdresa')));"
+                              CisloDomu             = "? cisloDomu()"
+                              Obec                  = "? obec()"
+                              Okres                 = "? okres();                                  onTrue removeIf('NEUVEDENY OKRES')"
+                              StatAdresa            = "? stat();         create from('@KodStatu'); onTrue removeIf('???')"
+                              PSC                   = "? psc()"
+                              Ulice                 = "? ulice()"
+        />
+    </Subjekt>
+
+    <VozidloIdent
+          CisloTP              ="? cisloTP()"
+          ModelVozidla         ="? modelVozidlaC7()"
+          SPZ                  ="? spz()"
+          VIN                  ="? vin()"
+          ZnackaVozidla        ="? znackaVozidlaC7()"
+    />
+</xd:def>

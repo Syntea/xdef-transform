@@ -205,4 +205,11 @@ public class XDefExtendedXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
                 "D3A", Collections.singletonList("D3A"), null);
     }
 
+    @Test
+    public void extended_c7() {
+        initTestCaseDirs(SUITE_NAME, "c7");
+        transformXd2SchemaNoRef(
+                "SouborC7A", Collections.singletonList("data"), null);
+    }
+
 }

@@ -191,7 +191,7 @@ public class XsdSchemaFactory {
             }
         }
 
-        LOG.debug("{}All of the root attributes use same namespace prefix. Attribute default form will be Unqualified",
+        LOG.debug("{}All of the root attributes use same namespace prefix. Attribute default form will be Unqualified.",
                 logHeader(INITIALIZATION, xDef));
         return XmlSchemaForm.UNQUALIFIED;
     }

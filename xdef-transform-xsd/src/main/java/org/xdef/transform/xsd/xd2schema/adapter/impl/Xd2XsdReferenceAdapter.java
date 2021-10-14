@@ -282,7 +282,7 @@ public class Xd2XsdReferenceAdapter {
                         addSchemaImportFromElem(nodeNsUri, refPos);
                     } else if (XsdNamespaceUtils.isRefInDifferentNamespacePrefix(refPos, schema)) {
                         final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
-                        XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
+                        final XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
                         final String refNsPrefix = XsdNamespaceUtils.getReferenceNamespacePrefix(refPos);
                         final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
                         if (!XsdNamespaceUtils.isValidNsUri(nsUri)) {
@@ -334,23 +334,30 @@ public class Xd2XsdReferenceAdapter {
                     }
                 }
 
-                if (!isRef) {
-                    final XMNode[] elemAttrs = xElem.getAttrs();
-                    for (XMNode attr : elemAttrs) {
+                final String parentSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(xElem.getXDPosition());
+
+                final XMNode[] elemAttrs = xElem.getAttrs();
+                for (XMNode attr : elemAttrs) {
+                    if (!isRef && XsdNamespaceUtils.equalsSystemId(parentSystemId, attr)) {
                         processSimpleTypeReference((XData) attr);
                     }
+                }
 
-                    int childrenCount = xElem._childNodes.length;
-                    for (XNode xChild : xElem._childNodes) {
-                        if (xChild.getKind() == XNode.XMTEXT
-                                && (adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE)
-                                    || (childrenCount > 1 || ((XData) xChild).getRefTypeName() != null))) {
-                            processSimpleTypeReference((XData) xChild);
-                        } else {
-                            boolean isParentRef = xElem.isReference()
-                                    || XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xElem, schema);
-                            extractSimpleRefsAndImports(xChild, processed, isParentRef);
-                        }
+                int childrenCount = xElem._childNodes.length;
+                for (XNode xChild : xElem._childNodes) {
+                    if (xChild.getKind() == XNode.XMSELECTOR_END
+                            || !XsdNamespaceUtils.equalsSystemId(parentSystemId, xChild)) {
+                        continue;
+                    }
+
+                    if (xChild.getKind() == XNode.XMTEXT
+                            && (adapterCtx.hasEnableFeature(Xd2XsdFeature.XSD_ELEMENT_NO_SIMPLE_TYPE)
+                            || (childrenCount > 1 || ((XData) xChild).getRefTypeName() != null))) {
+                        processSimpleTypeReference((XData) xChild);
+                    } else {
+                        boolean isParentRef = xElem.isReference()
+                                || XsdNamespaceUtils.isNodeInDifferentNamespacePrefix(xElem, schema);
+                        extractSimpleRefsAndImports(xChild, processed, isParentRef);
                     }
                 }
 
@@ -459,11 +466,13 @@ public class Xd2XsdReferenceAdapter {
         final List<XsdSchemaImportLocation> importLocations = adapterCtx.findSchemaLocations(nsUri);
         if (!importLocations.isEmpty()) {
             for (XsdSchemaImportLocation importLocation : importLocations) {
-                LOG.info("{}Add schema include. schemaName='{}', namespaceURI='{}'",
-                        logHeader(PREPROCESSING), importLocation.getFileName(), nsUri);
-                xsdFactory.createSchemaInclude(
-                        schema,
-                        importLocation.buildLocation(XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos)));
+                if (!importLocation.getXDefName().isPresent() || refSystemId.equals(importLocation.getXDefName().get())) {
+                    LOG.info("{}Add schema include. schemaName='{}', namespaceURI='{}'",
+                            logHeader(PREPROCESSING), importLocation.getFileName(), nsUri);
+                    xsdFactory.createSchemaInclude(
+                            schema,
+                            importLocation.buildLocation(XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos)));
+                }
             }
         } else {
             adapterCtx.getReportWriter().warning(XSD.XSD012, refSystemId);

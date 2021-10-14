@@ -68,7 +68,7 @@ public class DefaultSchemaNamespaceLocationMap extends HashMap<String, SchemaFil
     @Override
     public XsdSchemaImportLocation addSchemaLocation(final String nsPrefix, final String nsUri) {
         final String schemaName = XsdNamespaceUtils.createExtraSchemaNameFromNsPrefix(nsPrefix);
-        return addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, schemaName));
+        return addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, schemaName, null));
     }
 
     @Override

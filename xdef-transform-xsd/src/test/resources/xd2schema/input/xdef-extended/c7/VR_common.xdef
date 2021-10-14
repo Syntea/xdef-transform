@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:def xmlns:xd     ="http://www.xdef.org/xdef/4.0"
+        xmlns        ="http://www.ckp.cz/gam/vr/common/2018/04"
+        impl-version ="2018/04.1" impl-date="2021-06-17"
+        xd:name      ="VR_common" >
+
+ <xd:declaration scope="local">
+    type batchSeq          long(1,99_999);
+    type channelType       string(2,5);
+    type checkSumType      enum('MD5');
+    type checkSumValue     string(32);
+    type errorCode         num(4);
+    type errorDescription  string(1,255);
+    type errorType         enum('D','F','W');
+    type errorValue        string(1,255);
+    type errorXpath        string(1,100);
+    type fileClass         regex('[A-Z]\\d[A-Z]{1,2}');
+    type fileFormat        enum('XML');
+    type fileName          string(21,50);
+    type fileSeq           long(1,999_999);
+    type identZaznamu      string(1,19);
+    type kodPartnera       num(9999);
+    type mode              enum('STD','TST','DEV');
+    type operationForm     enum('TRY','STD','DIR');
+    type operationName     string(1,30);
+    type recordCount       long(0,99_999_999);
+    type recordSeq         long(1,99_999_999);
+    type transID           string(1,128);
+    type userField         string(1,255);
+    type xsDateTime        xdatetime('yyyyMMddHHmmss|yyyy-MM-ddTHH:mm:ss');
+ </xd:declaration>
+
+ <Davka
+         Kanal               ="  channelType()"
+         Mode                ="  mode()"
+         Odesilatel          ="  kodPartnera()"
+         OperationForm       ="? operationForm()"
+         Prijemce            ="  kodPartnera()"
+         SeqDavky            ="  batchSeq()"
+         SeqDavkyRef         ="? batchSeq()"
+         UserField           ="? userField()"
+         Vytvorena           ="  xsDateTime()">
+     <UserAttributes       xd:script="0..1"
+            TransID          ="? transID"
+     />
+     <Soubor               xd:script="1.."
+            DruhSouboru      ="  fileClass()"
+            FormatSouboru    ="  fileFormat()"
+            NazevSouboru     ="  fileName()"
+            PocetZaznamu     ="  recordCount()">
+        <CheckSum
+               Type          ="  checkSumType()"
+               Value         ="  checkSumValue()"
+        />
+     </Soubor>
+ </Davka>
+
+ <Soubor
+         Davka               ="  batchSeq()"
+         ZeDne               ="  xsDateTime()"
+ />
+</xd:def>
