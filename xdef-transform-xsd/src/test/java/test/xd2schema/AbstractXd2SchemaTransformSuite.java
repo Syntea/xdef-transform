@@ -12,6 +12,7 @@ import org.xdef.XDPool;
 import org.xdef.sys.ArrayReporter;
 import org.xdef.sys.ReportWriter;
 import org.xdef.sys.SUtils;
+import org.xdef.transform.xsd.error.FormattedRuntimeException;
 import org.xdef.transform.xsd.xd2schema.adapter.impl.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
@@ -22,9 +23,11 @@ import test.validator.XmlSchemaValidator;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -142,18 +145,33 @@ public abstract class AbstractXd2SchemaTransformSuite {
 
         try {
             final XdPool2XsdAdapter adapter = createXdPoolAdapter(transformFeatures);
-            final String fileGroupRegex = inputResourceUtil.getRootDir().toAbsolutePath().toString() + '/' + "*.xdef";
+
+            final List<String> xDefWildcardNames = new LinkedList<>();
+            xDefWildcardNames.add(inputResourceUtil.getRootDir().toAbsolutePath().toString() + '/' + "*.xdef");
+            xDefWildcardNames.add(Paths.get("src/test/resources/xd2schema/input/DefaultExternalMockedMethods.xdef").toAbsolutePath().toString());
 
             // Load X-Definition files
-            File[] defFiles = SUtils.getFileGroup(fileGroupRegex);
+            File[] defFiles = SUtils.getFileGroup(xDefWildcardNames.toArray(new String[xDefWildcardNames.size()]));
             final Properties props = new Properties();
             // Do not check deprecated
             props.setProperty(XDConstants.XDPROPERTY_WARNINGS, XDConstants.XDPROPERTYVALUE_WARNINGS_FALSE);
-            props.setProperty(XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT, XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE);
 
             final XDBuilder xb = XDFactory.getXDBuilder(reportWriter, props);
             xb.setSource(defFiles);
             final XDPool inputXD = xb.compileXD();
+
+            if (reportWriter.errors()) {
+                try (PrintStream printStream = org.usefultoys.slf4j.LoggerFactory.getErrorPrintStream(LOG)) {
+                    printStream.println("");
+                    reportWriter.getReportReader().printReports(printStream);
+                }
+
+                throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s).");
+            }
+
+            if (inputXD == null) {
+                throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s).");
+            }
 
             // Transform X-Definition -> XML Schema
             LOG.debug("Transforming ...");

@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,7 +53,9 @@ public class DefaultXDefAdapter implements XDefAdapter {
     @Override
     public XDefTransformResult transform() {
         LOG.info("Preparing XDef2XmlSchema transformation ... ");
-        StopWatch watch = StopWatch.createStarted();
+
+        final StopWatch watch = StopWatch.createStarted();
+        final ReportWriter reportWriter = new ArrayReporter();
 
         XDPool inputXD;
 
@@ -61,11 +64,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
             LOG.info("Compiling XDPool from given X-definition. source: {}", Arrays.stream(defFiles).collect(Collectors.toList()));
 
-            final Properties props = new Properties();
-            props.setProperty(XDConstants.XDPROPERTY_IGNORE_UNDEF_EXT, XDConstants.XDPROPERTYVALUE_IGNORE_UNDEF_EXT_TRUE);
-
-            final ReportWriter repWriter = new ArrayReporter();
-            final XDBuilder xb = XDFactory.getXDBuilder(repWriter, props);
+            final XDBuilder xb = XDFactory.getXDBuilder(reportWriter, null);
             xb.setSource(defFiles);
 
             inputXD = xb.compileXD();
@@ -76,6 +75,21 @@ public class DefaultXDefAdapter implements XDefAdapter {
                     watch.getTime());
         } finally {
             watch.stop();
+        }
+
+        if (reportWriter.errors()) {
+            try (PrintStream printStream = org.usefultoys.slf4j.LoggerFactory.getErrorPrintStream(LOG)) {
+                printStream.println("");
+                reportWriter.getReportReader().printReports(printStream);
+            }
+
+            throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s), elapsed {} ms",
+                    watch.getTime());
+        }
+
+        if (inputXD == null) {
+            throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s), elapsed {} ms",
+                    watch.getTime());
         }
 
         return transform(inputXD);
