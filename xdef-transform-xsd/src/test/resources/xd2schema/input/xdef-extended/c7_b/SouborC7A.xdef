@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:def xmlns:xd     ="http://www.xdef.org/xdef/4.0"
+        impl-version ="2005/06.1" impl-date="2005-09-30"
+        xd:name      ="SouborC7A"
+        xd:root      ="SouborC7A" >
+
+ <SouborC7A                   xd:script="ref VR_common#Soubor">
+    <InfoNeplaceniPojistneho  xd:script="0..; ref InfoNeplaceniPojistneho#InfoNeplaceniPojistneho"/>
+ </SouborC7A>
+</xd:def>

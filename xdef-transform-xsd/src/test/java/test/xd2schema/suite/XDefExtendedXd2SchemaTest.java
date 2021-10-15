@@ -206,8 +206,15 @@ public class XDefExtendedXd2SchemaTest extends AbstractXd2SchemaTransformSuite {
     }
 
     @Test
-    public void extended_c7() {
-        initTestCaseDirs(SUITE_NAME, "c7");
+    public void extended_c7_namespaces() {
+        initTestCaseDirs(SUITE_NAME, "c7_namespaces");
+        transformXd2SchemaNoRef(
+                "SouborC7A", Collections.singletonList("data"), null);
+    }
+
+    @Test
+    public void extended_c7_b() {
+        initTestCaseDirs(SUITE_NAME, "c7_b");
         transformXd2SchemaNoRef(
                 "SouborC7A", Collections.singletonList("data"), null);
     }

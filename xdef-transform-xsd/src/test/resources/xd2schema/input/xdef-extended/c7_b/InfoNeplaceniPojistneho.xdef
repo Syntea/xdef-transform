@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xd:def xmlns:xd     ="http://www.xdef.org/xdef/4.0"
+        impl-version ="2005/06.1" impl-date="2021-09-30"
+        xd:name      ="InfoNeplaceniPojistneho"
+        xd:root      ="InfoNeplaceniPojistneho" >
+
+ <xd:declaration scope="local">
+   type  cisloDomu               string(1,10);
+   type  cisloTP                 pic('AA999999');
+   type  ic                      string(1,12);
+   type  jmeno                   string(1,24);
+   type  kodPojistitele          num(4)       AAND tab('CC_Pojistitel','KodPojistitele');
+   type  kodStatu                string(1,3)  AAND tab('CC_Stat','KodStatu');
+   type  modelVozidlaC7          string(1,40);
+   type  nazevFirmy              string(1,100);
+   type  obec                    string(1,36);
+   type  okres                   string(1,36);
+   type  prijmeni                string(1,36);
+   type  psc                     string(1,10);
+   type  rc                      string(1,14);
+   type  seqRec                  long(1,9_999_999);
+   type  spz                     string(1,12);
+   type  ulice                   string(1,36);
+   type  vin                     string(1,26);
+   type  znackaVozidlaC7         string(1,30);
+   type  xsDateC7                xdatetime('yyyyMMdd');
+ </xd:declaration>
+
+ <InfoNeplaceniPojistneho
+         KodPojistitele      ="  kodPojistitele()"
+         PojisteniDo         ="? xsDateC7()"
+         PojisteniOd         ="? xsDateC7()"
+         SeqRec              ="  seqRec()" >
+      <VozidloIdent        xd:script="1;    ref VozidloIdent"     />
+      <Pojistnik           xd:script="0..1; ref Subjekt"          />
+      <Provozovatel        xd:script="0..1; ref Subjekt"          />
+      <Vlastnik            xd:script="0..1; ref Subjekt"          />
+ </InfoNeplaceniPojistneho>
+
+ <Subjekt
+         IC                  ="? ic()"
+         DatumNarozeni       ="? xsDateC7()"
+         Jmeno               ="? jmeno()"
+         NazevFirmy          ="? nazevFirmy()"
+         PlatnostOd          ="? xsDateC7()"
+         Prijmeni            ="? prijmeni()"
+         RC                  ="? rc()"
+         StatPrislusnost     ="? kodStatu()">
+      <Adresa              xd:script="0..1; ref Adresa"           />
+ </Subjekt>
+
+ <Adresa
+         CisloDomu           ="? cisloDomu()"
+         Obec                ="? obec()"
+         Okres               ="? okres()"
+         StatAdresa          ="? kodStatu()"
+         PSC                 ="? psc()"
+         Ulice               ="? ulice()"
+ />
+
+ <VozidloIdent
+         CisloTP             ="? cisloTP()"
+         ModelVozidla        ="? modelVozidlaC7()"
+         SPZ                 ="? spz()"
+         VIN                 ="? vin()"
+         ZnackaVozidla       ="? znackaVozidlaC7()"
+ />
+</xd:def>
