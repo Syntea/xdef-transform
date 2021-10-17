@@ -17,6 +17,7 @@ import org.xdef.impl.XElement;
 import org.xdef.impl.XNode;
 import org.xdef.model.XMElement;
 import org.xdef.model.XMNode;
+import org.xdef.transform.xsd.def.NamespaceConst;
 import org.xdef.transform.xsd.model.impl.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.schema2xd.error.XdAdapterCtxException;
@@ -113,11 +114,12 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Creates following XML Schema nodes from X-Definition nodes:
-     *      simpleType      - attribute, text
-     *      complexType     - element
-     *      group           - mixed
-     *      import          - used namespaces in reference of attributes and elements
-     * @param xDef  input X-Definition
+     * simpleType      - attribute, text
+     * complexType     - element
+     * group           - mixed
+     * import          - used namespaces in reference of attributes and elements
+     *
+     * @param xDef input X-Definition
      */
     public void createRefsAndImports(XDefinition xDef) {
         simpleTypeReferences = new HashSet<>();
@@ -128,8 +130,9 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Creates following XML Schema nodes from X-Definition nodes:
-     *      simpleType      - attribute, text
-     *      import          - used namespaces in reference of attributes and elements
+     * simpleType      - attribute, text
+     * import          - used namespaces in reference of attributes and elements
+     *
      * @param nodes list of X-Definition nodes
      */
     public void extractRefsAndImports(final List<XNode> nodes) {
@@ -162,7 +165,8 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Extracts references and imports from given X-Definition
-     * @param xDef  input X-Definition
+     *
+     * @param xDef input X-Definition
      */
     private void extractRefsAndImports(final XDefinition xDef) {
         LOG.info(HEADER_LINE);
@@ -190,6 +194,7 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Transform top-level X-Definition element node into XML Schema node (element, complex-type, simple-type, group)
+     *
      * @param xElem top-level X-Definition element to be transformed
      */
     private void transformTopLevelElem(final XMElement xElem) {
@@ -206,7 +211,7 @@ public class Xd2XsdReferenceAdapter {
             if (Xd2XsdUtils.containsMixedElement(xElem) && elementType instanceof XmlSchemaComplexType) {
                 // Convert xd:mixed to group
                 final XmlSchemaGroup schemaGroup = xsdFactory.createEmptyGroup(xsdElem.getName());
-                schemaGroup.setParticle((XmlSchemaGroupParticle)((XmlSchemaComplexType)elementType).getParticle());
+                schemaGroup.setParticle((XmlSchemaGroupParticle) ((XmlSchemaComplexType) elementType).getParticle());
                 adapterCtx.updateNode(xElem, schemaGroup);
                 Xd2XsdUtils.removeNode(schema, xsdElem);
                 LOG.info("{}Add definition of group. name='{}'", logHeader(PREPROCESSING, xElem), xsdElem.getName());
@@ -252,9 +257,10 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Extract simple-type references and schema imports from X-Definition tree.
-     * @param xNode         root of X-Definition tree
-     * @param processed     already processed nodes
-     * @param parentRef     flag if parent is node using reference
+     *
+     * @param xNode     root of X-Definition tree
+     * @param processed already processed nodes
+     * @param parentRef flag if parent is node using reference
      */
     private void extractSimpleRefsAndImports(final XMNode xNode, final Set<XMNode> processed, boolean parentRef) {
         if (!processed.add(xNode)) {
@@ -264,14 +270,14 @@ public class Xd2XsdReferenceAdapter {
 
         switch (xNode.getKind()) {
             case XMATTRIBUTE: {
-                processSimpleTypeReference((XData)xNode);
+                processSimpleTypeReference((XData) xNode);
                 break;
             }
             case XNode.XMELEMENT: {
                 LOG.debug("{}Processing XMElement node. nodeName='{}'",
                         logHeader(PREPROCESSING, xNode), xNode.getName());
 
-                final XElement xElem = (XElement)xNode;
+                final XElement xElem = (XElement) xNode;
                 boolean isRef = false;
                 treeAdapter.loadElementUniqueSets(xElem);
 
@@ -293,7 +299,16 @@ public class Xd2XsdReferenceAdapter {
                             addSchemaImportFromElem(nsUri, refPos);
                         }
                     } else if (XsdNamespaceUtils.isRefInDifferentSystem(refPos, xElem.getXDPosition())) {
-                        addSchemaInclude(refPos);
+                        final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
+                        final XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
+                        final String targetNamespaceUri = refSchema.getTargetNamespace();
+                        final String schemaNamespacePrefix = refSchema.getSchemaNamespacePrefix();
+                        if (NamespaceConst.NAMESPACE_PREFIX_EMPTY.equals(schemaNamespacePrefix) &&
+                                !targetNamespaceUri.equals(nodeNsUri)) {
+                            addSchemaImportFromElem(targetNamespaceUri, refPos);
+                        } else {
+                            addSchemaInclude(refPos);
+                        }
                     } // else {} // Reference in same X-Definition and same namespace
 
                     isRef = true;
@@ -367,7 +382,7 @@ public class Xd2XsdReferenceAdapter {
                 LOG.debug("{}Processing X-Definition node. nodeName='{}'",
                         logHeader(PREPROCESSING, xNode), xNode.getName());
 
-                final XDefinition def = (XDefinition)xNode;
+                final XDefinition def = (XDefinition) xNode;
                 final XMElement[] xmElements = def.getModels();
                 for (XMElement elem : xmElements) {
                     extractSimpleRefsAndImports(elem, processed, false);
@@ -414,10 +429,10 @@ public class Xd2XsdReferenceAdapter {
 
             String refTypeName = adapterCtx.getNameFactory().findTopLevelName(xData, false)
                     .orElseGet(() ->
-                        OptionalExt.of(XsdNameFactory.createLocalSimpleTypeName(xData))
-                                .ifPresent(defaultRefTypeNameOpt ->
-                                        adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt))
-                                .orElseGet(() -> null)
+                            OptionalExt.of(XsdNameFactory.createLocalSimpleTypeName(xData))
+                                    .ifPresent(defaultRefTypeNameOpt ->
+                                            adapterCtx.getNameFactory().addTopSimpleTypeName(xData, defaultRefTypeNameOpt))
+                                    .orElseGet(() -> null)
                     );
 
             if (refTypeName != null && simpleTypeReferences.add(refTypeName)) {
@@ -451,7 +466,8 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Add XML Schema document include.
-     * @param refPos    reference position of X-Definition node
+     *
+     * @param refPos reference position of X-Definition node
      */
     private void addSchemaInclude(final String refPos) {
         final String refSystemId = XsdNamespaceUtils.getSystemIdFromXPosRequired(refPos);
@@ -482,8 +498,9 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Add XML Schema document import based on X-Definition element node.
-     * @param nsUri     X-Definition node namespace URI
-     * @param refPos    X-Definition reference position
+     *
+     * @param nsUri  X-Definition node namespace URI
+     * @param refPos X-Definition reference position
      */
     private void addSchemaImportFromElem(final String nsUri, final String refPos) {
         if (nsUri == null || !namespaceImports.add(nsUri)) {
@@ -509,8 +526,9 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Add XML Schema document import based on attribute/text X-Definition node
-     * @param nsPrefix  X-Definition node namespace prefix
-     * @param nsUri     X-Definition node namespace URI
+     *
+     * @param nsPrefix X-Definition node namespace prefix
+     * @param nsUri    X-Definition node namespace URI
      */
     private void addSchemaImportFromSimpleType(final String nsPrefix, final String nsUri) {
         if (nsUri == null || !namespaceImports.add(nsUri)) {
@@ -546,8 +564,9 @@ public class Xd2XsdReferenceAdapter {
 
     /**
      * Add XML Schema document import of post processed schema
-     * @param nsPrefix  schema namespace prefix
-     * @param nsUri     schema namespace URI
+     *
+     * @param nsPrefix schema namespace prefix
+     * @param nsUri    schema namespace URI
      */
     private void addPostProcessingSchemaImport(final String nsPrefix, final String nsUri, boolean addNamespace) {
         if (nsUri == null || (addNamespace && !namespaceImports.add(nsUri))) {
