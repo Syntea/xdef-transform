@@ -36,6 +36,7 @@ import org.xdef.model.XMData;
 import org.xdef.model.XMNode;
 import org.xdef.model.XMVariable;
 import org.xdef.model.XMVariableTable;
+import org.xdef.transform.xsd.def.NamespaceConst;
 import org.xdef.transform.xsd.model.impl.OptionalExt;
 import org.xdef.transform.xsd.msg.XSD;
 import org.xdef.transform.xsd.util.StringFormatter;
@@ -136,7 +137,8 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Gather names of all X-Definition root element nodes
-     * @param xDef  input X-Definition
+     *
+     * @param xDef input X-Definition
      */
     public void loadXDefRootNames(final XDefinition xDef) {
         LOG.info("{}Loading root of X-Definition", logHeader(PREPROCESSING, xDef));
@@ -152,7 +154,8 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Gather data of all global and local uniqueSets used by X-Definition
-     * @param xDef  input X-Definition
+     *
+     * @param xDef input X-Definition
      */
     public void loadXDefRootUniqueSets(final XDefinition xDef) {
         loadUniqueSets(xDef, xDef.getXDPool().getVariableTable(), "");
@@ -160,6 +163,7 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Gather data of uniqueSets used by X-Definition element node
+     *
      * @param xElem input X-Definition element node
      */
     public void loadElementUniqueSets(final XElement xElem) {
@@ -168,9 +172,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Gather data of uniqueSets from variable table
-     * @param xNode             container of variable table
-     * @param varTable          input variable table
-     * @param varTablePath      path of variable table
+     *
+     * @param xNode        container of variable table
+     * @param varTable     input variable table
+     * @param varTablePath path of variable table
      */
     private void loadUniqueSets(final XNode xNode, final XMVariableTable varTable, final String varTablePath) {
         if (varTable != null && varTable.size() > 0) {
@@ -190,7 +195,8 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Transforms X-Definition node tree into XML Schema node tree.
-     * @param xNode     root of X-Definition tree
+     *
+     * @param xNode root of X-Definition tree
      * @return root of XML Schema node tree, may return null
      */
     public Optional<XmlSchemaObject> convertTree(XMNode xNode) {
@@ -200,8 +206,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Transforms X-Definition node tree into XML Schema node tree.
-     * @param xNode     root of X-Definition tree
-     * @param topLevel  flag if X-Definition node is placed on top level
+     *
+     * @param xNode    root of X-Definition tree
+     * @param topLevel flag if X-Definition node is placed on top level
      * @return root of XML Schema node tree, may return null
      */
     private Optional<XmlSchemaObject> convertTreeInt(final XMNode xNode, boolean topLevel) {
@@ -217,7 +224,7 @@ public class Xd2XsdTreeAdapter {
             }
             case XNode.XMTEXT: {
                 LOG.info("{}Creating simple (text) content ...", logHeader(TRANSFORMATION, xNode));
-                return (Optional)xsdFactory.createTextBasedSimpleContent((XData)xNode, topLevel);
+                return (Optional) xsdFactory.createTextBasedSimpleContent((XData) xNode, topLevel);
             }
             case XNode.XMELEMENT: {
                 return Optional.of(createElement((XElement) xNode, topLevel));
@@ -247,8 +254,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema attribute node based on X-Definition attribute node
-     * @param xData     X-Definition source (attribute node)
-     * @param topLevel  flag if source node is placed on top level
+     *
+     * @param xData    X-Definition source (attribute node)
+     * @param topLevel flag if source node is placed on top level
      * @return XML Schema attribute node
      */
     private XmlSchemaAttribute createAttribute(final XData xData, boolean topLevel) {
@@ -351,12 +359,12 @@ public class Xd2XsdTreeAdapter {
                     qName = Xd2XsdParserMapping.findDefaultParserQName(parserName, adapterCtx)
                             .orElseThrow(() -> new XsdTreeAdapterException("No parser has found for unique constraint. " +
                                     "parserName='{}'", parserName)
-                    );
+                            );
                     attr.setSchemaTypeName(qName);
                 } else {
                     final XmlSchemaSimpleType simpleType = xsdFactory.createAttributeSimpleType(xData, attr.getName());
                     if (simpleType.getContent() instanceof XmlSchemaSimpleTypeRestriction) {
-                        postProcessor.simpleTypeRestrictionToAttr((XmlSchemaSimpleTypeRestriction)simpleType.getContent(), attr);
+                        postProcessor.simpleTypeRestrictionToAttr((XmlSchemaSimpleTypeRestriction) simpleType.getContent(), attr);
                     }
                     if (attr.getSchemaTypeName() == null) {
                         attr.setSchemaType(simpleType);
@@ -380,8 +388,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema element node based on X-Definition element node
-     * @param xElem     X-Definition source (element node)
-     * @param topLevel  flag if source node is placed on top level
+     *
+     * @param xElem    X-Definition source (element node)
+     * @param topLevel flag if source node is placed on top level
      * @return XML Schema element node
      */
     private XmlSchemaObject createElement(final XElement xElem, boolean topLevel) {
@@ -435,9 +444,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema element node using reference
-     * @param xElem     X-Definition source (element node)
-     * @param refQName  reference QName
-     * @param xsdElem   XML Schema element node which will be filled (output)
+     *
+     * @param xElem    X-Definition source (element node)
+     * @param refQName reference QName
+     * @param xsdElem  XML Schema element node which will be filled (output)
      */
     private void createElementReference(final XElement xElem, final QName refQName, final XmlSchemaElement xsdElem) {
         LOG.info("{}Creating element reference ...", logHeader(TRANSFORMATION, xElem));
@@ -477,10 +487,11 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema element node using reference, where source X-Definition node is extending the reference
-     * @param xElem     X-Definition source (element node)
-     * @param refQName  reference QName
-     * @param topLevel  flag if source node is placed on top level
-     * @param xsdElem   XML Schema element node which will be filled (output)
+     *
+     * @param xElem    X-Definition source (element node)
+     * @param refQName reference QName
+     * @param topLevel flag if source node is placed on top level
+     * @param xsdElem  XML Schema element node which will be filled (output)
      */
     private void createElementExtendedReference(final XElement xElem,
                                                 final QName refQName,
@@ -504,7 +515,7 @@ public class Xd2XsdTreeAdapter {
                 adapterCtx.getReportWriter().error(XSD.XSD003);
                 LOG.error("{}Reference to node type element is expected!", logHeader(TRANSFORMATION, xElem));
             } else {
-                final XElement xRefElem = (XElement)xRefNode;
+                final XElement xRefElem = (XElement) xRefNode;
                 final List<XMData> extAttrs = new ArrayList<>();
                 final List<XNode> extNodes = new ArrayList<>();
 
@@ -590,8 +601,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema element where source X-Definition node is using different namespace
-     * @param xElem     X-Definition source (element node)
-     * @param xsdElem   XML Schema element node which will be filled (output)
+     *
+     * @param xElem   X-Definition source (element node)
+     * @param xsdElem XML Schema element node which will be filled (output)
      */
     private void createElementInDiffNamespace(final XElement xElem, final XmlSchemaElement xsdElem) {
         LOG.info("{}Creating element in different namespace ...", logHeader(TRANSFORMATION, xElem));
@@ -642,9 +654,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates content of standard XML Schema element node
-     * @param xElem     X-Definition source (element node)
-     * @param topLevel  flag if source node is placed on top level
-     * @param xsdElem   XML Schema element node which will be filled (output)
+     *
+     * @param xElem    X-Definition source (element node)
+     * @param topLevel flag if source node is placed on top level
+     * @param xsdElem  XML Schema element node which will be filled (output)
      */
     private void fillXsdElement(final XElement xElem, boolean topLevel, final XmlSchemaElement xsdElem) {
         xsdElem.setName(XsdNameUtils.getName(xElem));
@@ -652,7 +665,7 @@ public class Xd2XsdTreeAdapter {
 
         // If element contains only data, we dont have to create complexType
         if (xElem._attrs.size() == 0 && xElem._childNodes.length == 1 && xElem._childNodes[0].getKind() == XNode.XMTEXT) {
-            final XData xDataText = (XData)xElem._childNodes[0];
+            final XData xDataText = (XData) xElem._childNodes[0];
             if (!StringUtils.isBlank(xDataText.getRefTypeName())) {
                 final XmlSchemaComplexType complexType = createComplexType(xElem.getAttrs(), xElem._childNodes, xElem, topLevel);
                 if (complexType.getContentModel() != null || complexType.getAttributes().size() > 0 || complexType.getParticle() != null) {
@@ -683,8 +696,8 @@ public class Xd2XsdTreeAdapter {
                             && complexType.getContentModel().getContent() instanceof XmlSchemaSimpleContentRestriction) {
 
                         final String simpleTypeRefName = XsdNameUtils.createRefNameFromParser(
-                                xDataText,
-                                adapterCtx)
+                                        xDataText,
+                                        adapterCtx)
                                 .orElse(null);
 
                         final XmlSchemaSimpleContentExtension schemaContent = xsdFactory.createEmptySimpleContentExtension(
@@ -725,6 +738,7 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Determines reference QName based on X-Definition element node
+     *
      * @param xElem X-Definition source (element node)
      * @return reference QName
      */
@@ -759,7 +773,17 @@ public class Xd2XsdTreeAdapter {
             final String nsUri = refSchema.getNamespaceContext().getNamespaceURI(refNsPrefix);
             return new QName(nsUri, refLocalName);
         } else if (XsdNamespaceUtils.isRefInDifferentSystem(refXPos, xPos)) {
-            return new QName(NAMESPACE_PREFIX_EMPTY, refLocalName);
+            final XmlSchema refSchema = adapterCtx.findSchemaReq(refSystemId, PREPROCESSING);
+            final String targetNamespaceUri = refSchema.getTargetNamespace();
+            final String nodeNsUri = xElem.getNSUri();
+
+            if (NamespaceConst.NAMESPACE_PREFIX_EMPTY.equals(refNsPrefix)
+                    && ((targetNamespaceUri != null && !targetNamespaceUri.equals(nodeNsUri))
+                    || (nodeNsUri != null && !nodeNsUri.equals(targetNamespaceUri)))) {
+                return new QName(targetNamespaceUri, refLocalName);
+            } else {
+                return new QName(NAMESPACE_PREFIX_EMPTY, refLocalName);
+            }
         } else if (Xd2XsdUtils.isAnyElement(xElem)) {
             String anyLocalName = refLocalName;
             final int anyPos = anyLocalName.indexOf("$any/$any");
@@ -780,8 +804,9 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates simple type from X-Definition text node and fill XML Schema element node by created simple type
-     * @param xsdElem       XML Schema element node
-     * @param xDataText     X-Definition text node
+     *
+     * @param xsdElem   XML Schema element node
+     * @param xDataText X-Definition text node
      */
     private void addSimpleTypeToElem(final XmlSchemaElement xsdElem, final XData xDataText) {
         LOG.info("{}Creating simple type of element. elementName='{}'",
@@ -801,10 +826,11 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates XML Schema complex type node based on input parameters
-     * @param xAttrs            X-Definition attribute nodes
-     * @param xChildrenNodes    X-Definition children nodes
-     * @param xElem             X-Definition element node
-     * @param topLevel          flag if source node is placed on top level
+     *
+     * @param xAttrs         X-Definition attribute nodes
+     * @param xChildrenNodes X-Definition children nodes
+     * @param xElem          X-Definition element node
+     * @param topLevel       flag if source node is placed on top level
      * @return XML Schema complex type node
      */
     private XmlSchemaComplexType createComplexType(final XMData[] xAttrs, final XNode[] xChildrenNodes, final XElement xElem, boolean topLevel) {
@@ -874,8 +900,8 @@ public class Xd2XsdTreeAdapter {
 
                         contentForAttrs = splitted;
                         // TODO: create ref by SchemaNodeFactory?
-                    } else if (simpleContent.getContent() instanceof XmlSchemaSimpleContentExtension){
-                        contentForAttrs = (XmlSchemaSimpleContentExtension)simpleContent.getContent();
+                    } else if (simpleContent.getContent() instanceof XmlSchemaSimpleContentExtension) {
+                        contentForAttrs = (XmlSchemaSimpleContentExtension) simpleContent.getContent();
                     }
 
                     complexType.setContentModel(simpleContent);
@@ -899,7 +925,7 @@ public class Xd2XsdTreeAdapter {
                     if (!particleStack.empty()) {
                         currParticle.set(particleStack.pop());
                         if (currParticle.get() != null && currParticle.get() instanceof XmlSchemaChoiceWrapper) {
-                            final XmlSchemaChoiceWrapper currParticleChoice = (XmlSchemaChoiceWrapper)currParticle.get();
+                            final XmlSchemaChoiceWrapper currParticleChoice = (XmlSchemaChoiceWrapper) currParticle.get();
                             if (currParticleChoice.hasTransformDirection()) {
                                 currParticleChoice.updateOccurrence(adapterCtx);
                             }
@@ -917,9 +943,9 @@ public class Xd2XsdTreeAdapter {
 
                 if (childrenKind == XNode.XMELEMENT
                         && topLevel
-                        && !((XElement)xnChild).isReference()
-                        && Xd2XsdUtils.isAnyElement((XElement)xnChild)) {
-                    XElement xElemChild = ((XElement)xnChild);
+                        && !((XElement) xnChild).isReference()
+                        && Xd2XsdUtils.isAnyElement((XElement) xnChild)) {
+                    XElement xElemChild = ((XElement) xnChild);
                     if (!xElemChild._attrs.isEmpty()) {
                         for (XMData attr : xElemChild.getAttrs()) {
                             complexType.getAttributes().add(
@@ -952,10 +978,10 @@ public class Xd2XsdTreeAdapter {
 
             Arrays.stream(xAttrs).forEach(xdefAttr -> OptionalExt.of(convertTreeInt(xdefAttr, false))
                     .ifPresent(xmlSchemaObject ->
-                            complexType.getAttributes().add((XmlSchemaAttributeOrGroupRef)xmlSchemaObject)
+                            complexType.getAttributes().add((XmlSchemaAttributeOrGroupRef) xmlSchemaObject)
                     ).orElse(() ->
-                    LOG.debug("{}X-definition attribute not transformed. attrXDefPos='{}'.",
-                            logHeader(TRANSFORMATION, xElem), xdefAttr.getXDPosition())));
+                            LOG.debug("{}X-definition attribute not transformed. attrXDefPos='{}'.",
+                                    logHeader(TRANSFORMATION, xElem), xdefAttr.getXDPosition())));
         }
 
         return complexType;
@@ -963,13 +989,14 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates xs:group reference based on X-Definition mixed node with reference
-     * @param xChildrenNodes        X-Definition children nodes
-     * @param currGroup             current XML Schema particle group node
-     * @param groups                XML Schema particle group node stack
-     * @param defEl                 source X-Definition element
-     * @return  null if node is not using reference
-     *          instance of XmlSchemaGroupRef if node is only child of element {@code defEl}
-     *          instance of XmlSchemaParticle if node is not only child of element {@code defEl}
+     *
+     * @param xChildrenNodes X-Definition children nodes
+     * @param currGroup      current XML Schema particle group node
+     * @param groups         XML Schema particle group node stack
+     * @param defEl          source X-Definition element
+     * @return null if node is not using reference
+     * instance of XmlSchemaGroupRef if node is only child of element {@code defEl}
+     * instance of XmlSchemaParticle if node is not only child of element {@code defEl}
      */
     private XmlSchemaParticle createGroupReference(final XNode[] xChildrenNodes,
                                                    @Nullable XmlSchemaParticle currGroup,
@@ -1006,7 +1033,7 @@ public class Xd2XsdTreeAdapter {
 
                 if (group.getParticle() instanceof XmlSchemaAll) {
                     final XmlSchemaChoiceWrapper newGroupChoice = new XmlSchemaChoiceWrapper(
-                            postProcessor.groupParticleAllToChoice((XmlSchemaAll)group.getParticle(),
+                            postProcessor.groupParticleAllToChoice((XmlSchemaAll) group.getParticle(),
                                     false)
                     );
 
@@ -1027,9 +1054,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Transforms group particles to be valid by XML Schema rules
-     * @param particleStack     group particles stack
-     * @param prev              previous particle
-     * @param newGroupParticle  currently created new group particle
+     *
+     * @param particleStack    group particles stack
+     * @param prev             previous particle
+     * @param newGroupParticle currently created new group particle
      * @return number of particles which has been popped-out from group particle stack
      */
     private int updateGroupParticles(final Stack<XmlSchemaParticle> particleStack,
@@ -1089,9 +1117,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Replaces the newest particle in particles stack by {@code newGroupParticle}
-     * @param particleStack         particle stack
-     * @param newGroupParticle      new group particle which will be inserted into stack
-     * @return  previous particle
+     *
+     * @param particleStack    particle stack
+     * @param newGroupParticle new group particle which will be inserted into stack
+     * @return previous particle
      */
     private static XmlSchemaParticle replaceLastGroupParticle(final Stack<XmlSchemaParticle> particleStack,
                                                               final AbstractXmlSchemaGroupParticleWrapper newGroupParticle) {
@@ -1110,11 +1139,12 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Creates default particle if no group particle is created yet
-     * @param currParticle      current particle
-     * @param particleStack     particle stack
-     * @param xElem             parent X-Definition element node
-     * @return  if currParticle == null, then newly created instance of CXmlSchemaSequence
-     *          else currParticle
+     *
+     * @param currParticle  current particle
+     * @param particleStack particle stack
+     * @param xElem         parent X-Definition element node
+     * @return if currParticle == null, then newly created instance of CXmlSchemaSequence
+     * else currParticle
      */
     private XmlSchemaParticle createDefaultParticleGroup(@Nullable XmlSchemaParticle currParticle,
                                                          final Stack<XmlSchemaParticle> particleStack,
@@ -1131,9 +1161,10 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Push new group particle into particle stack and set the group particle as child of current particle
-     * @param particleStack     particle stack
-     * @param currParticle      current particle
-     * @param newGroupParticle  new group particle
+     *
+     * @param particleStack    particle stack
+     * @param currParticle     current particle
+     * @param newGroupParticle new group particle
      */
     private static void pushGroupParticleToStack(final Stack<XmlSchemaParticle> particleStack,
                                                  final XmlSchemaParticle currParticle,
@@ -1144,16 +1175,17 @@ public class Xd2XsdTreeAdapter {
 
     /**
      * Insert XML Schema node into current particle
-     * @param currParticle  current particle
-     * @param xsdNode       XML Schema node
+     *
+     * @param currParticle current particle
+     * @param xsdNode      XML Schema node
      */
     private static void addNodeToParticleGroup(final XmlSchemaParticle currParticle, XmlSchemaObject xsdNode) {
         if (xsdNode instanceof AbstractXmlSchemaGroupParticleWrapper) {
-            xsdNode = ((AbstractXmlSchemaGroupParticleWrapper)xsdNode).xsd();
+            xsdNode = ((AbstractXmlSchemaGroupParticleWrapper) xsdNode).xsd();
         }
 
         if (currParticle instanceof AbstractXmlSchemaGroupParticleWrapper) {
-            ((AbstractXmlSchemaGroupParticleWrapper)currParticle).addItem(xsdNode);
+            ((AbstractXmlSchemaGroupParticleWrapper) currParticle).addItem(xsdNode);
         }
     }
 

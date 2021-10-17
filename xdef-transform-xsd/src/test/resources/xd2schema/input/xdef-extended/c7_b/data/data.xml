@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<SouborC7A Davka="258" ZeDne="20100825000000">
+  <InfoNeplaceniPojistneho SeqRec="676" KodPojistitele="0010" PojisteniOd="20031101" PojisteniDo="20040201" >
+    <VozidloIdent CisloTP="AX765432" VIN="WRDN29RRJHD987067" SPZ="AD 99-88" ZnackaVozidla="BMW" ModelVozidla="318"/>
+    <Pojistnik Jmeno="PAVEL" Prijmeni="NOVAK" RC="6612060194">
+      <Adresa Ulice="DLOUHA" CisloDomu="3/543" Obec="PRAHA 1" Okres="PRAHA 1" PSC="110 00" StatAdresa="CZ"/>
+    </Pojistnik>
+    <Provozovatel Jmeno="PAVEL" Prijmeni="NOVAK" RC="6612060194">
+      <Adresa Ulice="DLOUHA" CisloDomu="3/543" Obec="PRAHA 1" Okres="PRAHA 1" PSC="110 00" StatAdresa="CZ"/>
+    </Provozovatel>
+    <Vlastnik Jmeno="PAVEL" Prijmeni="NOVAK" RC="6612060194">
+      <Adresa Ulice="DLOUHA" CisloDomu="3/543" Obec="PRAHA 1" Okres="PRAHA 1" PSC="110 00" StatAdresa="CZ"/>
+    </Vlastnik>
+  </InfoNeplaceniPojistneho>
+</SouborC7A>

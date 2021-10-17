@@ -144,6 +144,42 @@ public class XsdNamespaceUtils {
     }
 
     /**
+     * Compares X-Definition name (XML Schema system identifier) for given X-Definition nodes
+     * @param nodeA
+     * @param nodeB
+     * @return  true if X-Definition name equals
+     *          otherwise false
+     * @throws XsdNamespaceException if X-Definition node pos does not contain name of X-Definition
+     */
+    public static boolean equalsSystemId(final XMNode nodeA, final XMNode nodeB) throws XsdNamespaceException {
+        final String nodeASystemId = getSystemIdFromXPos(nodeA.getXDPosition()).orElseThrow(() ->
+                new XsdNamespaceException("Given x-Definition position does not contain X-Definition name. xPos='{}'",
+                        nodeA));
+
+        final String nodeBSystemId = getSystemIdFromXPos(nodeB.getXDPosition()).orElseThrow(() ->
+                new XsdNamespaceException("Given x-Definition position does not contain X-Definition name. xPos='{}'",
+                        nodeB));
+
+        return nodeASystemId.equals(nodeBSystemId);
+    }
+
+    /**
+     * Compares X-Definition name (XML Schema system identifier) for given X-Definition position and X-Definition node
+     * @param nodeAXDefPos  X-Definition position
+     * @param nodeB         X-Definition node
+     * @return  true if X-Definition name equals
+     *          otherwise false
+     * @throws XsdNamespaceException if X-Definition node pos does not contain name of X-Definition
+     */
+    public static boolean equalsSystemId(final String nodeAXDefPos, final XMNode nodeB) throws XsdNamespaceException {
+        final String nodeBSystemId = getSystemIdFromXPos(nodeB.getXDPosition()).orElseThrow(() ->
+                new XsdNamespaceException("Given x-Definition position does not contain X-Definition name. xPos='{}'",
+                        nodeB));
+
+        return nodeAXDefPos.equals(nodeBSystemId);
+    }
+
+    /**
      * Parse namespace prefix from given X-Definition node name
      * @param name  X-Definition node name
      * @return  namespace prefix if it is part of name

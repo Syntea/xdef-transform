@@ -139,12 +139,12 @@ public class XdPool2XsdAdapter extends AbstractXd2XsdAdapter implements XdPool2S
         for (Map.Entry<String, Pair<String, String>> entry : xDefTargetNs.entrySet()) {
             final String nsUri = entry.getValue().getValue();
             final String xDefName = entry.getKey();
-            adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName));
+            adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName, xDefName));
         }
 
         for (String xDefName : xDefsWithoutNs) {
             final String nsUri = NAMESPACE_URI_EMPTY;
-            adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName));
+            adapterCtx.addSchemaLocation(nsUri, new XsdSchemaImportLocation(nsUri, xDefName, xDefName));
             LOG.debug("{}Creating namespace URI from X-Definition name. xDefName='{}', nsUri='{}'",
                     logHeader(PREPROCESSING, XSD_XDPOOL_ADAPTER), xDefName, nsUri);
         }
