@@ -1,5 +1,23 @@
 package org.xdef.transform.xsd.console.impl;
 
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.xml.transform.stream.StreamSource;
+
 import org.apache.commons.lang3.time.StopWatch;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.ws.commons.schema.XmlSchema;
@@ -7,7 +25,6 @@ import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xdef.XDBuilder;
-import org.xdef.XDConstants;
 import org.xdef.XDFactory;
 import org.xdef.XDPool;
 import org.xdef.sys.ArrayReporter;
@@ -20,25 +37,6 @@ import org.xdef.transform.xsd.util.XmlValidator;
 import org.xdef.transform.xsd.xd2schema.adapter.impl.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
-
-import javax.xml.transform.stream.StreamSource;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
 
 public class DefaultXDefAdapter implements XDefAdapter {
 
@@ -78,10 +76,7 @@ public class DefaultXDefAdapter implements XDefAdapter {
         }
 
         if (reportWriter.errors()) {
-            try (PrintStream printStream = org.usefultoys.slf4j.LoggerFactory.getErrorPrintStream(LOG)) {
-                printStream.println("");
-                reportWriter.getReportReader().printReports(printStream);
-            }
+            LOG.error(reportWriter.getReportReader().printToString());
 
             throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s), elapsed {} ms",
                     watch.getTime());

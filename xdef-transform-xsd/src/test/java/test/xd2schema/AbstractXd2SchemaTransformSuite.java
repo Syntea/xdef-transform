@@ -1,5 +1,21 @@
 package test.xd2schema;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.annotation.Nullable;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,26 +32,11 @@ import org.xdef.transform.xsd.error.FormattedRuntimeException;
 import org.xdef.transform.xsd.xd2schema.adapter.impl.XdPool2XsdAdapter;
 import org.xdef.transform.xsd.xd2schema.def.Xd2XsdFeature;
 import org.xdef.transform.xsd.xd2schema.util.Xd2XsdUtils;
+
 import test.resource.TransformInputResourceUtil;
 import test.resource.TransformOutputResourceUtil;
 import test.validator.XDefValidator;
 import test.validator.XmlSchemaValidator;
-
-import javax.annotation.Nullable;
-import java.io.File;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.Set;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-import static org.xdef.transform.xsd.util.LoggingUtil.HEADER_LINE;
 
 /**
  * @author smid
@@ -161,10 +162,7 @@ public abstract class AbstractXd2SchemaTransformSuite {
             final XDPool inputXD = xb.compileXD();
 
             if (reportWriter.errors()) {
-                try (PrintStream printStream = org.usefultoys.slf4j.LoggerFactory.getErrorPrintStream(LOG)) {
-                    printStream.println("");
-                    reportWriter.getReportReader().printReports(printStream);
-                }
+                LOG.error(reportWriter.getReportReader().printToString());
 
                 throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s).");
             }
