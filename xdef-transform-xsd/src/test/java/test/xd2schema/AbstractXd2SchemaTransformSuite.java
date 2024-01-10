@@ -8,11 +8,13 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
@@ -162,9 +164,10 @@ public abstract class AbstractXd2SchemaTransformSuite {
             final XDPool inputXD = xb.compileXD();
 
             if (reportWriter.errors()) {
-                LOG.error(reportWriter.getReportReader().printToString());
-
-                throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s).");
+                throw new FormattedRuntimeException(
+                    "Error occurs while compile input X-Definition(s), source: {}, reporter:\n{}",
+                    Arrays.stream(defFiles).collect(Collectors.toList()), reportWriter.getReportReader().printToString()
+                );
             }
 
             if (inputXD == null) {

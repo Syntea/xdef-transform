@@ -49,16 +49,20 @@ public class XDefValidator {
         this.outputResourceUtil = outputResourceUtil;
     }
 
-    public void validateXmlAgainstOutputXDef(final String xDefFileName,
-                                              @Nullable final List<String> validTestingData,
-                                              @Nullable final List<String> invalidTestingData,
-                                              boolean validateRef) {
-        LOG.debug("Validating XML data against output X-Definition. " +
-                        "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}, validateRef={}",
-                xDefFileName,
-                Optional.ofNullable(validTestingData).map(List::size).orElse(0),
-                Optional.ofNullable(invalidTestingData).map(List::size).orElse(0),
-                validateRef);
+    public void validateXmlAgainstOutputXDef(
+        final String xDefFileName,
+        @Nullable final List<String> validTestingData,
+        @Nullable final List<String> invalidTestingData,
+        boolean validateRef)
+    {
+        LOG.debug(
+            "Validating XML data against output X-Definition. " +
+            "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}, validateRef={}",
+            xDefFileName,
+            Optional.ofNullable(validTestingData).map(List::size).orElse(0),
+            Optional.ofNullable(invalidTestingData).map(List::size).orElse(0),
+            validateRef
+        );
 
         // Validate valid XML file against X-Definition
         File xDefFile = outputResourceUtil.getXDefFile(xDefFileName);
@@ -68,59 +72,63 @@ public class XDefValidator {
             for (String testingFile : validTestingData) {
                 File xmlDataFile = inputResourceUtil.getXmlDataFile(testingFile);
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
-                    ArrayReporter reporter = new ArrayReporter();
-                    XDDocument xdDocument = XValidate.validate(
-                            null,
-                            xmlDataFile,
-                            new File[]{refXDefFile},
-                            xDefFileName,
-                            reporter);
-
-                    if (reporter.errors()) {
-                        LOG.error(reporter.printToString());
-                    }
-
-                    assertFalse(
-                            reporter.errors(),
-                            StringFormatter.format("Error occurs while validating reference X-Definition (positive scenario). " +
-                                            "xDefFile='{}', testingFile='{}'",
-                                    refXDefFile.getAbsolutePath(),
-                                    xmlDataFile.getAbsolutePath())
-                    );
-                    assertTrue(
-                            xdDocument != null,
-                            StringFormatter.format("XML is not valid against reference X-Definition (positive scenario). " +
-                                            "xDefFile='{}', testingFile='{}'",
-                                    refXDefFile.getAbsolutePath(),
-                                    xmlDataFile.getAbsolutePath())
-                    );
-                }
-
-                ArrayReporter reporter = new ArrayReporter();
-                XDDocument xdDocument = XValidate.validate(
+                    ArrayReporter reporter   = new ArrayReporter();
+                    XDDocument    xdDocument = XValidate.validate(
                         null,
                         xmlDataFile,
-                        new File[]{xDefFile},
+                        new File[]{refXDefFile},
                         xDefFileName,
-                        reporter);
+                        reporter
+                    );
 
-                if (reporter.errors()) {
-                    LOG.error(reporter.printToString());
+                    assertFalse(
+                        reporter.errors(),
+                        StringFormatter.format(
+                            "Error occurs while validating reference X-Definition (positive scenario). " +
+                            "xDefFile='{}', testingFile='{}', reporter:\n{}",
+                            refXDefFile.getAbsolutePath(),
+                            xmlDataFile.getAbsolutePath(),
+                            reporter.printToString()
+                        )
+                    );
+                    assertTrue(
+                        xdDocument != null,
+                        StringFormatter.format(
+                            "XML is not valid against reference X-Definition (positive scenario). " +
+                            "xDefFile='{}', testingFile='{}'",
+                            refXDefFile.getAbsolutePath(),
+                            xmlDataFile.getAbsolutePath()
+                        )
+                    );
                 }
 
+                ArrayReporter reporter   = new ArrayReporter();
+                XDDocument    xdDocument = XValidate.validate(
+                    null,
+                    xmlDataFile,
+                    new File[]{xDefFile},
+                    xDefFileName,
+                    reporter
+                );
+
                 assertFalse(
-                        reporter.errors(),
-                        StringFormatter.format("Error occurs while validating output X-Definition (positive scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                    reporter.errors(),
+                    StringFormatter.format(
+                        "Error occurs while validating output X-Definition (positive scenario). " +
+                        "xDefFile='{}', testingFile='{}', reporter:\n{}",
+                        xDefFile.getAbsolutePath(),
+                        xmlDataFile.getAbsolutePath(),
+                        reporter.printToString()
+                    )
                 );
                 assertTrue(
-                        xdDocument != null,
-                        StringFormatter.format("XML is not valid against output X-Definition (positive scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                    xdDocument != null,
+                    StringFormatter.format(
+                        "XML is not valid against output X-Definition (positive scenario). " +
+                        "xDefFile='{}', testingFile='{}'",
+                        xDefFile.getAbsolutePath(),
+                        xmlDataFile.getAbsolutePath()
+                    )
                 );
             }
         }
@@ -132,48 +140,58 @@ public class XDefValidator {
                 if (validateRef == true && VALIDATE_XML_AGAINST_REF_FILE == true) {
                     ArrayReporter reporter = new ArrayReporter();
                     XValidate.validate(
-                            null,
-                            xmlDataFile,
-                            new File[]{refXDefFile},
-                            xDefFileName,
-                            reporter);
+                        null,
+                        xmlDataFile,
+                        new File[]{refXDefFile},
+                        xDefFileName,
+                        reporter
+                    );
 
                     assertTrue(
-                            reporter.errors(),
-                            StringFormatter.format("No error occurs while validating X-Definition reference (negative scenario). " +
-                                            "xDefFile='{}', testingFile='{}'",
-                                    refXDefFile.getAbsolutePath(),
-                                    xmlDataFile.getAbsolutePath())
+                        reporter.errors(),
+                        StringFormatter.format(
+                            "No error occurs while validating X-Definition reference (negative scenario). " +
+                            "xDefFile='{}', testingFile='{}'",
+                            refXDefFile.getAbsolutePath(),
+                            xmlDataFile.getAbsolutePath()
+                        )
                     );
                 }
 
                 ArrayReporter reporter = new ArrayReporter();
                 XValidate.validate(
-                        null,
-                        xmlDataFile,
-                        new File[]{xDefFile},
-                        xDefFileName,
-                        reporter);
+                    null,
+                    xmlDataFile,
+                    new File[]{xDefFile},
+                    xDefFileName,
+                    reporter
+                );
 
                 assertTrue(
-                        reporter.errors(),
-                        StringFormatter.format("No error occurs while validating X-Definition output (negative scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefFile.getAbsolutePath(),
-                                xmlDataFile.getAbsolutePath())
+                    reporter.errors(),
+                    StringFormatter.format(
+                        "No error occurs while validating X-Definition output (negative scenario). " +
+                        "xDefFile='{}', testingFile='{}'",
+                        xDefFile.getAbsolutePath(),
+                        xmlDataFile.getAbsolutePath()
+                    )
                 );
             }
         }
     }
 
-    public void validateXmlAgainstInputXDef(final String xDefFileName,
-                                            @Nullable final List<String> validTestingData,
-                                            @Nullable final List<String> invalidTestingData) {
-        LOG.debug("Validating XML data against input X-Definition. " +
-                "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}",
-                xDefFileName,
-                Optional.ofNullable(validTestingData).map(List::size).orElse(0),
-                Optional.ofNullable(invalidTestingData).map(List::size).orElse(0));
+    public void validateXmlAgainstInputXDef(
+        final String xDefFileName,
+        @Nullable final List<String> validTestingData,
+        @Nullable final List<String> invalidTestingData
+    ) {
+        LOG.debug(
+            "Validating XML data against input X-Definition. " +
+            "xDefFileName='{}', validTestingDataCount={}, invalidTestingDataCount={}",
+            xDefFileName,
+            Optional.ofNullable(validTestingData).map(List::size).orElse(0),
+            Optional.ofNullable(invalidTestingData).map(List::size).orElse(0)
+        );
 
         final Properties props = new Properties();
         // Do not check deprecated
@@ -195,27 +213,28 @@ public class XDefValidator {
 
                 ArrayReporter reporter = new ArrayReporter();
                 XDDocument xdDocument = XValidate.validate(
-                        props,
-                        xmlDataFile,
-                        xDefFiles,
-                        xDefFileName,
-                        reporter);
-
-                if (reporter.errors()) {
-                    LOG.error(reporter.printToString());
-                }
+                    props,
+                    xmlDataFile,
+                    xDefFiles,
+                    xDefFileName,
+                    reporter
+                );
 
                 assertFalse(
-                        reporter.errors(),
-                        StringFormatter.format("Error occurs while validating input X-Definition (positive scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefInputDir, xmlDataFile.getAbsolutePath())
+                    reporter.errors(),
+                    StringFormatter.format(
+                        "Error occurs while validating input X-Definition (positive scenario). " +
+                        "xDefFile='{}', testingFile='{}', reporter:\n{}",
+                        xDefInputDir, xmlDataFile.getAbsolutePath(), reporter.printToString()
+                    )
                 );
                 assertTrue(
-                        xdDocument != null,
-                        StringFormatter.format("XML is not valid against input X-Definition (positive scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefInputDir, xmlDataFile.getAbsolutePath())
+                    xdDocument != null,
+                    StringFormatter.format(
+                        "XML is not valid against input X-Definition (positive scenario). " +
+                        "xDefFile='{}', testingFile='{}', reporter:\n{}",
+                        xDefInputDir, xmlDataFile.getAbsolutePath(), reporter.printToString()
+                    )
                 );
             }
         }
@@ -229,10 +248,12 @@ public class XDefValidator {
                 XValidate.validate(props, xmlDataFile, xDefFiles, xDefFileName, reporter);
 
                 assertTrue(
-                        reporter.errors(),
-                        StringFormatter.format("No error occurs while validating input X-Definition (negative scenario). " +
-                                        "xDefFile='{}', testingFile='{}'",
-                                xDefInputDir, xmlDataFile.getAbsolutePath())
+                    reporter.errors(),
+                    StringFormatter.format(
+                        "No error occurs while validating input X-Definition (negative scenario). " +
+                        "xDefFile='{}', testingFile='{}'",
+                        xDefInputDir, xmlDataFile.getAbsolutePath()
+                    )
                 );
             }
         }

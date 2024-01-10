@@ -54,11 +54,12 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
         final StopWatch watch = StopWatch.createStarted();
         final ReportWriter reportWriter = new ArrayReporter();
+        File[] defFiles = null;
 
         XDPool inputXD;
 
         try {
-            final File[] defFiles = getInputXDefinitionFiles();
+            defFiles = getInputXDefinitionFiles();
 
             LOG.info("Compiling XDPool from given X-definition. source: {}", Arrays.stream(defFiles).collect(Collectors.toList()));
 
@@ -69,17 +70,19 @@ public class DefaultXDefAdapter implements XDefAdapter {
 
             LOG.info("Compilation of XDPool done, elapsed {} ms", watch.getTime());
         } catch (Exception ex) {
-            throw new FormattedRuntimeException(ex, "Error occurs while compile input X-Definition(s), elapsed {} ms",
-                    watch.getTime());
+            throw new FormattedRuntimeException(ex,
+                "Error occurs while compile input X-Definition(s), elapsed {} ms, source: {}, reporter:\n{}",
+                watch.getTime(), Arrays.stream(defFiles).collect(Collectors.toList()), reportWriter.getReportReader().printToString()
+            );
         } finally {
             watch.stop();
         }
 
         if (reportWriter.errors()) {
-            LOG.error(reportWriter.getReportReader().printToString());
-
-            throw new FormattedRuntimeException("Error occurs while compile input X-Definition(s), elapsed {} ms",
-                    watch.getTime());
+            throw new FormattedRuntimeException(
+                "Error occurs while compile input X-Definition(s), elapsed {} ms, source: {}, reporter:\n{}",
+                watch.getTime(), Arrays.stream(defFiles).collect(Collectors.toList()), reportWriter.getReportReader().printToString()
+            );
         }
 
         if (inputXD == null) {

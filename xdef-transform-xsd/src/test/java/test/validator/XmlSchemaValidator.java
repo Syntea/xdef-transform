@@ -1,5 +1,6 @@
 package test.validator;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.ws.commons.schema.XmlSchema;
 import org.apache.ws.commons.schema.XmlSchemaCollection;
 import org.slf4j.Logger;
@@ -253,11 +254,13 @@ public class XmlSchemaValidator {
         }
     }
 
-    private static void validateXmlAgainstXmlSchema(final String xDefFileName,
-                                                    final File xmlFile,
-                                                    final File xsdSchemaFile,
-                                                    boolean expectedResult,
-                                                    String type) {
+    private static void validateXmlAgainstXmlSchema(
+        final String xDefFileName,
+        final File xmlFile,
+        final File xsdSchemaFile,
+        boolean expectedResult,
+        String type
+    ) {
         XmlValidator validator = new XmlValidator(new StreamSource(xmlFile), new StreamSource(xsdSchemaFile));
         boolean validateResult;
         Exception validateEx = null;
@@ -273,11 +276,15 @@ public class XmlSchemaValidator {
         }
 
         assertEquals(
-                expectedResult,
-                validateResult,
-                StringFormatter.format("XML validation against XML schema failed. " +
-                        "type='{}', xsdSchemaFile='{}', xmlFile='{}'",
-                        type, xsdSchemaFile.getAbsolutePath(), xmlFile.getAbsolutePath()));
+            expectedResult,
+            validateResult,
+            StringFormatter.format(
+                "XML validation against XML schema failed. " +
+                "type='{}', xsdSchemaFile='{}', xmlFile='{}', exception:\n{}",
+                type, xsdSchemaFile.getAbsolutePath(), xmlFile.getAbsolutePath(),
+                validateEx != null ? ExceptionUtils.getStackTrace(validateEx) : ""
+            )
+        );
     }
 
 }
